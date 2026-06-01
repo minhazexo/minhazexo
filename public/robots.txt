@@ -1,0 +1,11 @@
+# https://www.robotstxt.org/robotstxt.html
+User-agent: *
+Allow: /
+
+# Sitemap
+Sitemap: https://mehrabhossain.dev/sitemap.xml
+
+# Disallow admin or private paths
+Disallow: /api/
+Disallow: /_next/
+Disallow: /_error

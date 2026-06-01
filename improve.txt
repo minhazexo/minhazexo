@@ -1,0 +1,19 @@
+- __Fix Broken Links__ - LinkedIn & Twitter links are "#" placeholders in Footer and ContactSection
+
+- __Contact Form Backend__ - Currently simulates submission; integrate with EmailJS, Formspree, or create API route
+
+- __Add Favicon__ - Create favicon.ico in public folder
+
+- __Add 404 Page__ - Create `src/app/not-found.tsx` for better UX
+
+- __Add Analytics__ - Consider Vercel Analytics for visitor tracking
+
+- __SEO Enhancements__ - Add sitemap.xml and robots.txt
+
+- __Blog Section__ - Would enhance portfolio depth
+
+- __Performance__ - Add `loading="lazy"` to non-critical images
+
+- __Accessibility__ - Enhance aria-labels and focus management
+
+- __Error Boundaries__ - Add React error boundaries for better error handling

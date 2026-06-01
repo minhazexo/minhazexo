@@ -1,0 +1,27 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(npm run *)",
+      "Bash(Start-Sleep -Seconds 5)",
+      "Bash(Get-Content \"C:\\Users\\User\\AppData\\Local\\Temp\\claude\\E--Project-mehrab-portfolio-react-minhazexo\\bf14d1fb-7c71-4900-9491-fb3278138e28\\tasks\\blpks36cl.output\" -Tail 20)"
+    ]
+  },
+  "mcpServers": {
+    "sequential-thinking": {
+      "command": "npx",
+      "args": ["-y", "@anthropic-ai/sequential-thinking"]
+    },
+    "duckduckgo": {
+      "command": "npx",
+      "args": ["-y", "@modelcontextprotocol/server-duckduckgo"]
+    },
+    "fetch": {
+      "command": "npx",
+      "args": ["-y", "@modelcontextprotocol/server-fetch"]
+    },
+    "puppeteer": {
+      "command": "npx",
+      "args": ["-y", "@modelcontextprotocol/server-puppeteer"]
+    }
+  }
+}

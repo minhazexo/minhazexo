@@ -1,0 +1,22 @@
+[build]
+  command = "npm run build"
+  publish = ".next"
+
+# Netlify Essential Next.js Plugin
+[[plugins]]
+  package = "@netlify/plugin-nextjs"
+
+[build.environment]
+  NODE_VERSION = "20"
+
+# SEO: Redirect default Netlify subdomain to custom domain
+# [[redirects]]
+#   from = "https://your-site.netlify.app/*"
+#   to = "https://mehrabhossain.dev/:splat"
+#   status = 301
+
+# Legacy paths (if any)
+# [[redirects]]
+#   from = "/old-path"
+#   to = "/new-path"
+#   status = 301
