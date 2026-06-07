@@ -31,7 +31,7 @@ export const projects: Project[] = [
     tech: ['Next.js', 'Tailwind', 'Stripe'],
     category: 'React',
     github: 'https://github.com/minhazexo',
-    demo: 'https://chocovers.netlify.app/',
+    demo: 'https://chocoverse.nahidaferjana27022002.workers.dev/',
   },
   {
     id: 4,
