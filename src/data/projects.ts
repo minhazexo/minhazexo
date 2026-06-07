@@ -81,6 +81,6 @@ export const projects: Project[] = [
     tech: ['React', 'Three.js', 'GSAP', 'CSS'],
     category: 'React',
     github: 'https://github.com/minhazexo',
-    demo: 'https://blackholesm.netlify.app/',
+    demo: 'https://blackhole.nahidaferjana27022002.workers.dev/',
   },
 ]

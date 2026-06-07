@@ -208,32 +208,29 @@ export function AboutSection() {
             transition={{ duration: 0.8, ease: cinematicEase, delay: 0.3 }}
           >
             <div className="space-y-4 mb-8">
-              <motion.p
-                className="text-lg text-gray-300 leading-relaxed"
-                initial={{ opacity: 0, y: 20 }}
-                animate={isInView ? { opacity: 1, y: 0 } : {}}
-                transition={{ delay: 0.4, ease: cinematicEase }}
-              >
-                <span className="text-indigo-400 font-mono">{'<p>'}</span>{' '}
-                I'm a passionate web developer with over 3 years of experience creating 
-                stunning digital experiences. My journey began with a curiosity for how 
-                things work on the web, which evolved into a deep love for crafting 
-                beautiful, functional applications.{' '}
-                <span className="text-indigo-400 font-mono">{'</p>'}</span>
-              </motion.p>
-              <motion.p
-                className="text-lg text-gray-300 leading-relaxed"
-                initial={{ opacity: 0, y: 20 }}
-                animate={isInView ? { opacity: 1, y: 0 } : {}}
-                transition={{ delay: 0.5, ease: cinematicEase }}
-              >
-                <span className="text-indigo-400 font-mono">{'<p>'}</span>{' '}
-                I specialize in React, Next.js, and Node.js, with a keen eye for design 
-                and user experience. Every project I undertake is an opportunity to push 
-                boundaries and create something extraordinary.{' '}
-                <span className="text-indigo-400 font-mono">{'</p>'}</span>
-              </motion.p>
-            </div>
+  <motion.p
+    className="text-lg text-gray-300 leading-relaxed"
+    initial={{ opacity: 0, y: 20 }}
+    animate={isInView ? { opacity: 1, y: 0 } : {}}
+    transition={{ delay: 0.4, ease: cinematicEase }}
+  >
+    I'm a passionate web developer with over 3 years of experience creating
+    stunning digital experiences. My journey began with a curiosity for how
+    things work on the web, which evolved into a deep love for crafting
+    beautiful, functional applications.
+  </motion.p>
+
+  <motion.p
+    className="text-lg text-gray-300 leading-relaxed"
+    initial={{ opacity: 0, y: 20 }}
+    animate={isInView ? { opacity: 1, y: 0 } : {}}
+    transition={{ delay: 0.5, ease: cinematicEase }}
+  >
+    I specialize in React, Next.js, and Node.js, with a keen eye for design
+    and user experience. Every project I undertake is an opportunity to push
+    boundaries and create something extraordinary.
+  </motion.p>
+</div>
 
             {/* Skills with Energy Flow */}
             <div className="space-y-4" role="list" aria-label="Core skills proficiency levels">
