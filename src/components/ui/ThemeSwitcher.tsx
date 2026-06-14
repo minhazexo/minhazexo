@@ -2,9 +2,10 @@
 
 import { useState, useEffect, useRef } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import { Palette, Check, Eye } from 'lucide-react'
+import { Palette, Check, Eye, RefreshCw } from 'lucide-react'
 import { useTheme } from 'next-themes'
 import { themes } from '@/data/themes'
+import { useThemeAutoCycle } from '@/hooks/useThemeAutoCycle'
 
 const colorBlindModes = [
   { value: 'none', label: 'Default' },
@@ -21,6 +22,7 @@ export function ThemeSwitcher() {
   const [cbMode, setCbMode] = useState('none')
   const toggleRef = useRef<HTMLButtonElement>(null)
   const dropdownRef = useRef<HTMLDivElement>(null)
+  const { isCycling, toggle: toggleCycle } = useThemeAutoCycle(setTheme)
 
   // Avoid hydration mismatch
   useEffect(() => {
@@ -121,7 +123,7 @@ export function ThemeSwitcher() {
                 <h3 className="text-white font-semibold">Choose Theme</h3>
               </div>
 
-              <div className="grid grid-cols-2 gap-2">
+              <div className="grid grid-cols-2 gap-2 max-h-64 overflow-y-auto">
                 {themes.map((t) => (
                   <motion.button
                     key={t.value}
@@ -161,6 +163,34 @@ export function ThemeSwitcher() {
                     )}
                   </motion.button>
                 ))}
+              </div>
+
+              {/* Auto-cycle Toggle */}
+              <div className="mt-4 pt-4 border-t border-white/10">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-2">
+                    <RefreshCw className={`w-4 h-4 transition-colors ${isCycling ? 'text-accent' : 'text-gray-500'}`} aria-hidden="true" />
+                    <span className="text-sm text-gray-300">Auto-cycle</span>
+                  </div>
+                  <button
+                    onClick={toggleCycle}
+                    className={`relative w-10 h-5 rounded-full transition-colors ${
+                      isCycling ? 'bg-accent' : 'bg-white/10'
+                    }`}
+                    role="switch"
+                    aria-checked={isCycling}
+                    aria-label="Auto-cycle themes every 15 seconds"
+                  >
+                    <motion.div
+                      animate={{ x: isCycling ? 18 : 0 }}
+                      transition={{ type: 'spring', stiffness: 500, damping: 30 }}
+                      className="absolute top-0.5 left-0.5 w-4 h-4 rounded-full bg-white shadow-md"
+                    />
+                  </button>
+                </div>
+                <p className="text-xs text-gray-500 mt-1">
+                  Cycles through all themes every 15s
+                </p>
               </div>
 
               {/* Color Blind Mode Section */}

@@ -2,6 +2,7 @@
 
 import { useEffect, useRef } from 'react'
 import { motion } from 'framer-motion'
+import { getCssVar } from '@/lib/utils'
 
 interface DigitalRainProps {
   speed?: number
@@ -24,23 +25,28 @@ export default function DigitalRain({
     const ctx = canvas.getContext('2d')
     if (!ctx) return
 
+    const dpr = window.devicePixelRatio || 1
+
     const resizeCanvas = () => {
-      canvas.width = window.innerWidth
-      canvas.height = window.innerHeight
+      canvas.width = window.innerWidth * dpr
+      canvas.height = window.innerHeight * dpr
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0)
     }
 
     resizeCanvas()
 
     const isMobile = window.innerWidth < 768
-    const columnWidth = isMobile ? 30 : 20
+    const columnWidth = isMobile ? Math.max(15, 40 - density) : Math.max(10, 40 - density)
     const columns = Math.floor(canvas.width / columnWidth)
     const columnHeight = new Array(columns).fill(0)
     
     const chars = 'アイウエオカキクケコサシスセソタチツテトナニヌネノハヒフヘホマミムメモヤユヨラリルレロワヲン0123456789ABCDEF<>{}[]()/\\=;:+-*&|!?%$#@'
     const charArray = chars.split('')
     
-    const primaryColor = color || '#00D4FF'
-    const secondaryColor = color ? `${color}aa` : '#00FF88'
+    const themePrimary = getCssVar('--primary', '#00D4FF')
+    const themeSecondary = getCssVar('--accent', '#00FF88')
+    const primaryColor = color || themePrimary
+    const secondaryColor = color ? `${color}aa` : themeSecondary
 
     const draw = () => {
       ctx.fillStyle = 'rgba(10, 10, 26, 0.05)'
@@ -49,10 +55,10 @@ export default function DigitalRain({
       for (let i = 0; i < columnHeight.length; i++) {
         if (Math.random() < 0.02 * speed || columnHeight[i] === 0) {
           const char = charArray[Math.floor(Math.random() * charArray.length)]
-          const x = i * 20 + 10
-          const y = columnHeight[i] * 20
+          const x = i * columnWidth + columnWidth / 2
+          const y = columnHeight[i] * columnWidth
 
-          const gradient = ctx.createLinearGradient(x, y - (isMobile ? 80 : 100), x, y)
+          const gradient = ctx.createLinearGradient(x, y - columnWidth * 5, x, y)
           gradient.addColorStop(0, secondaryColor)
           gradient.addColorStop(1, primaryColor)
 
@@ -70,7 +76,7 @@ export default function DigitalRain({
         if (columnHeight[i] > 0 && Math.random() > 0.95) {
           const fadeY = (columnHeight[i] - Math.floor(Math.random() * 10)) * columnWidth
           const x = i * columnWidth + columnWidth / 2
-          const fadeOpacity = Math.max(0, 1 - (columnHeight[i] * 20 - fadeY) / 200)
+          const fadeOpacity = Math.max(0, 1 - (columnHeight[i] * columnWidth - fadeY) / 200)
           ctx.fillStyle = `rgba(0, 255, 136, ${fadeOpacity * 0.3})`
           ctx.font = `${isMobile ? 12 : 14}px "JetBrains Mono", monospace`
           ctx.fillText(charArray[Math.floor(Math.random() * charArray.length)], x, fadeY)
@@ -80,21 +86,49 @@ export default function DigitalRain({
       animationRef.current = requestAnimationFrame(draw)
     }
 
-    const interval = setInterval(() => {
+    let interval: ReturnType<typeof setInterval> | undefined
+
+    const handleVisibility = () => {
+      if (document.hidden) {
+        if (animationRef.current) {
+          cancelAnimationFrame(animationRef.current)
+          animationRef.current = undefined
+        }
+        if (interval !== undefined) {
+          clearInterval(interval)
+          interval = undefined
+        }
+      } else {
+        if (!interval) {
+          interval = setInterval(() => {
+            for (let i = 0; i < columnHeight.length; i++) {
+              if (Math.random() < 0.01 * speed) {
+                columnHeight[i] = 0
+              }
+            }
+          }, 100)
+        }
+        if (!animationRef.current) {
+          animationRef.current = requestAnimationFrame(draw)
+        }
+      }
+    }
+    document.addEventListener('visibilitychange', handleVisibility)
+    interval = setInterval(() => {
       for (let i = 0; i < columnHeight.length; i++) {
         if (Math.random() < 0.01 * speed) {
           columnHeight[i] = 0
         }
       }
     }, 100)
-
     draw()
 
     window.addEventListener('resize', resizeCanvas)
 
     return () => {
       window.removeEventListener('resize', resizeCanvas)
-      clearInterval(interval)
+      document.removeEventListener('visibilitychange', handleVisibility)
+      if (interval !== undefined) clearInterval(interval)
       if (animationRef.current) {
         cancelAnimationFrame(animationRef.current)
       }

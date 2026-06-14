@@ -2,6 +2,7 @@
 
 import { useEffect, useRef } from 'react'
 import { motion } from 'framer-motion'
+import { getCssVarRgb } from '@/lib/utils'
 
 interface Star {
   x: number
@@ -34,12 +35,18 @@ export default function ConstellationMap({
     const ctx = canvas.getContext('2d')
     if (!ctx) return
 
+    const dpr = window.devicePixelRatio || 1
+
     const resizeCanvas = () => {
-      canvas.width = window.innerWidth
-      canvas.height = window.innerHeight
+      canvas.width = window.innerWidth * dpr
+      canvas.height = window.innerHeight * dpr
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0)
     }
 
     resizeCanvas()
+
+    const starRgb = getCssVarRgb('--accent-violet', '#8B5CF6')
+    const glowRgb = getCssVarRgb('--primary', '#00D4FF')
 
     starsRef.current = Array.from({ length: starCount }, () => {
       const x = Math.random() * canvas.width
@@ -66,17 +73,21 @@ export default function ConstellationMap({
       })
     })
 
-    const handleMouseMove = (e: MouseEvent) => {
-      mouseRef.current = { x: e.clientX, y: e.clientY, active: true }
+    const handlePointerMove = (e: MouseEvent | TouchEvent) => {
+      const clientX = 'touches' in e ? e.touches[0].clientX : e.clientX
+      const clientY = 'touches' in e ? e.touches[0].clientY : e.clientY
+      mouseRef.current = { x: clientX, y: clientY, active: true }
     }
 
-    const handleMouseLeave = () => {
+    const handlePointerEnd = () => {
       mouseRef.current.active = false
     }
 
     window.addEventListener('resize', resizeCanvas)
-    window.addEventListener('mousemove', handleMouseMove)
-    canvas.addEventListener('mouseleave', handleMouseLeave)
+    window.addEventListener('mousemove', handlePointerMove)
+    window.addEventListener('touchmove', handlePointerMove, { passive: true })
+    window.addEventListener('touchend', handlePointerEnd)
+    canvas.addEventListener('mouseleave', handlePointerEnd)
 
     let time = 0
 
@@ -90,7 +101,7 @@ export default function ConstellationMap({
         
         ctx.beginPath()
         ctx.arc(star.x, star.y, star.size * pulse, 0, Math.PI * 2)
-        ctx.fillStyle = `rgba(139, 92, 246, ${star.brightness * pulse})`
+        ctx.fillStyle = `rgba(${starRgb}, ${star.brightness * pulse})`
         ctx.fill()
 
         if (mouseRef.current.active) {
@@ -100,7 +111,7 @@ export default function ConstellationMap({
           if (dist < 150) {
             ctx.beginPath()
             ctx.arc(star.x, star.y, star.size * 2, 0, Math.PI * 2)
-            ctx.fillStyle = `rgba(0, 212, 255, ${0.5 * (1 - dist / 150)})`
+            ctx.fillStyle = `rgba(${glowRgb}, ${0.5 * (1 - dist / 150)})`
             ctx.fill()
 
             star.connections.forEach((connIndex) => {
@@ -109,7 +120,7 @@ export default function ConstellationMap({
               ctx.beginPath()
               ctx.moveTo(star.x, star.y)
               ctx.lineTo(other.x, other.y)
-              ctx.strokeStyle = `rgba(0, 212, 255, ${connectionPulse * (1 - dist / 150)})`
+              ctx.strokeStyle = `rgba(${glowRgb}, ${connectionPulse * (1 - dist / 150)})`
               ctx.lineWidth = 1
               ctx.stroke()
             })
@@ -121,7 +132,7 @@ export default function ConstellationMap({
             ctx.beginPath()
             ctx.moveTo(star.x, star.y)
             ctx.lineTo(other.x, other.y)
-            ctx.strokeStyle = `rgba(139, 92, 246, ${connectionPulse})`
+            ctx.strokeStyle = `rgba(${starRgb}, ${connectionPulse})`
             ctx.lineWidth = 0.5
             ctx.stroke()
           })
@@ -131,12 +142,26 @@ export default function ConstellationMap({
       animationRef.current = requestAnimationFrame(animate)
     }
 
+    const handleVisibility = () => {
+      if (document.hidden) {
+        if (animationRef.current) {
+          cancelAnimationFrame(animationRef.current)
+          animationRef.current = undefined
+        }
+      } else if (!animationRef.current) {
+        animationRef.current = requestAnimationFrame(animate)
+      }
+    }
+    document.addEventListener('visibilitychange', handleVisibility)
     animate()
 
     return () => {
       window.removeEventListener('resize', resizeCanvas)
-      window.removeEventListener('mousemove', handleMouseMove)
-      canvas.removeEventListener('mouseleave', handleMouseLeave)
+      window.removeEventListener('mousemove', handlePointerMove)
+      window.removeEventListener('touchmove', handlePointerMove)
+      window.removeEventListener('touchend', handlePointerEnd)
+      canvas.removeEventListener('mouseleave', handlePointerEnd)
+      document.removeEventListener('visibilitychange', handleVisibility)
       if (animationRef.current) {
         cancelAnimationFrame(animationRef.current)
       }

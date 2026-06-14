@@ -1,6 +1,8 @@
 'use client'
 
+import { useMemo, useState } from 'react'
 import { motion } from 'framer-motion'
+import { getCssVarRgba } from '@/lib/utils'
 
 interface FloatingOrbsProps {
   count?: number
@@ -8,14 +10,24 @@ interface FloatingOrbsProps {
 }
 
 export default function FloatingOrbs({ count = 5, speed = 1 }: FloatingOrbsProps) {
-  const orbs = Array.from({ length: count }, (_, i) => ({
-    size: Math.floor(Math.random() * 200) + 100,
-    top: `${Math.random() * 80 + 10}%`,
-    left: `${Math.random() * 80 + 10}%`,
-    duration: Math.floor(Math.random() * 10) + 15,
-    delay: Math.random() * -15,
-    color: ['rgba(0, 212, 255, 0.15)', 'rgba(255, 0, 170, 0.12)', 'rgba(0, 255, 136, 0.1)', 'rgba(139, 92, 246, 0.1)', 'rgba(255, 184, 0, 0.08)'][i % 5],
-  }))
+  const [themeColors] = useState<string[]>(() => [
+    getCssVarRgba('--primary', 0.15, '#00D4FF'),
+    getCssVarRgba('--secondary', 0.12, '#FF00FF'),
+    getCssVarRgba('--accent', 0.1, '#00FF88'),
+    getCssVarRgba('--accent-violet', 0.1, '#8B5CF6'),
+    getCssVarRgba('--accent-amber', 0.08, '#FFB800'),
+  ])
+
+  const orbs = useMemo(() =>
+    Array.from({ length: count }, (_, i) => ({
+      size: Math.floor(Math.random() * 200) + 100,
+      top: `${Math.random() * 80 + 10}%`,
+      left: `${Math.random() * 80 + 10}%`,
+      duration: Math.floor(Math.random() * 10) + 15,
+      delay: Math.random() * -15,
+      color: themeColors[i % themeColors.length],
+    })),
+  [count, themeColors])
 
   return (
     <motion.div

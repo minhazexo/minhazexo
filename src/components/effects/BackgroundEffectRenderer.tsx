@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react'
 import dynamic from 'next/dynamic'
 import { useBackgroundEffect } from '@/components/providers/BackgroundEffectsProvider'
+import { SectionErrorBoundary } from '@/components/providers/ErrorBoundary'
 
 const effectLoader = (importer: any) =>
   dynamic(importer, {
@@ -50,10 +51,16 @@ export function BackgroundEffectRenderer() {
     ? effectComponents[secondaryEffect]
     : null
 
+  const renderEffect = (Effect: React.ComponentType<any>) => (
+    <SectionErrorBoundary>
+      <Effect />
+    </SectionErrorBoundary>
+  )
+
   return (
     <>
-      {PrimaryEffect && <PrimaryEffect />}
-      {SecondaryEffect && <SecondaryEffect />}
+      {PrimaryEffect && renderEffect(PrimaryEffect)}
+      {SecondaryEffect && renderEffect(SecondaryEffect)}
     </>
   )
 }

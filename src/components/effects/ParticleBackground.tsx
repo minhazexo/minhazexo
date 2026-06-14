@@ -1,6 +1,7 @@
 'use client'
 
 import { useEffect, useRef } from 'react'
+import { getCssVar } from '@/lib/utils'
 
 interface Particle {
   x: number
@@ -23,15 +24,22 @@ export default function ParticleBackground() {
     const ctx = canvas.getContext('2d')
     if (!ctx) return
 
+    const dpr = window.devicePixelRatio || 1
+
     const resizeCanvas = () => {
-      canvas.width = window.innerWidth
-      canvas.height = window.innerHeight
+      canvas.width = window.innerWidth * dpr
+      canvas.height = window.innerHeight * dpr
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0)
     }
 
     resizeCanvas()
 
     const isMobile = window.innerWidth < 768
-    const colors = ['#00D4FF', '#FF00FF', '#00FF88']
+    const colors = [
+      getCssVar('--primary', '#00D4FF'),
+      getCssVar('--secondary', '#FF00FF'),
+      getCssVar('--accent', '#00FF88'),
+    ]
     const particleCount = Math.max(12, Math.floor(Math.min(30, Math.floor((canvas.width * canvas.height) / 20000)) * (isMobile ? 0.3 : 0.5)))
 
     particlesRef.current = Array.from({ length: particleCount }, () => ({
@@ -87,10 +95,22 @@ export default function ParticleBackground() {
       animationRef.current = requestAnimationFrame(animate)
     }
 
+    const handleVisibility = () => {
+      if (document.hidden) {
+        if (animationRef.current) {
+          cancelAnimationFrame(animationRef.current)
+          animationRef.current = undefined
+        }
+      } else if (!animationRef.current) {
+        animationRef.current = requestAnimationFrame(animate)
+      }
+    }
+    document.addEventListener('visibilitychange', handleVisibility)
     animate()
 
     return () => {
       window.removeEventListener('resize', resizeCanvas)
+      document.removeEventListener('visibilitychange', handleVisibility)
       if (animationRef.current) {
         cancelAnimationFrame(animationRef.current)
       }
