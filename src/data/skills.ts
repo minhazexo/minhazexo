@@ -1,24 +1,24 @@
-import { Palette, Server, Terminal, Code2 } from 'lucide-react'
+import { Monitor, Server, Terminal } from 'lucide-react'
 import type { SkillCategory, OrbitSkill } from '@/types'
 
 export const skillCategories: SkillCategory[] = [
   {
     name: 'Frontend',
-    icon: Palette,
-    color: '#00D4FF',
-    skills: ['React', 'Next.js', 'TypeScript', 'Tailwind CSS', 'Framer Motion', 'Three.js'],
+    icon: Monitor,
+    color: '#00E5FF',
+    skills: ['React', 'Next.js', 'TypeScript', 'JavaScript', 'HTML5', 'CSS3', 'Tailwind CSS', 'Framer Motion', 'Three.js', 'Redux', 'Zustand', 'Vite'],
   },
   {
     name: 'Backend',
     icon: Server,
-    color: '#00FF88',
-    skills: ['Node.js', 'Express', 'MongoDB', 'PostgreSQL', 'GraphQL', 'REST API'],
+    color: '#00F593',
+    skills: ['Node.js', 'Express', 'Python', 'REST APIs', 'GraphQL', 'PostgreSQL', 'MongoDB', 'SQLite', 'Firebase', 'Supabase', 'Appwrite', 'Cloudflare'],
   },
   {
-    name: 'Tools',
+    name: 'Tools & Others',
     icon: Terminal,
-    color: '#FF00FF',
-    skills: ['Git', 'Docker', 'AWS', 'Vercel', 'Figma', 'VS Code'],
+    color: '#FF2D95',
+    skills: ['Git', 'GitHub', 'VS Code', 'Figma', 'Linux', 'Docker', 'Postman', 'Vercel', 'Netlify', 'CI/CD', 'Jira', 'Notion'],
   },
 ]
 
@@ -52,5 +52,3 @@ export const topSkills: SkillWithLevel[] = [
   { name: 'PostgreSQL', level: 78, color: '#336791' },
   { name: 'Git', level: 90, color: '#f05032' },
 ]
-
-export { Code2 }

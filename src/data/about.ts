@@ -1,10 +1,10 @@
 import type { Milestone, Skill } from '@/types'
 
 export const milestones: Milestone[] = [
-  { year: '2021', title: 'Started Journey', description: 'Began learning web development with HTML, CSS, and JavaScript', color: '#00D4FF' },
-  { year: '2022', title: 'First Client', description: 'Completed first commercial project and entered freelance world', color: '#FF00FF' },
-  { year: '2023', title: 'Full Stack Dev', description: 'Mastered React, Next.js, and Node.js ecosystem', color: '#00FF88' },
-  { year: '2024', title: '50+ Projects', description: 'Delivered excellence consistently across diverse projects', color: '#00D4FF' },
+  { year: '2021', title: 'Started Journey', description: 'Began learning web development with HTML, CSS, and JavaScript', color: '#00E5FF' },
+  { year: '2022', title: 'First Client', description: 'Completed first commercial project and entered freelance world', color: '#FF2D95' },
+  { year: '2023', title: 'Full Stack Dev', description: 'Mastered React, Next.js, and Node.js ecosystem', color: '#00F593' },
+  { year: '2024', title: '50+ Projects', description: 'Delivered excellence consistently across diverse projects', color: '#00E5FF' },
 ]
 
 export const skills: Skill[] = [

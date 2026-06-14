@@ -117,7 +117,7 @@ export function ThemeSwitcher() {
             >
               {/* Theme Selection */}
               <div className="flex items-center gap-2 mb-4 pb-3 border-b border-white/10">
-                <Palette className="w-5 h-5 text-cyan-400" aria-hidden="true" />
+                <Palette className="w-5 h-5 text-accent" aria-hidden="true" />
                 <h3 className="text-white font-semibold">Choose Theme</h3>
               </div>
 
@@ -131,7 +131,7 @@ export function ThemeSwitcher() {
                     }}
                     className={`relative p-3 rounded-xl border-2 transition-all ${
                       theme === t.value
-                        ? 'border-cyan-400 bg-cyan-400/10'
+                        ? 'border-accent bg-accent-subtle'
                         : 'border-transparent hover:bg-white/5'
                     }`}
                     whileHover={{ scale: 1.05 }}
@@ -156,7 +156,7 @@ export function ThemeSwitcher() {
                         animate={{ scale: 1 }}
                         className="absolute top-2 right-2"
                       >
-                        <Check className="w-4 h-4 text-cyan-400" aria-hidden="true" />
+                        <Check className="w-4 h-4 text-accent" aria-hidden="true" />
                       </motion.div>
                     )}
                   </motion.button>
@@ -166,7 +166,7 @@ export function ThemeSwitcher() {
               {/* Color Blind Mode Section */}
               <div className="mt-4 pt-4 border-t border-white/10">
                 <div className="flex items-center gap-2 mb-3">
-                  <Eye className="w-4 h-4 text-cyan-400" aria-hidden="true" />
+                  <Eye className="w-4 h-4 text-accent" aria-hidden="true" />
                   <h4 className="text-gray-300 text-sm font-medium">Color Blind Safe</h4>
                 </div>
                 <div className="flex flex-wrap gap-2" role="radiogroup" aria-label="Color blindness compensation mode">
@@ -176,7 +176,7 @@ export function ThemeSwitcher() {
                       onClick={() => setColorBlindMode(mode.value)}
                       className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-all ${
                         cbMode === mode.value
-                          ? 'bg-cyan-400/20 text-cyan-400 border border-cyan-400/30'
+                          ? 'bg-accent-subtle text-accent border border-accent-muted'
                           : 'text-gray-400 hover:text-white hover:bg-white/5 border border-transparent'
                       }`}
                       role="radio"

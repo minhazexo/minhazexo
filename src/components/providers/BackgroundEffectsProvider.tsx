@@ -1,6 +1,6 @@
 'use client'
 
-import { createContext, useContext, useState, useEffect, ReactNode } from 'react'
+import { createContext, useContext, useState, useEffect, useMemo, ReactNode } from 'react'
 import { getLocalStorageItem, setLocalStorageItem } from '@/lib/utils'
 
 interface BackgroundEffectContextType {
@@ -39,13 +39,15 @@ export function BackgroundEffectsProvider({ children }: { children: ReactNode })
     }
   }
 
+  const value = useMemo(() => ({
+    backgroundEffect,
+    setBackgroundEffect,
+    secondaryEffect,
+    setSecondaryEffect,
+  }), [backgroundEffect, secondaryEffect, setBackgroundEffect, setSecondaryEffect])
+
   return (
-    <BackgroundEffectContext.Provider value={{ 
-      backgroundEffect, 
-      setBackgroundEffect,
-      secondaryEffect,
-      setSecondaryEffect 
-    }}>
+    <BackgroundEffectContext.Provider value={value}>
       {children}
     </BackgroundEffectContext.Provider>
   )

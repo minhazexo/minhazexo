@@ -184,8 +184,9 @@ export function BackgroundMusic() {
       >
         <motion.button
           onClick={() => {
-            if (!hasInteracted || !isPlaying) {
+            if (!hasInteracted) {
               togglePlay()
+              setShowControls(true)
             } else {
               setShowControls(!showControls)
             }
@@ -195,24 +196,24 @@ export function BackgroundMusic() {
           whileTap={{ scale: 0.9 }}
           animate={{
             boxShadow: isPlaying
-              ? '0 0 30px rgba(0, 212, 255, 0.6), 0 0 60px rgba(0, 212, 255, 0.3)'
+              ? '0 0 30px color-mix(in srgb, var(--primary) 60%, transparent), 0 0 60px color-mix(in srgb, var(--primary) 30%, transparent)'
               : '0 0 20px rgba(255, 255, 255, 0.1)',
           }}
           title={!hasInteracted ? 'Enable background music' : isPlaying ? 'Pause background music' : 'Play background music'}
           aria-label={!hasInteracted ? 'Enable background music' : isPlaying ? 'Pause background music' : 'Play background music'}
         >
           {!hasInteracted ? (
-            <Music className="w-6 h-6 text-cyan-400" aria-hidden="true" />
+            <Music className="w-6 h-6 text-accent" aria-hidden="true" />
           ) : isPlaying ? (
-            <Pause className="w-6 h-6 text-cyan-400" aria-hidden="true" />
+            <Pause className="w-6 h-6 text-accent" aria-hidden="true" />
           ) : (
-            <Play className="w-6 h-6 text-cyan-400" aria-hidden="true" />
+            <Play className="w-6 h-6 text-accent" aria-hidden="true" />
           )}
 
           {/* Pulse animation when playing */}
           {isPlaying && (
             <motion.div
-              className="absolute inset-0 rounded-full border-2 border-cyan-400"
+              className="absolute inset-0 rounded-full border-2 border-accent"
               animate={{ scale: [1, 1.5, 1], opacity: [1, 0, 1] }}
               transition={{ duration: 2, repeat: Infinity }}
             />
@@ -228,10 +229,20 @@ export function BackgroundMusic() {
               exit={{ opacity: 0, y: 20, scale: 0.9 }}
               className="absolute bottom-20 right-0 glass-strong rounded-2xl p-4 w-64 space-y-4"
             >
+              {/* Close button */}
+              <button
+                onClick={() => setShowControls(false)}
+                className="absolute top-2 right-2 w-6 h-6 flex items-center justify-center rounded-full bg-white/10 hover:bg-white/20 text-gray-400 hover:text-white transition-colors"
+                aria-label="Close music controls"
+              >
+                <svg className="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+                </svg>
+              </button>
               {/* Play/Pause */}
               <button
                 onClick={togglePlay}
-                className="w-full flex items-center justify-center gap-2 py-2 rounded-lg bg-gradient-to-r from-cyan-500 to-blue-600 text-white font-medium hover:opacity-90 transition-opacity"
+                className="w-full flex items-center justify-center gap-2 py-2 rounded-lg bg-gradient-to-r from-[var(--primary)] to-[var(--primary-dark)] text-white font-medium hover:opacity-90 transition-opacity"
               >
                 {isPlaying ? (
                   <>
@@ -288,7 +299,7 @@ export function BackgroundMusic() {
             className="fixed bottom-24 right-6 z-50 glass-strong rounded-2xl p-4 max-w-xs"
           >
             <div className="flex items-start gap-3">
-              <div className="w-10 h-10 rounded-full bg-gradient-to-r from-cyan-500 to-magenta-500 flex items-center justify-center flex-shrink-0">
+              <div className="w-10 h-10 rounded-full bg-gradient-to-r from-[var(--primary)] to-[var(--secondary)] flex items-center justify-center flex-shrink-0">
                 <Music className="w-5 h-5 text-white" />
               </div>
               <div className="flex-1">
@@ -299,7 +310,7 @@ export function BackgroundMusic() {
                 <div className="flex gap-2">
                   <button
                     onClick={togglePlay}
-                    className="flex-1 py-2 rounded-lg bg-gradient-to-r from-cyan-500 to-blue-600 text-white text-xs font-medium hover:opacity-90 transition-opacity"
+                    className="flex-1 py-2 rounded-lg bg-gradient-to-r from-[var(--primary)] to-[var(--primary-dark)] text-white text-xs font-medium hover:opacity-90 transition-opacity"
                   >
                     Enable
                   </button>

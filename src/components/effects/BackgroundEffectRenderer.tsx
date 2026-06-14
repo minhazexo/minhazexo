@@ -1,5 +1,6 @@
 'use client'
 
+import { useState, useEffect } from 'react'
 import dynamic from 'next/dynamic'
 import { useBackgroundEffect } from '@/components/providers/BackgroundEffectsProvider'
 
@@ -16,7 +17,7 @@ const DigitalRain = effectLoader(() => import('./DigitalRain').then(mod => ({ de
 const FloatingOrbs = effectLoader(() => import('./FloatingOrbs').then(mod => ({ default: mod.default })))
 const GeometricPattern = effectLoader(() => import('./GeometricPattern').then(mod => ({ default: mod.default })))
 const WaveFlowField = effectLoader(() => import('./WaveFlowField').then(mod => ({ default: mod.default })))
-const ParticleBackground = effectLoader(() => import('./ParticleBackground').then(mod => ({ default: mod.ParticleBackground })))
+const ParticleBackground = effectLoader(() => import('./ParticleBackground').then(mod => ({ default: mod.default })))
 
 const effectComponents: Record<string, React.ComponentType<any> | null> = {
   none: null,
@@ -32,6 +33,17 @@ const effectComponents: Record<string, React.ComponentType<any> | null> = {
 
 export function BackgroundEffectRenderer() {
   const { backgroundEffect, secondaryEffect } = useBackgroundEffect()
+  const [isReady, setIsReady] = useState(false)
+
+  useEffect(() => {
+    if ('requestIdleCallback' in window) {
+      requestIdleCallback(() => setIsReady(true), { timeout: 1500 })
+    } else {
+      setTimeout(() => setIsReady(true), 1500)
+    }
+  }, [])
+
+  if (!isReady) return null
 
   const PrimaryEffect = effectComponents[backgroundEffect] ?? null
   const SecondaryEffect = secondaryEffect && secondaryEffect !== 'none'

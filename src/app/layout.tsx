@@ -1,10 +1,31 @@
 import type { Metadata, Viewport } from 'next'
+import { Orbitron, Exo_2, JetBrains_Mono } from 'next/font/google'
 import { ThemeProvider } from '@/components/providers/ThemeProvider'
 import { BackgroundEffectsProvider } from '@/components/providers/BackgroundEffectsProvider'
+import { ThemeTransition } from '@/components/providers/ThemeTransition'
+import { KeyboardShortcutProvider } from '@/components/providers/KeyboardShortcuts'
 import { NoiseOverlay } from '@/components/effects/NoiseOverlay'
-import { ScrollProgress, SectionProgress } from '@/components/effects/ScrollProgress'
-import { ThemeTransition } from '@/components/effects/ThemeTransition'
+import { ScrollProgress } from '@/components/effects/ScrollProgress'
+import { SectionProgress } from '@/components/effects/SectionProgress'
 import '@/styles/globals.css'
+
+const orbitron = Orbitron({
+  subsets: ['latin'],
+  variable: '--font-orbitron',
+  display: 'swap',
+})
+
+const exo2 = Exo_2({
+  subsets: ['latin'],
+  variable: '--font-exo-2',
+  display: 'swap',
+})
+
+const jetbrainsMono = JetBrains_Mono({
+  subsets: ['latin'],
+  variable: '--font-jetbrains',
+  display: 'swap',
+})
 
 export const metadata: Metadata = {
   title: {
@@ -73,13 +94,17 @@ export default function RootLayout({
   children: React.ReactNode
 }) {
   return (
-    <html lang="en" suppressHydrationWarning>
+    <html lang="en" suppressHydrationWarning className={`${orbitron.variable} ${exo2.variable} ${jetbrainsMono.variable}`}>
       <head>
         <link rel="manifest" href="/manifest.json" />
-        <link rel="apple-touch-icon" href="/icon-192x192.png" />
+        <link rel="manifest" href="/favicon_io/site.webmanifest" />
+        <link rel="apple-touch-icon" sizes="180x180" href="/favicon_io/apple-touch-icon.png" />
         <link rel="icon" type="image/png" sizes="192x192" href="/icon-192x192.png" />
         <link rel="icon" type="image/png" sizes="512x512" href="/icon-512x512.png" />
-        <link rel="shortcut icon" href="/icon-192x192.png" />
+        <link rel="icon" type="image/png" sizes="16x16" href="/favicon_io/favicon-16x16.png" />
+        <link rel="icon" type="image/png" sizes="32x32" href="/favicon_io/favicon-32x32.png" />
+        <link rel="shortcut icon" href="/favicon_io/favicon.ico" />
+        <link rel="icon" type="image/x-icon" href="/favicon_io/favicon.ico" />
         <meta name="theme-color" content="#0A0A0F" />
         <meta name="application-name" content="MD Mehrab Hossain Portfolio" />
         <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -197,9 +222,11 @@ export default function RootLayout({
             <ThemeTransition />
             <NoiseOverlay />
             <SectionProgress />
-            <main id="main-content" role="main" tabIndex={-1}>
-              {children}
-            </main>
+            <KeyboardShortcutProvider>
+              <main id="main-content" role="main" tabIndex={-1}>
+                {children}
+              </main>
+            </KeyboardShortcutProvider>
           </BackgroundEffectsProvider>
         </ThemeProvider>
       </body>

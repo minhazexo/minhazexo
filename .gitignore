@@ -26,6 +26,9 @@ yarn-error.log*
 .env.test.local
 .env.production.local
 
+# Claude
+.claude/
+
 # IDE
 .idea/
 .vscode/

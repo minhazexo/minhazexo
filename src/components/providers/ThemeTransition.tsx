@@ -4,12 +4,8 @@ import { useEffect, useState } from 'react'
 import { useTheme } from 'next-themes'
 import { motion, AnimatePresence } from 'framer-motion'
 
-/**
- * Cinematic Theme Transition - Warp-speed effect when changing themes
- * Creates an immersive "traveling to a new dimension" feeling
- */
 export function ThemeTransition() {
-  const { theme, resolvedTheme } = useTheme()
+  const { theme } = useTheme()
   const [isTransitioning, setIsTransitioning] = useState(false)
   const [prevTheme, setPrevTheme] = useState<string>('')
 
@@ -48,7 +44,6 @@ export function ThemeTransition() {
             `,
           }}
         >
-          {/* Warp streaks effect */}
           <motion.div
             className="absolute inset-0"
             style={{

@@ -5,6 +5,7 @@ import { motion, AnimatePresence, useScroll, useMotionValueEvent } from 'framer-
 import { Menu, X, Github } from 'lucide-react'
 import { ThemeSwitcher } from '@/components/ui/ThemeSwitcher'
 import { BackgroundEffectSwitcher } from '@/components/ui/BackgroundEffectSwitcher'
+
 import { navLinks } from '@/data/navigation'
 
 export function Navigation() {
@@ -136,11 +137,11 @@ export function Navigation() {
                     e.preventDefault()
                     scrollToSection(link.href)
                   }}
-                  className={`relative px-4 py-2 min-h-[44px] min-w-[44px] text-sm font-medium transition-colors ${
-                    activeSection === link.href.slice(1)
-                      ? 'text-cyan-400'
-                      : 'text-gray-300 hover:text-white'
-                  } touch-target-min`}
+                      className={`relative px-4 py-2 min-h-[44px] min-w-[44px] text-sm font-medium transition-colors ${
+                        activeSection === link.href.slice(1)
+                          ? 'text-accent'
+                          : 'text-gray-400 hover:text-white'
+                      } touch-target-min`}
                   whileHover={{ y: -2 }}
                   role="menuitem"
                   aria-current={activeSection === link.href.slice(1) ? 'true' : undefined}
@@ -148,7 +149,7 @@ export function Navigation() {
                   {link.name}
                   {activeSection === link.href.slice(1) && (
                     <motion.span
-                      className="absolute bottom-0 left-4 right-4 h-0.5 bg-gradient-to-r from-cyan-400 to-magenta-500"
+                      className="absolute bottom-0 left-4 right-4 h-0.5 bg-gradient-to-r from-[var(--primary)] to-[var(--secondary)]"
                       layoutId="activeNav"
                       transition={{ type: 'spring', stiffness: 380, damping: 30 }}
                     />
@@ -167,7 +168,7 @@ export function Navigation() {
                 href="https://github.com/minhazexo"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="p-2 rounded-full glass ml-2 hover:bg-cyan-400/20 transition-colors touch-target-min"
+                className="p-2 rounded-full glass ml-2 hover:bg-white/5 transition-all touch-target-min"
                 whileHover={{ scale: 1.1 }}
                 whileTap={{ scale: 0.95 }}
                 aria-label="Visit GitHub profile (opens in new tab)"
@@ -230,11 +231,11 @@ export function Navigation() {
                       e.preventDefault()
                       scrollToSection(link.href)
                     }}
-                    className={`block px-4 py-3 rounded-lg text-lg font-medium transition-colors ${
-                      activeSection === link.href.slice(1)
-                        ? 'bg-cyan-400/20 text-cyan-400'
-                        : 'text-gray-300 hover:bg-white/5 hover:text-white'
-                    }`}
+                      className={`block px-4 py-3 rounded-lg text-lg font-medium transition-colors ${
+                        activeSection === link.href.slice(1)
+                          ? 'bg-accent-subtle text-accent'
+                          : 'text-gray-400 hover:bg-white/5 hover:text-white'
+                      }`}
                     initial={{ opacity: 0, x: -20 }}
                     animate={{ opacity: 1, x: 0 }}
                     transition={{ delay: index * 0.1 }}
@@ -246,7 +247,7 @@ export function Navigation() {
                 ))}
               </div>
 
-{/* Mobile Theme Switcher */}
+              {/* Mobile Theme Switcher */}
               <div className="mt-4 pt-4 border-t border-white/10 space-y-3">
                 <div className="flex items-center justify-between">
                   <span className="text-gray-400">Theme</span>

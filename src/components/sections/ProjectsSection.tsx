@@ -2,7 +2,7 @@
 
 import { useState, useRef, useCallback, memo } from 'react'
 import { motion, useInView, AnimatePresence } from 'framer-motion'
-import { Github, ExternalLink, Code2, Eye, ChevronRight } from 'lucide-react'
+import { ExternalLink, Code2, Eye, ChevronRight } from 'lucide-react'
 import Image from 'next/image'
 import dynamic from 'next/dynamic'
 import { projects, categories } from '@/data/projects'

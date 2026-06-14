@@ -12,7 +12,21 @@ export function LoadingScreen({ onComplete, progress: externalProgress, isReady 
   const [displayProgress, setDisplayProgress] = useState(0)
   const [fontsLoaded, setFontsLoaded] = useState(false)
   const [minTimeElapsed, setMinTimeElapsed] = useState(false)
+  const [showSkip, setShowSkip] = useState(false)
   const hasCompleted = useRef(false)
+
+  // Show skip button: immediately for returning users, after 2s for first-timers
+  useEffect(() => {
+    const isReturning = localStorage.getItem('visited-before') === 'true'
+    const delay = isReturning ? 500 : 2000
+    const timer = setTimeout(() => setShowSkip(true), delay)
+    return () => clearTimeout(timer)
+  }, [])
+
+  // Mark as visited on mount
+  useEffect(() => {
+    localStorage.setItem('visited-before', 'true')
+  }, [])
 
   // Wait for web fonts to load
   useEffect(() => {
@@ -142,7 +156,7 @@ export function LoadingScreen({ onComplete, progress: externalProgress, isReady 
 
         {/* Middle Ring */}
         <motion.div
-          className="absolute inset-3 rounded-full border border-cyan-400/40"
+          className="absolute inset-3 rounded-full border border-accent-muted"
           animate={{ rotate: -360 }}
           transition={{ duration: 6, repeat: Infinity, ease: 'linear' }}
           aria-hidden="true"
@@ -150,7 +164,7 @@ export function LoadingScreen({ onComplete, progress: externalProgress, isReady 
 
         {/* Inner Ring */}
         <motion.div
-          className="absolute inset-6 rounded-full border border-magenta-400/30"
+          className="absolute inset-6 rounded-full border border-accent-secondary-muted"
           animate={{ rotate: 360 }}
           transition={{ duration: 8, repeat: Infinity, ease: 'linear' }}
           aria-hidden="true"
@@ -158,10 +172,7 @@ export function LoadingScreen({ onComplete, progress: externalProgress, isReady 
 
         {/* Core */}
         <motion.div
-          className="absolute inset-10 rounded-full bg-gradient-to-br from-cyan-500 to-magenta-500 flex items-center justify-center"
-          animate={{
-            boxShadow: '0 0 30px rgba(0, 212, 255, 0.6), 0 0 60px rgba(255, 0, 170, 0.4)',
-          }}
+          className="absolute inset-10 rounded-full bg-gradient-to-br from-[var(--primary)] to-[var(--secondary)] flex items-center justify-center"
         >
           <motion.span
             className="text-2xl font-orbitron font-bold text-white"
@@ -178,7 +189,7 @@ export function LoadingScreen({ onComplete, progress: externalProgress, isReady 
         {[0, 120, 240].map((angle, i) => (
           <motion.div
             key={i}
-            className="absolute w-2 h-2 rounded-full bg-cyan-400"
+            className="absolute w-2 h-2 rounded-full bg-accent"
             style={{
               top: '50%',
               left: '50%',
@@ -222,7 +233,7 @@ export function LoadingScreen({ onComplete, progress: externalProgress, isReady 
         transition={{ delay: 0.3 }}
       >
         <p
-          className="text-cyan-400 font-orbitron tracking-[0.3em] text-sm mb-3"
+          className="text-accent font-orbitron tracking-[0.3em] text-sm mb-3"
           aria-live="polite"
           aria-atomic="true"
         >
@@ -234,7 +245,7 @@ export function LoadingScreen({ onComplete, progress: externalProgress, isReady 
           {[...Array(3)].map((_, i) => (
             <motion.div
               key={i}
-              className="w-1.5 h-1.5 rounded-full bg-cyan-400"
+              className="w-1.5 h-1.5 rounded-full bg-accent"
               animate={{
                 scale: [1, 1.8, 1],
                 opacity: [0.3, 1, 0.3],
@@ -247,6 +258,20 @@ export function LoadingScreen({ onComplete, progress: externalProgress, isReady 
             />
           ))}
         </div>
+
+        {/* Skip button for returning users */}
+        {showSkip && (
+          <motion.button
+            onClick={() => { hasCompleted.current = true; onComplete() }}
+            className="mt-6 text-gray-500 text-xs font-mono underline hover:text-gray-300 transition-colors cursor-pointer bg-transparent border-none"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 0.3 }}
+            aria-label="Skip loading animation"
+          >
+            Skip to content
+          </motion.button>
+        )}
       </motion.div>
     </motion.div>
   )

@@ -2,7 +2,7 @@
 
 import { useEffect, useState, useRef, useMemo } from 'react'
 import { motion, useScroll, useTransform } from 'framer-motion'
-import { Rocket, Github, Code2, Sparkles } from 'lucide-react'
+import { Rocket, Github, Code2 } from 'lucide-react'
 import Image from 'next/image'
 import { stats, fullText } from '@/data/hero'
 import { imageAssets } from '@/data/assets'
@@ -80,7 +80,7 @@ export function HeroSection() {
             {/* Available Badge */}
             <RevealText delay={0.1}>
               <div className="inline-block px-4 py-2 rounded-full glass mb-6">
-                <span className="text-cyan-400 text-sm font-medium flex items-center gap-2">
+                <span className="text-accent text-sm font-medium flex items-center gap-2">
                   <motion.span
                     className="w-2 h-2 rounded-full bg-green-400"
                     animate={{ scale: [1, 1.2, 1], opacity: [1, 0.7, 1] }}
@@ -118,7 +118,7 @@ export function HeroSection() {
             <RevealText delay={0.8} className="mb-6">
               <div className="flex flex-wrap items-center gap-x-4 gap-y-2">
                 <motion.span
-                  className="text-lg md:text-xl text-cyan-400 font-medium inline-block"
+                  className="text-lg md:text-xl text-accent font-medium inline-block"
                   initial={{ opacity: 0, y: 10 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.5, ease: cinematicEase, delay: 0.9 }}
@@ -127,7 +127,7 @@ export function HeroSection() {
                 </motion.span>
                 <span className="text-gray-500 hidden sm:inline">|</span>
                 <motion.span
-                  className="text-lg md:text-xl text-magenta-400 font-medium inline-block"
+                  className="text-lg md:text-xl text-accent-secondary font-medium inline-block"
                   initial={{ opacity: 0, y: 10 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.5, ease: cinematicEase, delay: 1.0 }}
@@ -136,7 +136,7 @@ export function HeroSection() {
                 </motion.span>
                 <span className="text-gray-500 hidden sm:inline">|</span>
                 <motion.span
-                  className="text-lg md:text-xl text-green-400 font-medium inline-block"
+                  className="text-lg md:text-xl text-accent-tertiary font-medium inline-block"
                   initial={{ opacity: 0, y: 10 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.5, ease: cinematicEase, delay: 1.1 }}
@@ -158,7 +158,7 @@ export function HeroSection() {
               >
                 {displayText}
                 {!isTypingComplete && (
-                  <span className="inline-block w-0.5 h-6 bg-cyan-400 ml-1 animate-pulse" aria-hidden="true" />
+                  <span className="inline-block w-0.5 h-6 bg-accent ml-1 animate-pulse" aria-hidden="true" />
                 )}
               </p>
             </div>
@@ -195,8 +195,8 @@ export function HeroSection() {
             >
               <motion.a
                 href="#projects"
-                className="group px-6 md:px-8 py-3 md:py-4 rounded-full bg-gradient-to-r from-cyan-500 to-blue-600 text-white font-medium flex items-center gap-2 shadow-neon"
-                whileHover={{ scale: 1.05, boxShadow: '0 0 40px rgba(0, 212, 255, 0.6)' }}
+                className="group px-6 md:px-8 py-3 md:py-4 rounded-full bg-gradient-to-r from-[var(--primary)] to-[var(--primary-dark)] text-white font-medium flex items-center gap-2 shadow-neon"
+                whileHover={{ scale: 1.05, boxShadow: '0 0 40px var(--shadow-neon)' }}
                 whileTap={{ scale: 0.95 }}
               >
                 <Rocket className="w-5 h-5 group-hover:animate-bounce" />
@@ -239,7 +239,7 @@ export function HeroSection() {
 
               {/* Middle Ring */}
               <motion.div
-                className="absolute inset-4 rounded-full border-2 border-cyan-400/30"
+                className="absolute inset-4 rounded-full border-2 border-accent-muted"
                 animate={{ rotate: -360 }}
                 transition={{ duration: 15, repeat: Infinity, ease: 'linear' }}
               />
@@ -312,9 +312,9 @@ export function HeroSection() {
           className="flex flex-col items-center gap-2"
         >
           <span className="text-gray-500 text-xs tracking-widest">SCROLL</span>
-          <div className="w-6 h-10 rounded-full border-2 border-cyan-400/50 flex justify-center pt-2">
+          <div className="w-6 h-10 rounded-full border-2 border-accent-subtle flex justify-center pt-2">
             <motion.div
-              className="w-1.5 h-3 rounded-full bg-cyan-400"
+              className="w-1.5 h-3 rounded-full bg-accent"
               animate={{ y: [0, 12, 0], opacity: [1, 0.3, 1] }}
               transition={{ duration: 1.5, repeat: Infinity, ease: 'easeInOut' }}
             />

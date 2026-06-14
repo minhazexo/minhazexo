@@ -51,7 +51,7 @@ export const projects: Project[] = [
     tech: ['Next.js', 'Tailwind', 'API Integration'],
     category: 'React',
     github: 'https://github.com/minhazexo',
-    demo: 'https://sciencebee.netlify.app/',
+    demo: 'https://science-box-rose.vercel.app/',
   },
   {
     id: 6,

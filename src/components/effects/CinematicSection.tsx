@@ -85,7 +85,7 @@ export function SectionHeader({
       transition={{ duration: 0.6, ease: cinematicEase, delay }}
     >
       <motion.span
-        className="inline-block px-4 py-1 rounded-full glass text-cyan-400 text-sm font-medium mb-4"
+        className="inline-block px-4 py-1 rounded-full glass text-accent text-sm font-medium mb-4"
         initial={{ opacity: 0, scale: 0.9 }}
         animate={isInView ? { opacity: 1, scale: 1 } : {}}
         transition={{ delay: delay + 0.1, duration: 0.4, ease: cinematicEase }}

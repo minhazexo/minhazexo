@@ -4,17 +4,7 @@ import { useEffect, useState } from 'react'
 import { createPortal } from 'react-dom'
 import { motion, AnimatePresence } from 'framer-motion'
 import { X, ExternalLink, Github } from 'lucide-react'
-
-interface Project {
-  id: number;
-  title: string;
-  description: string;
-  image: string;
-  tech: string[];
-  category: string;
-  github: string;
-  demo: string;
-}
+import type { Project } from '@/types'
 
 interface ProjectDetailModalProps {
   project: Project | null;

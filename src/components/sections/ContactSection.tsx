@@ -293,6 +293,7 @@ export function ContactSection() {
   const [focusedField, setFocusedField] = useState<string | null>(null)
   const [errors, setErrors] = useState<Record<string, string>>({})
   const [showLaunchConfirm, setShowLaunchConfirm] = useState(false)
+  const [submissionError, setSubmissionError] = useState<string | null>(null)
   const [isOnline, setIsOnline] = useState(true)
   
   const sectionRef = useRef<HTMLElement>(null)
@@ -347,6 +348,7 @@ export function ContactSection() {
       setIsSubmitted(true)
       setShowLaunchConfirm(true)
       setFormData({ name: '', email: '', message: '' })
+      setSubmissionError(null)
       
       setTimeout(() => {
         setIsSubmitted(false)
@@ -354,7 +356,7 @@ export function ContactSection() {
       }, 5000)
     } catch (error) {
       console.error('Form submission error:', error)
-      alert(error instanceof Error ? error.message : 'Failed to send message. Please try again.')
+      setSubmissionError(error instanceof Error ? error.message : 'Failed to send message. Please try again.')
     } finally {
       setIsSubmitting(false)
     }
@@ -454,8 +456,8 @@ export function ContactSection() {
                   animate={{ opacity: [0.5, 1, 0.5] }}
                   transition={{ duration: 2, repeat: Infinity }}
                 >
-                  <Signal className="w-4 h-4 text-green-400" />
-                  <span className="text-[10px] font-mono text-green-400/60">SIGNAL_ACTIVE</span>
+                  <Signal className="w-4 h-4 text-accent" />
+                  <span className="text-[10px] font-mono text-accent-muted">SIGNAL_ACTIVE</span>
                 </motion.div>
               </div>
 
@@ -544,6 +546,18 @@ export function ContactSection() {
                   </span>
                 </motion.button>
               </form>
+
+              {submissionError && (
+                <motion.div
+                  role="alert"
+                  className="text-red-400 text-sm font-mono mt-4 p-3 rounded-lg border border-red-500/20 bg-red-500/5"
+                  initial={{ opacity: 0, x: -10 }}
+                  animate={{ opacity: 1, x: 0 }}
+                >
+                  <Zap className="w-3 h-3 inline-block mr-1" />
+                  {submissionError}
+                </motion.div>
+              )}
 
               {/* Bottom status bar */}
               <div className="mt-6 pt-4 border-t border-indigo-500/10 flex items-center justify-between text-[10px] font-mono text-indigo-500/40">
