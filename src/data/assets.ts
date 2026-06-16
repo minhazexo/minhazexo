@@ -1,6 +1,7 @@
 export const imageAssets = {
   heroBg: '/hero-astronaut.jpg',
   profile: '/profile.png',
+  chessImage: '/for chess.jpg',
   aboutProfile: '/about-profile.jpg',
   projectWeather: '/project-weather.png',
   projectGbcPhysics: '/project-gbc-physics.png',
