@@ -73,25 +73,15 @@ export function HeroSection() {
                 </div>
               </RevealText>
 
-              <div className="mb-4 overflow-hidden">
+              <div className="mb-4">
                 <CinematicText
                   as="h1"
-                  className="text-[clamp(1.75rem,5vw,4rem)] lg:text-[clamp(2.5rem,4vw,4.5rem)] font-orbitron font-bold gradient-text inline-block tracking-tight"
+                  className="text-[clamp(1.75rem,5vw,4rem)] lg:text-[clamp(2.5rem,4vw,4.5rem)] font-orbitron font-bold gradient-text tracking-tight whitespace-nowrap"
                   delay={0.3}
                   staggerAmount={0.03}
                   type="characters"
                 >
-                  MD MEHRAB
-                </CinematicText>
-                <br />
-                <CinematicText
-                  as="span"
-                  className="text-[clamp(1.75rem,5vw,4rem)] lg:text-[clamp(2.5rem,4vw,4.5rem)] font-orbitron font-bold text-white tracking-tight"
-                  delay={0.6}
-                  staggerAmount={0.04}
-                  type="characters"
-                >
-                  HOSSAIN
+                  Mehrab Hossain
                 </CinematicText>
               </div>
 
