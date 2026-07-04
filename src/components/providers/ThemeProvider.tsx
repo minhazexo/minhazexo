@@ -1,23 +1,26 @@
 'use client'
 
 import { ThemeProvider as NextThemesProvider } from 'next-themes'
-import type { ThemeProviderProps } from '@/types'
-import { themes } from '@/data/themes'
 
-const themeValues = themes.map((t) => t.value)
+interface ThemeProviderProps {
+  children: React.ReactNode
+  attribute?: string
+  defaultTheme?: string
+  enableSystem?: boolean
+}
 
-export function ThemeProvider({ 
-  children, 
-  attribute = 'class',
-  defaultTheme = 'dark',
-  enableSystem = false
+export function ThemeProvider({
+  children,
+  attribute = 'data-theme',
+  defaultTheme = 'blue',
+  enableSystem = false,
 }: ThemeProviderProps) {
   return (
-    <NextThemesProvider 
+    <NextThemesProvider
       attribute={attribute}
       defaultTheme={defaultTheme}
       enableSystem={enableSystem}
-      themes={themeValues}
+      storageKey="aurora-theme"
     >
       {children}
     </NextThemesProvider>

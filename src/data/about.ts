@@ -1,20 +1,16 @@
-import type { Milestone, Skill } from '@/types'
+import { MapPin, Briefcase, Calendar, Code2 } from 'lucide-react'
+import type { AboutInfoItem, StatItem } from '@/types'
 
-export const milestones: Milestone[] = [
-  { year: '2021', title: 'Started Journey', description: 'Began learning web development with HTML, CSS, and JavaScript', color: '#00E5FF' },
-  { year: '2022', title: 'First Client', description: 'Completed first commercial project and entered freelance world', color: '#FF2D95' },
-  { year: '2023', title: 'Full Stack Dev', description: 'Mastered React, Next.js, and Node.js ecosystem', color: '#00F593' },
-  { year: '2024', title: '50+ Projects', description: 'Delivered excellence consistently across diverse projects', color: '#00E5FF' },
+export const aboutInfoItems: AboutInfoItem[] = [
+  { icon: MapPin, label: 'Location', value: 'Dhaka, Bangladesh' },
+  { icon: Briefcase, label: 'Availability', value: 'Available for Freelance' },
+  { icon: Calendar, label: 'Experience', value: '3+ Years' },
+  { icon: Code2, label: 'Tech Stack', value: 'React, Next.js, Node.js' },
 ]
 
-export const skills: Skill[] = [
-  { name: 'React/Next.js', level: 95 },
-  { name: 'TypeScript', level: 90 },
-  { name: 'Node.js', level: 85 },
-  { name: 'UI/UX Design', level: 90 },
-  { name: 'PHP', level: 80 },
-  { name: 'Laravel', level: 85 },
-  { name: 'MySQL', level: 85 },
-  { name: 'PostgreSQL', level: 80 },
-  { name: 'MongoDB', level: 75 },
+export const aboutStats: StatItem[] = [
+  { value: '3+', label: 'Years Experience', description: 'Building production web applications' },
+  { value: '50+', label: 'Projects Completed', description: 'Across various industries and scales' },
+  { value: '15+', label: 'Technologies', description: 'From frontend to backend and cloud' },
+  { value: '100%', label: 'Client Satisfaction', description: 'Consistent quality and on-time delivery' },
 ]

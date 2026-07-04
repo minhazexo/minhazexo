@@ -1,33 +1,32 @@
 'use client'
 
 import { useState, useEffect, lazy, Suspense } from 'react'
-import { motion, AnimatePresence } from 'framer-motion'
+import { AnimatePresence } from 'framer-motion'
 import { LoadingScreen } from '@/components/ui/LoadingScreen'
+import { SectionDivider } from '@/components/ui/SectionDivider'
 import { Navigation } from '@/components/layout/Navigation'
 import { HeroSection } from '@/components/sections/HeroSection'
-import { imageAssets, preloadImages } from '@/data/assets'
-import { SectionErrorBoundary } from '@/components/providers/ErrorBoundary'
-import { ParallaxSection } from '@/components/effects/ParallaxSection'
-import dynamic from 'next/dynamic'
 
-const BackgroundEffectRenderer = dynamic(() => import('@/components/effects/BackgroundEffectRenderer').then(mod => ({ default: mod.BackgroundEffectRenderer })), { 
-  ssr: false,
-  loading: () => <div className="fixed inset-0 bg-[var(--bg-primary)]" aria-hidden="true" />
-})
-
-// Lazy loaded components for performance optimization
+const FeaturesSection = lazy(() => import('@/components/sections/FeaturesSection').then(mod => ({ default: mod.FeaturesSection })))
 const AboutSection = lazy(() => import('@/components/sections/AboutSection').then(mod => ({ default: mod.AboutSection })))
 const ProjectsSection = lazy(() => import('@/components/sections/ProjectsSection').then(mod => ({ default: mod.ProjectsSection })))
 const SkillsSection = lazy(() => import('@/components/sections/SkillsSection').then(mod => ({ default: mod.SkillsSection })))
+const ExperienceSection = lazy(() => import('@/components/sections/ExperienceSection').then(mod => ({ default: mod.ExperienceSection })))
+const TestimonialsSection = lazy(() => import('@/components/sections/TestimonialsSection').then(mod => ({ default: mod.TestimonialsSection })))
 const ContactSection = lazy(() => import('@/components/sections/ContactSection').then(mod => ({ default: mod.ContactSection })))
 const Footer = lazy(() => import('@/components/layout/Footer').then(mod => ({ default: mod.Footer })))
-const BackToTop = lazy(() => import('@/components/layout/BackToTop').then(mod => ({ default: mod.BackToTop })))
-const BackgroundMusic = lazy(() => import('@/components/effects/BackgroundMusic').then(mod => ({ default: mod.BackgroundMusic })))
 
-// Fallback component for lazy-loaded sections
-function SectionFallback() {
-  return <div className="py-24" aria-hidden="true" />
-}
+/* Section spacing per spec (Part 06):
+   Hero → Features:    120px
+   Features → About:   144px
+   About → Projects:   144px (+ SectionDivider)
+   Projects → Skills:  120px
+   Skills → Experience: 120px
+   Experience → Contact: 144px
+   Contact → Footer:   160px
+   Footer Bottom:       48px
+   Each section below uses pt=0, pb=0 via internal padding.
+   Spacer divs between sections handle the exact gap. */
 
 export default function Home() {
   const [isLoading, setIsLoading] = useState(true)
@@ -35,73 +34,39 @@ export default function Home() {
   const [loadProgress, setLoadProgress] = useState(0)
 
   useEffect(() => {
-    const criticalImages: string[] = [
-      imageAssets.heroBg,
-      imageAssets.profile,
-      imageAssets.aboutProfile,
-    ]
-    let loadedCount = 0
-    const totalImages = criticalImages.length
+    let loaded = false
+    const timer = setTimeout(() => {
+      if (!loaded) { setIsReady(true); setLoadProgress(100) }
+    }, 2500)
 
-    criticalImages.forEach((src) => {
-      const img = new Image()
-      img.onload = () => {
-        loadedCount++
-        setLoadProgress(Math.round((loadedCount / totalImages) * 100))
-        if (loadedCount === totalImages) {
-          setIsReady(true)
-        }
-      }
-      img.onerror = () => {
-        loadedCount++
-        setLoadProgress(Math.round((loadedCount / totalImages) * 100))
-        if (loadedCount === totalImages) {
-          setIsReady(true)
-        }
-      }
-      img.src = src
-    })
+    const interval = setInterval(() => {
+      setLoadProgress((prev) => {
+        if (prev >= 90) { clearInterval(interval); return 90 }
+        return prev + 10
+      })
+    }, 200)
 
-    // Defer non-critical images with requestIdleCallback
-    const remainingImages = preloadImages.filter(
-      (img) => !criticalImages.includes(img)
-    )
-    if ('requestIdleCallback' in window) {
-      requestIdleCallback(() => {
-        remainingImages.forEach((src) => {
-          const img = new Image()
-          img.src = src
-        })
-      }, { timeout: 3000 })
-    } else {
-      setTimeout(() => {
-        remainingImages.forEach((src) => {
-          const img = new Image()
-          img.src = src
-        })
-      }, 3000)
-    }
-
-    // Fallback if images take too long
-    const timeout = setTimeout(() => {
-      setIsReady(true)
+    const img = new Image()
+    img.onload = () => {
+      loaded = true
+      clearTimeout(timer); clearInterval(interval)
       setLoadProgress(100)
-    }, 5000)
+      setTimeout(() => setIsReady(true), 300)
+    }
+    img.src = '/webp/for chess.webp'
 
-    return () => clearTimeout(timeout)
+    return () => { clearTimeout(timer); clearInterval(interval) }
   }, [])
 
-  const handleLoadingComplete = () => {
-    setIsLoading(false)
-  }
+  const handleLoadingComplete = () => setIsLoading(false)
 
   return (
-    <div className="relative min-h-screen bg-dark-bg overflow-x-hidden">
+    <div style={{ position: 'relative', minHeight: '100vh', overflowX: 'hidden' }}>
       <AnimatePresence mode="wait">
         {isLoading && (
-          <LoadingScreen 
-            key="loading" 
-            onComplete={handleLoadingComplete} 
+          <LoadingScreen
+            key="loading"
+            onComplete={handleLoadingComplete}
             isReady={isReady}
             progress={loadProgress}
           />
@@ -110,66 +75,65 @@ export default function Home() {
 
       {!isLoading && (
         <>
-          <Suspense fallback={null}>
-            <BackgroundEffectRenderer />
+          <Navigation />
+          <HeroSection />
+
+          {/* Hero → Features: 120px */}
+          <div style={{ height: 120 }} />
+
+          <Suspense fallback={<div style={{ height: 400 }} />}>
+            <FeaturesSection />
           </Suspense>
-          <motion.div
-            initial={{ opacity: 0, y: -20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5 }}
-          >
-            <Navigation />
-          </motion.div>
-          <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6 }}
-            role="region"
-            aria-label="Hero"
-            id="hero-section"
-          >
-            <HeroSection />
-          </motion.div>
-          <ParallaxSection id="about-section" delay={0.15}>
-            <SectionErrorBoundary>
-              <Suspense fallback={<SectionFallback />}>
-                <AboutSection />
-              </Suspense>
-            </SectionErrorBoundary>
-          </ParallaxSection>
-          <ParallaxSection id="projects-section" delay={0.3} offset={40}>
-            <SectionErrorBoundary>
-              <Suspense fallback={<SectionFallback />}>
-                <ProjectsSection />
-              </Suspense>
-            </SectionErrorBoundary>
-          </ParallaxSection>
-          <ParallaxSection id="skills-section" delay={0.45}>
-            <SectionErrorBoundary>
-              <Suspense fallback={<SectionFallback />}>
-                <SkillsSection />
-              </Suspense>
-            </SectionErrorBoundary>
-          </ParallaxSection>
-          <ParallaxSection id="contact-section" delay={0.6} offset={20}>
-            <SectionErrorBoundary>
-              <Suspense fallback={<SectionFallback />}>
-                <ContactSection />
-              </Suspense>
-            </SectionErrorBoundary>
-          </ParallaxSection>
-          <ParallaxSection id="footer-section" delay={0.75} offset={15}>
-            <SectionErrorBoundary>
-              <Suspense fallback={<div className="h-32 border-t border-white/5" aria-hidden="true" />}>
-                <Footer />
-              </Suspense>
-            </SectionErrorBoundary>
-          </ParallaxSection>
-          <Suspense fallback={null}>
-            <BackToTop />
+
+          {/* Features → About: 144px */}
+          <div style={{ height: 144 }} />
+
+          <Suspense fallback={<div style={{ height: '100vh' }} />}>
+            <AboutSection />
           </Suspense>
+
+          {/* About → Projects: 144px + SectionDivider */}
+          <div style={{ height: 72 }} />
+          <SectionDivider />
+          <div style={{ height: 71 }} />
+
+          <Suspense fallback={<div style={{ height: '100vh' }} />}>
+            <ProjectsSection />
+          </Suspense>
+
+          {/* Projects → Skills: 120px */}
+          <div style={{ height: 120 }} />
+
+          <Suspense fallback={<div style={{ height: '100vh' }} />}>
+            <SkillsSection />
+          </Suspense>
+
+          {/* Skills → Experience: 120px */}
+          <div style={{ height: 120 }} />
+
+          <Suspense fallback={<div style={{ height: '100vh' }} />}>
+            <ExperienceSection />
+          </Suspense>
+
+          {/* Experience → Testimonials: 120px (not in spec, reasonable gap) */}
+          <div style={{ height: 120 }} />
+
+          <Suspense fallback={<div style={{ height: '100vh' }} />}>
+            <TestimonialsSection />
+          </Suspense>
+
+          {/* Testimonials → Contact: 144px */}
+          <div style={{ height: 144 }} />
+
+          <Suspense fallback={<div style={{ height: '100vh' }} />}>
+            <ContactSection />
+          </Suspense>
+
+          {/* Contact → Footer: 160px + Footer Bottom 48px */}
+          <div style={{ height: 160 }} />
+
           <Suspense fallback={null}>
-            <BackgroundMusic />
+            <Footer />
           </Suspense>
         </>
       )}

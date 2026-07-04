@@ -128,7 +128,7 @@ export function LoadingScreen({ onComplete, progress: externalProgress, isReady 
       </div>
 
       {/* Galaxy Spinner */}
-      <div className="relative w-40 h-40 mb-8">
+      <div className="relative w-32 h-32 sm:w-40 sm:h-40 mb-6 sm:mb-8">
         {/* Outer glow */}
         <motion.div
           className="absolute inset-0 rounded-full"
@@ -142,10 +142,13 @@ export function LoadingScreen({ onComplete, progress: externalProgress, isReady 
 
         {/* Outer Ring */}
         <motion.div
-          className="absolute inset-0 rounded-full border-2 border-transparent"
+          className="absolute inset-0 rounded-full"
           style={{
+            border: '2px solid transparent',
             background: 'conic-gradient(from 0deg, #00D4FF, #FF00FF, #00FF88, #00D4FF)',
+            WebkitMask: 'linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0)',
             mask: 'linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0)',
+            WebkitMaskComposite: 'exclude',
             maskComposite: 'exclude',
             padding: '3px',
           }}
@@ -156,7 +159,8 @@ export function LoadingScreen({ onComplete, progress: externalProgress, isReady 
 
         {/* Middle Ring */}
         <motion.div
-          className="absolute inset-3 rounded-full border border-accent-muted"
+          className="absolute inset-3 rounded-full"
+          style={{ border: '1px solid rgba(255,255,255,0.08)' }}
           animate={{ rotate: -360 }}
           transition={{ duration: 6, repeat: Infinity, ease: 'linear' }}
           aria-hidden="true"
@@ -164,7 +168,8 @@ export function LoadingScreen({ onComplete, progress: externalProgress, isReady 
 
         {/* Inner Ring */}
         <motion.div
-          className="absolute inset-6 rounded-full border border-accent-secondary-muted"
+          className="absolute inset-6 rounded-full"
+          style={{ border: '1px solid rgba(255,255,255,0.05)' }}
           animate={{ rotate: 360 }}
           transition={{ duration: 8, repeat: Infinity, ease: 'linear' }}
           aria-hidden="true"
@@ -172,10 +177,12 @@ export function LoadingScreen({ onComplete, progress: externalProgress, isReady 
 
         {/* Core */}
         <motion.div
-          className="absolute inset-10 rounded-full bg-gradient-to-br from-[var(--primary)] to-[var(--secondary)] flex items-center justify-center"
+          className="absolute inset-10 rounded-full flex items-center justify-center"
+          style={{ background: 'var(--gradient-primary)' }}
         >
           <motion.span
-            className="text-2xl font-orbitron font-bold text-white"
+            className="font-bold text-white"
+            style={{ fontSize: 24 }}
             key={displayProgress}
             initial={{ scale: 0.8, opacity: 0 }}
             animate={{ scale: 1, opacity: 1 }}
@@ -189,12 +196,14 @@ export function LoadingScreen({ onComplete, progress: externalProgress, isReady 
         {[0, 120, 240].map((angle, i) => (
           <motion.div
             key={i}
-            className="absolute w-2 h-2 rounded-full bg-accent"
+            className="absolute"
             style={{
+              width: 8, height: 8, borderRadius: '50%',
               top: '50%',
               left: '50%',
               marginTop: -4,
               marginLeft: -4,
+              backgroundColor: 'var(--primary)',
               boxShadow: '0 0 10px var(--primary)',
             }}
             animate={{
@@ -213,7 +222,7 @@ export function LoadingScreen({ onComplete, progress: externalProgress, isReady 
       </div>
 
       {/* Progress bar */}
-      <div className="w-64 h-1 bg-white/10 rounded-full overflow-hidden mb-6" aria-hidden="true">
+      <div className="w-48 sm:w-64 h-1 bg-white/10 rounded-full overflow-hidden mb-4 sm:mb-6" aria-hidden="true">
         <motion.div
           className="h-full rounded-full"
           style={{
@@ -225,7 +234,7 @@ export function LoadingScreen({ onComplete, progress: externalProgress, isReady 
         />
       </div>
 
-      {/* Status Text */}
+        {/* Status Text */}
       <motion.div
         className="text-center"
         initial={{ opacity: 0, y: 20 }}
@@ -233,7 +242,7 @@ export function LoadingScreen({ onComplete, progress: externalProgress, isReady 
         transition={{ delay: 0.3 }}
       >
         <p
-          className="text-accent font-orbitron tracking-[0.3em] text-sm mb-3"
+          style={{ color: 'var(--primary)', fontSize: 13, letterSpacing: '0.3em', marginBottom: 12, fontFamily: 'var(--font-mono)' }}
           aria-live="polite"
           aria-atomic="true"
         >
@@ -245,7 +254,8 @@ export function LoadingScreen({ onComplete, progress: externalProgress, isReady 
           {[...Array(3)].map((_, i) => (
             <motion.div
               key={i}
-              className="w-1.5 h-1.5 rounded-full bg-accent"
+              className="rounded-full"
+              style={{ width: 6, height: 6, backgroundColor: 'var(--primary)' }}
               animate={{
                 scale: [1, 1.8, 1],
                 opacity: [0.3, 1, 0.3],

@@ -92,10 +92,10 @@ export function SectionHeader({
       >
         {label}
       </motion.span>
-      <h2 className="text-4xl md:text-5xl font-orbitron font-bold mb-4">
+      <h2 className="text-3xl sm:text-4xl md:text-5xl font-orbitron font-bold mb-2 sm:mb-4 px-2">
         <span className="gradient-text">{title}</span>
       </h2>
-      <p className="text-gray-400 max-w-2xl mx-auto">
+      <p className="text-sm sm:text-base text-gray-400 max-w-2xl mx-auto px-4">
         {subtitle}
       </p>
     </motion.div>

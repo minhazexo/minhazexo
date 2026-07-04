@@ -10,7 +10,7 @@ export function ScrollProgress() {
     restDelta: 0.001,
   })
 
-  const gradientBackground = `linear-gradient(90deg, var(--primary) 0%, var(--secondary) 25%, var(--tertiary) 50%, var(--secondary) 75%, var(--primary) 100%)`
+  const gradientBackground = `linear-gradient(90deg, var(--primary) 0%, var(--primary-secondary) 25%, var(--primary-accent) 50%, var(--primary-secondary) 75%, var(--primary) 100%)`
 
   return (
     <>
@@ -19,41 +19,42 @@ export function ScrollProgress() {
         style={{
           scaleX,
           background: gradientBackground,
-          backgroundSize: '200% 100%',
-          boxShadow: `
-            0 0 20px var(--primary),
-            0 0 40px var(--primary),
-            0 0 60px var(--secondary)
-          `,
+          willChange: 'transform',
         }}
-        animate={{ backgroundPosition: ['0% 0', '200% 0'] }}
-        transition={{ duration: 5, repeat: Infinity, ease: 'linear' }}
         role="progressbar"
         aria-valuenow={Math.round(scrollYProgress.get() * 100)}
         aria-valuemin={0}
         aria-valuemax={100}
         aria-label="Page scroll progress"
-      />
+      >
+        <motion.div
+          className="absolute inset-0"
+          style={{
+            background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent)',
+            willChange: 'transform',
+          }}
+          animate={{ x: ['-100%', '100%'] }}
+          transition={{ duration: 1.5, repeat: Infinity, ease: 'linear' }}
+        />
+      </motion.div>
 
       <motion.div
-        className="fixed top-[3px] left-0 right-0 h-[8px] z-[9998] origin-left opacity-40"
+        className="fixed top-[3px] left-0 right-0 h-[8px] z-[9998] origin-left opacity-40 pointer-events-none"
         style={{
           scaleX,
           background: gradientBackground,
-          backgroundSize: '200% 100%',
           filter: 'blur(6px)',
+          willChange: 'transform',
         }}
-        animate={{ backgroundPosition: ['0% 0', '200% 0'] }}
-        transition={{ duration: 5, repeat: Infinity, ease: 'linear' }}
       />
 
       <motion.div
-        className="fixed top-[1px] left-0 right-0 h-[1px] z-[9999] origin-left"
+        className="fixed top-[1px] left-0 right-0 h-[1px] z-[9999] origin-left pointer-events-none"
         style={{
           scaleX,
           background: 'white',
-          boxShadow: '0 0 10px white, 0 0 20px white',
           opacity: 0.6,
+          willChange: 'opacity',
         }}
       />
     </>

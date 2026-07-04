@@ -1,0 +1,183 @@
+/* ============================================================
+   AURORA X — COMPONENT STYLES
+   All classes use design tokens from variables.css.
+   ============================================================ */
+
+/* ---------- GLASS CARD ---------- */
+.glass {
+  background: var(--glass-bg);
+  backdrop-filter: blur(var(--glass-blur));
+  -webkit-backdrop-filter: blur(var(--glass-blur));
+  border: var(--glass-border);
+  box-shadow: var(--glass-shadow);
+  border-radius: var(--radius-glass);
+  transition: background var(--duration-normal) ease, border-color var(--duration-normal) ease;
+}
+
+.glass:hover {
+  background: var(--glass-hover-bg);
+  border-color: var(--border-strong);
+}
+
+.glass-strong {
+  background: var(--glass-hover-bg);
+  backdrop-filter: blur(var(--glass-blur));
+  -webkit-backdrop-filter: blur(var(--glass-blur));
+  border: 1px solid var(--border-strong);
+  box-shadow: var(--shadow-large);
+  border-radius: var(--radius-glass);
+}
+
+/* ---------- GLOW TEXT ---------- */
+.gradient-text {
+  background: var(--gradient-primary);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* ---------- NAV GLASS ---------- */
+.nav-glass {
+  background: rgba(5, 7, 10, 0.7);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border-bottom: 1px solid var(--border);
+}
+
+/* ---------- BUTTONS ---------- */
+.btn-primary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  height: var(--button-height);
+  padding: var(--button-padding);
+  border-radius: var(--button-radius);
+  font-weight: var(--weight-medium);
+  border: var(--glass-border);
+  background: var(--glass-bg);
+  backdrop-filter: blur(var(--glass-blur));
+  transition: all var(--button-transition) ease;
+  cursor: pointer;
+  color: var(--text);
+}
+
+.btn-primary:hover {
+  background: var(--glass-hover-bg);
+  border-color: var(--border-strong);
+  box-shadow: 0 0 20px var(--glow-color);
+  transform: translateY(-1px);
+}
+
+.btn-secondary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  height: var(--button-height);
+  padding: var(--button-padding);
+  border-radius: var(--button-radius);
+  font-weight: var(--weight-medium);
+  border: 1px solid var(--border);
+  background: transparent;
+  transition: all var(--button-transition) ease;
+  cursor: pointer;
+  color: var(--text-secondary);
+}
+
+.btn-secondary:hover {
+  border-color: var(--border-strong);
+  color: var(--text);
+  background: var(--glass-bg);
+}
+
+/* ---------- DIVIDER ---------- */
+.divider {
+  height: 1px;
+  background: var(--divider);
+  border: none;
+  width: 100%;
+}
+
+/* ---------- BADGE ---------- */
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-1) var(--space-3);
+  border-radius: var(--radius-full);
+  font-size: var(--text-tiny);
+  font-weight: var(--weight-medium);
+  border: var(--glass-border);
+  background: var(--glass-bg);
+  backdrop-filter: blur(12px);
+  color: var(--text-muted);
+  letter-spacing: var(--tracking-caps);
+  text-transform: uppercase;
+}
+
+/* ---------- INPUT ---------- */
+.input {
+  width: 100%;
+  background: transparent;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  padding: var(--space-4) var(--space-5);
+  color: var(--text);
+  font-size: var(--text-body);
+  transition: border-color var(--duration-normal) ease, box-shadow var(--duration-normal) ease;
+  outline: none;
+}
+
+.input:focus {
+  border-color: var(--primary);
+  box-shadow: 0 0 0 1px var(--primary);
+}
+
+.input::placeholder {
+  color: var(--text-muted);
+}
+
+/* ---------- SCROLLBAR ---------- */
+::-webkit-scrollbar {
+  width: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--background);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--border);
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--border-strong);
+}
+
+/* ---------- TAG ---------- */
+.tag {
+  display: inline-flex;
+  align-items: center;
+  padding: var(--space-1) var(--space-3);
+  border-radius: var(--radius-full);
+  font-size: var(--text-tiny);
+  background: var(--glass-bg);
+  border: 1px solid var(--border);
+  color: var(--text-muted);
+  font-family: var(--font-mono);
+}
+
+/* ---------- SECTION PADDING ---------- */
+.section {
+  padding-top: var(--space-16);
+  padding-bottom: var(--space-16);
+}
+
+@media (max-width: 768px) {
+  .section {
+    padding-top: var(--space-14);
+    padding-bottom: var(--space-14);
+  }
+}

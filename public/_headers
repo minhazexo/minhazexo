@@ -5,10 +5,21 @@
   X-XSS-Protection: 1; mode=block
   Referrer-Policy: strict-origin-when-cross-origin
   Permissions-Policy: geolocation=(), microphone=(), camera=()
+  Strict-Transport-Security: max-age=31536000; includeSubDomains; preload
 
-# Cache static assets aggressively
+# Next.js static assets (fingerprinted, cache forever)
+/_next/static/*
+  Cache-Control: public, max-age=31536000, immutable
+
+# Static images — cache for 30 days with stale-while-revalidate
+/webp/*
+  Cache-Control: public, max-age=2592000, stale-while-revalidate=86400
+
 /images/*
   Cache-Control: public, max-age=31536000, immutable
+
+/favicon_io/*
+  Cache-Control: public, max-age=2592000, stale-while-revalidate=86400
 
 /fonts/*
   Cache-Control: public, max-age=31536000, immutable
@@ -26,6 +37,10 @@
 /workbox-*.js
   Cache-Control: no-cache, no-store, must-revalidate
 
-# PWA manifest
+# PWA manifest — short cache
 /manifest.json
-  Cache-Control: public, max-age=3600
+  Cache-Control: public, max-age=3600, stale-while-revalidate=86400
+
+# HTML — no cache (Next.js handles CDN + ISR)
+/*.html
+  Cache-Control: public, max-age=0, must-revalidate

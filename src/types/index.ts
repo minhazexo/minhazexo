@@ -46,7 +46,7 @@ export interface Milestone {
 
 // Social Links
 export interface SocialLink {
-  icon: ComponentType<{ className?: string }>
+  icon: ComponentType<{ className?: string; style?: React.CSSProperties }>
   href: string
   label: string
   color?: string
@@ -58,6 +58,30 @@ export interface Theme {
   value: string
   color: string
   gradient: string
+}
+
+// Experience
+export interface Experience {
+  id: number
+  role: string
+  company: string
+  period: string
+  description: string
+  highlights: string[]
+  tech: string[]
+  color: string
+}
+
+// Testimonials
+export interface Testimonial {
+  id: number
+  name: string
+  role: string
+  company: string
+  avatar: string
+  content: string
+  rating: number
+  color: string
 }
 
 // Stats (Hero)
@@ -79,4 +103,27 @@ export interface ThemeProviderProps {
   attribute?: string
   defaultTheme?: string
   enableSystem?: boolean
+}
+
+// Feature Cards
+export interface Feature {
+  icon: ComponentType<{ className?: string; style?: React.CSSProperties }>
+  title: string
+  description: string
+  accentColor?: string
+  href?: string
+}
+
+// About Info Panel
+export interface AboutInfoItem {
+  icon: ComponentType<{ className?: string; style?: React.CSSProperties }>
+  label: string
+  value: string
+}
+
+// Stats Card
+export interface StatItem {
+  value: string
+  label: string
+  description: string
 }

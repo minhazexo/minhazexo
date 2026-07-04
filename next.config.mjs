@@ -1,3 +1,9 @@
+import bundleAnalyzer from '@next/bundle-analyzer'
+
+const withBundleAnalyzer = bundleAnalyzer({
+  enabled: process.env.ANALYZE === 'true',
+})
+
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   reactStrictMode: true,
@@ -8,15 +14,23 @@ const nextConfig = {
     minimumCacheTTL: 60 * 60 * 24 * 30, // 30 days
     remotePatterns: [],
   },
-  // Bundle analyzer for production builds
   productionBrowserSourceMaps: false,
   compiler: {
     removeConsole: process.env.NODE_ENV === 'production',
   },
   experimental: {
-    optimizeCss: false, // We handle CSS optimization via Tailwind
+    optimizeCss: false,
     scrollRestoration: true,
   },
 }
 
-export default nextConfig
+// Build-time env validation
+if (process.env.NODE_ENV === 'production' && !process.env.RESEND_API_KEY) {
+  console.warn('⚠ Missing RESEND_API_KEY — contact form will not send emails in production')
+}
+
+if (process.env.NODE_ENV === 'production' && !process.env.NEXT_PUBLIC_GA_ID) {
+  console.warn('⚠ Missing NEXT_PUBLIC_GA_ID — Google Analytics will not be active')
+}
+
+export default withBundleAnalyzer(nextConfig)

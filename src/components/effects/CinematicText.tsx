@@ -8,6 +8,7 @@ interface CinematicTextProps {
   children: string
   as?: 'h1' | 'h2' | 'h3' | 'h4' | 'p' | 'span'
   className?: string
+  style?: React.CSSProperties
   delay?: number
   staggerAmount?: number
   type?: 'characters' | 'words' | 'lines'
@@ -21,6 +22,7 @@ export function CinematicText({
   children,
   as: Tag = 'h1',
   className = '',
+  style,
   delay = 0,
   staggerAmount = 0.04,
   type = 'characters',
@@ -35,7 +37,7 @@ export function CinematicText({
   // For characters, we wrap each in a span
   if (type === 'characters') {
     return (
-      <Tag className={className} aria-label={children}>
+      <Tag className={className} style={style} aria-label={children}>
         {items.map((char, i) => (
           <motion.span
             key={i}
@@ -57,7 +59,7 @@ export function CinematicText({
 
   // For words or lines
   return (
-    <Tag className={className} aria-label={children}>
+    <Tag className={className} style={style} aria-label={children}>
       {items.map((item, i) => (
         <motion.span
           key={i}

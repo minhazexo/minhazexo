@@ -1,0 +1,136 @@
+/* ============================================================
+   AURORA X — ANIMATIONS
+   ============================================================ */
+
+/* ---------- Aurora drift ---------- */
+@keyframes aurora-drift-1 {
+  0%, 100% { transform: translateX(-10%) rotate(0deg) scaleY(1); opacity: 0.5; }
+  50% { transform: translateX(10%) rotate(2deg) scaleY(1.5); opacity: 0.8; }
+}
+
+@keyframes aurora-drift-2 {
+  0%, 100% { transform: translateX(10%) rotate(0deg) scaleY(1.2); opacity: 0.4; }
+  50% { transform: translateX(-10%) rotate(-2deg) scaleY(1.8); opacity: 0.7; }
+}
+
+@keyframes aurora-drift-3 {
+  0%, 100% { transform: translateX(-5%) translateY(0) scaleY(1); opacity: 0.3; }
+  50% { transform: translateX(5%) translateY(-20px) scaleY(1.3); opacity: 0.6; }
+}
+
+/* ---------- Fade in ---------- */
+@keyframes fade-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes fade-in-up {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes fade-in-down {
+  from { opacity: 0; transform: translateY(-20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* ---------- Scale ---------- */
+@keyframes scale-in {
+  from { opacity: 0; transform: scale(0.95); }
+  to { opacity: 1; transform: scale(1); }
+}
+
+/* ---------- Float ---------- */
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-8px); }
+}
+
+/* ---------- Pulse (subtle) ---------- */
+@keyframes pulse-subtle {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.6; }
+}
+
+/* ---------- Skeleton shimmer ---------- */
+@keyframes shimmer {
+  0% { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
+
+/* ---------- Spin ---------- */
+@keyframes spin-slow {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+/* ---------- Beam pulse (procedural light beams) ---------- */
+@keyframes beam-pulse {
+  0%, 100% { opacity: 0.3; height: 100%; }
+  25% { opacity: 1; height: 95%; }
+  50% { opacity: 0.5; height: 105%; }
+  75% { opacity: 0.8; height: 90%; }
+}
+
+/* ---------- Aurora ribbon wave ---------- */
+@keyframes aurora-ribbon {
+  0%, 100% { transform: translateX(-5%) translateY(0) scaleX(1) scaleY(1); opacity: 0.12; }
+  25% { transform: translateX(3%) translateY(-15px) scaleX(1.03) scaleY(1.08); opacity: 0.18; }
+  50% { transform: translateX(5%) translateY(5px) scaleX(0.97) scaleY(0.95); opacity: 0.15; }
+  75% { transform: translateX(-2%) translateY(-8px) scaleX(1.02) scaleY(1.05); opacity: 0.20; }
+}
+
+/* ---------- Aurora columns ---------- */
+@keyframes aurora-column-1 {
+  0%, 100% { transform: translateX(0); opacity: 0.04; }
+  25% { transform: translateX(-20px); opacity: 0.06; }
+  50% { transform: translateX(10px); opacity: 0.03; }
+  75% { transform: translateX(-10px); opacity: 0.05; }
+}
+
+@keyframes aurora-column-2 {
+  0%, 100% { transform: translateX(0); opacity: 0.03; }
+  30% { transform: translateX(15px); opacity: 0.05; }
+  60% { transform: translateX(-15px); opacity: 0.04; }
+  90% { transform: translateX(5px); opacity: 0.06; }
+}
+
+@keyframes aurora-column-3 {
+  0%, 100% { transform: translateX(0); opacity: 0.04; }
+  20% { transform: translateX(-12px); opacity: 0.06; }
+  55% { transform: translateX(18px); opacity: 0.03; }
+  85% { transform: translateX(-8px); opacity: 0.05; }
+}
+
+@keyframes aurora-column-4 {
+  0%, 100% { transform: translateX(0); opacity: 0.03; }
+  35% { transform: translateX(10px); opacity: 0.05; }
+  65% { transform: translateX(-20px); opacity: 0.04; }
+  95% { transform: translateX(12px); opacity: 0.06; }
+}
+
+/* ---------- Background system animations ---------- */
+@keyframes glow-pulse {
+  0%, 100% { transform: translate(-50%, -50%) scale(1); }
+  50% { transform: translate(-50%, -50%) scale(1.05); }
+}
+
+@keyframes star-twinkle {
+  0%, 100% { opacity: 0.2; }
+  50% { opacity: 1; }
+}
+
+@keyframes particle-float {
+  0%, 100% { transform: translateY(0); opacity: 0.15; }
+  50% { opacity: 0.25; }
+  100% { transform: translateY(-50px); opacity: 0.05; }
+}
+
+/* Utility classes */
+.animate-fade-in { animation: fade-in var(--duration-slow) var(--ease-out); }
+.animate-fade-in-up { animation: fade-in-up var(--duration-slow) var(--ease-out); }
+.animate-scale-in { animation: scale-in var(--duration-medium) var(--ease-out); }
+.animate-float { animation: float 6s var(--ease-in-out) infinite; }
+.animate-pulse-subtle { animation: pulse-subtle 2s var(--ease-in-out) infinite; }
+.animate-shimmer { animation: shimmer 2s ease-in-out infinite; background-size: 200% 100%; }
+.animate-spin-slow { animation: spin-slow 20s linear infinite; }

@@ -6,7 +6,14 @@
     "dev": "next dev -p 4000",
     "build": "next build",
     "start": "next start -p 4000",
-    "lint": "next lint"
+    "lint": "next lint",
+    "test": "playwright test",
+    "test:ui": "playwright test --ui",
+    "test:headed": "playwright test --headed",
+    "test:unit": "vitest run",
+    "test:unit:watch": "vitest",
+    "optimize:images": "node scripts/optimize-images.mjs",
+    "analyze": "ANALYZE=true next build"
   },
   "dependencies": {
     "clsx": "^2.1.1",
@@ -19,15 +26,20 @@
     "resend": "^6.12.4"
   },
   "devDependencies": {
+    "@next/bundle-analyzer": "^16.2.10",
+    "@playwright/test": "^1.60.0",
+    "@testing-library/jest-dom": "^6.9.1",
+    "@testing-library/react": "^16.3.2",
     "@types/node": "^22.4.1",
     "@types/react": "^18.3.3",
     "@types/react-dom": "^18.3.0",
     "autoprefixer": "^10.4.20",
     "eslint": "^8.57.0",
     "eslint-config-next": "14.2.5",
-    "playwright": "^1.60.0",
+    "jsdom": "^29.1.1",
     "postcss": "^8.4.41",
     "tailwindcss": "^3.4.10",
-    "typescript": "^5.5.4"
+    "typescript": "^5.5.4",
+    "vitest": "^4.1.9"
   }
 }

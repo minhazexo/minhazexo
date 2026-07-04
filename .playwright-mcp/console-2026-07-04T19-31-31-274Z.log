@@ -1,0 +1,177 @@
+[   46213ms] [INFO] %cDownload the React DevTools for a better development experience: https://reactjs.org/link/react-devtools font-weight:bold @ webpack-internal:///(app-pages-browser)/./node_modules/next/dist/compiled/react-dom/cjs/react-dom.development.js:38559
+[   46637ms] [WARNING] <meta name="apple-mobile-web-app-capable" content="yes"> is deprecated. Please include <meta name="mobile-web-app-capable" content="yes"> @ http://localhost:4000/:0
+[   46973ms] [ERROR] Warning: Prop `%s` did not match. Server: %s Client: %s%s style "width:2.4018873674035253px;height:3.9307732790358156px;left:28.57244673500694%;bottom:68.14935283922097%;border-radius:50%;background:var(--aurora-1);opacity:0.1;animation:dust-float 22.67894451598511s linear 9.149900191098538s infinite" "width:2.0759100699536357px;height:3.2300476032315384px;left:19.48494455954506%;bottom:11.267871006317598%;border-radius:50%;background:var(--aurora-1);opacity:0.1;animation:dust-float 31.063940763978763s linear 6.165938977320291s infinite" 
+    at div
+    at div
+    at BackgroundSystem
+    at O (webpack-internal:///(app-pages-browser)/./node_modules/next-themes/dist/index.mjs:28:24)
+    at z (webpack-internal:///(app-pages-browser)/./node_modules/next-themes/dist/index.mjs:21:47)
+    at ThemeProvider (webpack-internal:///(app-pages-browser)/./src/components/providers/ThemeProvider.tsx:10:11)
+    at body
+    at html
+    at RootLayout (Server)
+    at RedirectErrorBoundary (webpack-internal:///(app-pages-browser)/./node_modules/next/dist/client/components/redirect-boundary.js:74:9)
+    at RedirectBoundary (webpack-internal:///(app-pages-browser)/./node_modules/next/dist/client/components/redirect-boundary.js:82:11)
+    at NotFoundErrorBoundary (webpack-internal:///(app-pages-browser)/./node_modules/next/dist/client/components/not-found-boundary.js:76:9)
+    at NotFoundBoundary (webpack-internal:///(app-pages-browser)/./node_modules/next/dist/client/components/not-found-boundary.js:84:11)
+    at DevRootNotFoundBoundary (webpack-internal:///(app-pages-browser)/./node_modules/next/dist/client/components/dev-root-not-found-boundary.js:33:11)
+    at ReactDevOverlay (webpack-internal:///(app-pages-browser)/./node_modules/next/dist/client/components/react-dev-overlay/app/ReactDevOverlay.js:87:9)
+    at HotReload (webpack-internal:///(app-pages-browser)/./node_modules/next/dist/client/components/react-dev-overlay/app/hot-reloader-client.js:321:11)
+    at Router (webpack-internal:///(app-pages-browser)/./node_modules/next/dist/client/components/app-router.js:207:11)
+    at ErrorBoundaryHandler (webpack-internal:///(app-pages-browser)/./node_modules/next/dist/client/components/error-boundary.js:113:9)
+    at ErrorBoundary (webpack-internal:///(app-pages-browser)/./node_modules/next/dist/client/components/error-boundary.js:160:11)
+    at AppRouter (webpack-internal:///(app-pages-browser)/./node_modules/next/dist/client/components/app-router.js:585:13)
+    at ServerRoot (webpack-internal:///(app-pages-browser)/./node_modules/next/dist/client/app-index.js:112:27)
+    at Root (webpack-internal:///(app-pages-browser)/./node_modules/next/dist/client/app-index.js:117:11) @ webpack-internal:///(app-pages-browser)/./node_modules/next/dist/client/app-index.js:32
+[   49696ms] [WARNING] Please ensure that the container has a non-static position, like 'relative', 'fixed', or 'absolute' to ensure scroll offset is calculated correctly. @ webpack-internal:///(app-pages-browser)/./node_modules/framer-motion/dist/es/utils/warn-once.mjs:8
+[   49953ms] [ERROR] Warning: Function components cannot be given refs. Attempts to access this ref will fail. Did you mean to use React.forwardRef()?%s%s 
+
+Check the render method of `PopChild`. 
+    at ProjectCard (webpack-internal:///(app-pages-browser)/./src/components/sections/ProjectsSection.tsx:29:11)
+    at PopChildMeasure (webpack-internal:///(app-pages-browser)/./node_modules/framer-motion/dist/es/components/AnimatePresence/PopChild.mjs:16:5)
+    at PopChild (webpack-internal:///(app-pages-browser)/./node_modules/framer-motion/dist/es/components/AnimatePresence/PopChild.mjs:36:11)
+    at PresenceChild (webpack-internal:///(app-pages-browser)/./node_modules/framer-motion/dist/es/components/AnimatePresence/PresenceChild.mjs:18:11)
+    at AnimatePresence (webpack-internal:///(app-pages-browser)/./node_modules/framer-motion/dist/es/components/AnimatePresence/index.mjs:55:11)
+    at div
+    at MotionComponent (webpack-internal:///(app-pages-browser)/./node_modules/framer-motion/dist/es/motion/index.mjs:54:65)
+    at div
+    at div
+    at section
+    at SectionWrapper (webpack-internal:///(app-pages-browser)/./src/components/ui/SectionWrapper.tsx:22:11)
+    at ProjectsSection (webpack-internal:///(app-pages-browser)/./src/components/sections/ProjectsSection.tsx:351:80)
+    at Suspense
+    at div
+    at Home (webpack-internal:///(app-pages-browser)/./src/app/page.tsx:65:86)
+    at ClientPageRoot (webpack-internal:///(app-pages-browser)/./node_modules/next/dist/client/components/client-page.js:14:11)
+    at InnerLayoutRouter (webpack-internal:///(app-pages-browser)/./node_modules/next/dist/client/components/layout-router.js:243:11)
+    at RedirectErrorBoundary (webpack-internal:///(app-pages-browser)/./node_modules/next/dist/client/components/redirect-boundary.js:74:9)
+    at RedirectBoundary (webpack-internal:///(app-pages-browser)/./node_modules/next/dist/client/components/redirect-boundary.js:82:11)
+    at NotFoundErrorBoundary (webpack-internal:///(app-pages-browser)/./node_modules/next/dist/client/components/not-found-boundary.js:76:9)
+    at NotFoundBoundary (webpack-internal:///(app-pages-browser)/./node_modules/next/dist/client/components/not-found-boundary.js:84:11)
+    at Suspense
+    at LoadingBoundary (webpack-internal:///(app-pages-browser)/./node_modules/next/dist/client/components/layout-router.js:349:11)
+    at ErrorBoundary (webpack-internal:///(app-pages-browser)/./node_modules/next/dist/client/components/error-boundary.js:160:11)
+    at InnerScrollAndFocusHandler (webpack-internal:///(app-pages-browser)/./node_modules/next/dist/client/components/layout-router.js:153:9)
+    at ScrollAndFocusHandler (webpack-internal:///(app-pages-browser)/./node_modules/next/dist/client/components/layout-router.js:228:11)
+    at RenderFromTemplateContext (webpack-internal:///(app-pages-browser)/./node_modules/next/dist/client/components/render-from-template-context.js:16:44)
+    at OuterLayoutRouter (webpack-internal:///(app-pages-browser)/./node_modules/next/dist/client/components/layout-router.js:370:11)
+    at main
+    at O (webpack-internal:///(app-pages-browser)/./node_modules/next-themes/dist/index.mjs:28:24)
+    at z (webpack-internal:///(app-pages-browser)/./node_modules/next-themes/dist/index.mjs:21:47)
+    at ThemeProvider (webpack-internal:///(app-pages-browser)/./src/components/providers/ThemeProvider.tsx:10:11)
+    at body
+    at html
+    at RootLayout (Server)
+    at RedirectErrorBoundary (webpack-internal:///(app-pages-browser)/./node_modules/next/dist/client/components/redirect-boundary.js:74:9)
+    at RedirectBoundary (webpack-internal:///(app-pages-browser)/./node_modules/next/dist/client/components/redirect-boundary.js:82:11)
+    at NotFoundErrorBoundary (webpack-internal:///(app-pages-browser)/./node_modules/next/dist/client/components/not-found-boundary.js:76:9)
+    at NotFoundBoundary (webpack-internal:///(app-pages-browser)/./node_modules/next/dist/client/components/not-found-boundary.js:84:11)
+    at DevRootNotFoundBoundary (webpack-internal:///(app-pages-browser)/./node_modules/next/dist/client/components/dev-root-not-found-boundary.js:33:11)
+    at ReactDevOverlay (webpack-internal:///(app-pages-browser)/./node_modules/next/dist/client/components/react-dev-overlay/app/ReactDevOverlay.js:87:9)
+    at HotReload (webpack-internal:///(app-pages-browser)/./node_modules/next/dist/client/components/react-dev-overlay/app/hot-reloader-client.js:321:11)
+    at Router (webpack-internal:///(app-pages-browser)/./node_modules/next/dist/client/components/app-router.js:207:11)
+    at ErrorBoundaryHandler (webpack-internal:///(app-pages-browser)/./node_modules/next/dist/client/components/error-boundary.js:113:9)
+    at ErrorBoundary (webpack-internal:///(app-pages-browser)/./node_modules/next/dist/client/components/error-boundary.js:160:11)
+    at AppRouter (webpack-internal:///(app-pages-browser)/./node_modules/next/dist/client/components/app-router.js:585:13)
+    at ServerRoot (webpack-internal:///(app-pages-browser)/./node_modules/next/dist/client/app-index.js:112:27)
+    at Root (webpack-internal:///(app-pages-browser)/./node_modules/next/dist/client/app-index.js:117:11) @ webpack-internal:///(app-pages-browser)/./node_modules/next/dist/client/app-index.js:32
+[   87553ms] [LOG] [Fast Refresh] rebuilding @ webpack-internal:///(app-pages-browser)/./node_modules/next/dist/client/components/react-dev-overlay/app/hot-reloader-client.js:186
+[   89317ms] [LOG] [Fast Refresh] done in 1765ms @ webpack-internal:///(app-pages-browser)/./node_modules/next/dist/client/components/react-dev-overlay/app/hot-reloader-client.js:43
+[   89338ms] [LOG] HEXGRID MOUNT {backgroundImage: url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3…d%22%20opacity%3D%220.6%22%2F%3E%0A%3C%2Fsvg%3E"), opacity: 0.22, mixBlendMode: screen, zIndex: -9, backgroundSize: 20.7846px 36px} @ webpack-internal:///(app-pages-browser)/./src/components/effects/HexagonGrid.tsx:84
+[   89560ms] [LOG] HEXGRID MOUNT {backgroundImage: url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3…d%22%20opacity%3D%220.6%22%2F%3E%0A%3C%2Fsvg%3E"), opacity: 0.22, mixBlendMode: screen, zIndex: -9, backgroundSize: 20.7846px 36px} @ webpack-internal:///(app-pages-browser)/./src/components/effects/HexagonGrid.tsx:79
+[   89562ms] [LOG] HEXGRID MOUNT {backgroundImage: url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3…d%22%20opacity%3D%220.6%22%2F%3E%0A%3C%2Fsvg%3E"), opacity: 0.22, mixBlendMode: screen, zIndex: -9, backgroundSize: 20.7846px 36px} @ webpack-internal:///(app-pages-browser)/./src/components/effects/HexagonGrid.tsx:79
+[   90929ms] [LOG] HEXGRID MOUNT {backgroundImage: url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3…d%22%20opacity%3D%220.6%22%2F%3E%0A%3C%2Fsvg%3E"), opacity: 0.22, mixBlendMode: screen, zIndex: -9, backgroundSize: 20.7846px 36px} @ webpack-internal:///(app-pages-browser)/./src/components/effects/HexagonGrid.tsx:79
+[  127592ms] [LOG] [Fast Refresh] rebuilding @ webpack-internal:///(app-pages-browser)/./node_modules/next/dist/client/components/react-dev-overlay/app/hot-reloader-client.js:186
+[  128187ms] [LOG] HEXGRID MOUNT {backgroundImage: url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3…d%22%20opacity%3D%220.7%22%2F%3E%0A%3C%2Fsvg%3E"), opacity: 0.36, mixBlendMode: overlay, zIndex: -9, backgroundSize: 20.7846px 36px} @ webpack-internal:///(app-pages-browser)/./src/components/effects/HexagonGrid.tsx:79
+[  128189ms] [LOG] [Fast Refresh] done in 596ms @ webpack-internal:///(app-pages-browser)/./node_modules/next/dist/client/components/react-dev-overlay/app/hot-reloader-client.js:43
+[  128699ms] [LOG] HEXGRID MOUNT {backgroundImage: url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3…d%22%20opacity%3D%220.7%22%2F%3E%0A%3C%2Fsvg%3E"), opacity: 0.36, mixBlendMode: overlay, zIndex: -9, backgroundSize: 20.7846px 36px} @ webpack-internal:///(app-pages-browser)/./src/components/effects/HexagonGrid.tsx:79
+[ 1367151ms] [INFO] %cDownload the React DevTools for a better development experience: https://reactjs.org/link/react-devtools font-weight:bold @ webpack-internal:///(app-pages-browser)/./node_modules/next/dist/compiled/react-dom/cjs/react-dom.development.js:38559
+[ 1367434ms] [WARNING] <meta name="apple-mobile-web-app-capable" content="yes"> is deprecated. Please include <meta name="mobile-web-app-capable" content="yes"> @ http://localhost:4000/:0
+[ 1369283ms] [ERROR] Warning: Prop `%s` did not match. Server: %s Client: %s%s style "width:3.6760924317791095px;height:3.083534056715858px;left:76.88070055658834%;bottom:71.86720341477701%;border-radius:50%;background:var(--aurora-1);opacity:0.1;animation:dust-float 37.640086588266165s linear 0.44218954905431707s infinite" "width:2.858626989390962px;height:3.410876507282423px;left:56.058440807875655%;bottom:5.021118282380699%;border-radius:50%;background:var(--aurora-1);opacity:0.1;animation:dust-float 28.49361225612222s linear 2.5634869271619953s infinite" 
+    at div
+    at div
+    at BackgroundSystem
+    at O (webpack-internal:///(app-pages-browser)/./node_modules/next-themes/dist/index.mjs:28:24)
+    at z (webpack-internal:///(app-pages-browser)/./node_modules/next-themes/dist/index.mjs:21:47)
+    at ThemeProvider (webpack-internal:///(app-pages-browser)/./src/components/providers/ThemeProvider.tsx:10:11)
+    at body
+    at html
+    at RootLayout (Server)
+    at RedirectErrorBoundary (webpack-internal:///(app-pages-browser)/./node_modules/next/dist/client/components/redirect-boundary.js:74:9)
+    at RedirectBoundary (webpack-internal:///(app-pages-browser)/./node_modules/next/dist/client/components/redirect-boundary.js:82:11)
+    at NotFoundErrorBoundary (webpack-internal:///(app-pages-browser)/./node_modules/next/dist/client/components/not-found-boundary.js:76:9)
+    at NotFoundBoundary (webpack-internal:///(app-pages-browser)/./node_modules/next/dist/client/components/not-found-boundary.js:84:11)
+    at DevRootNotFoundBoundary (webpack-internal:///(app-pages-browser)/./node_modules/next/dist/client/components/dev-root-not-found-boundary.js:33:11)
+    at ReactDevOverlay (webpack-internal:///(app-pages-browser)/./node_modules/next/dist/client/components/react-dev-overlay/app/ReactDevOverlay.js:87:9)
+    at HotReload (webpack-internal:///(app-pages-browser)/./node_modules/next/dist/client/components/react-dev-overlay/app/hot-reloader-client.js:321:11)
+    at Router (webpack-internal:///(app-pages-browser)/./node_modules/next/dist/client/components/app-router.js:207:11)
+    at ErrorBoundaryHandler (webpack-internal:///(app-pages-browser)/./node_modules/next/dist/client/components/error-boundary.js:113:9)
+    at ErrorBoundary (webpack-internal:///(app-pages-browser)/./node_modules/next/dist/client/components/error-boundary.js:160:11)
+    at AppRouter (webpack-internal:///(app-pages-browser)/./node_modules/next/dist/client/components/app-router.js:585:13)
+    at ServerRoot (webpack-internal:///(app-pages-browser)/./node_modules/next/dist/client/app-index.js:112:27)
+    at Root (webpack-internal:///(app-pages-browser)/./node_modules/next/dist/client/app-index.js:117:11) @ webpack-internal:///(app-pages-browser)/./node_modules/next/dist/client/app-index.js:32
+[ 1369354ms] [LOG] HEXGRID MOUNT: element not found in DOM @ webpack-internal:///(app-pages-browser)/./src/components/effects/HexagonGrid.tsx:104
+[ 1369370ms] [LOG] HEXGRID MOUNT: element not found in DOM @ webpack-internal:///(app-pages-browser)/./src/components/effects/HexagonGrid.tsx:104
+[ 1369490ms] [LOG] HEXGRID MOUNT {backgroundImage: url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3…d%22%20opacity%3D%220.9%22%2F%3E%0A%3C%2Fsvg%3E"), opacity: 0.6, mixBlendMode: normal, zIndex: -6, backgroundSize: 20.7846px 31.2px} @ webpack-internal:///(app-pages-browser)/./src/components/effects/HexagonGrid.tsx:95
+[ 1371767ms] [ERROR] Warning: Function components cannot be given refs. Attempts to access this ref will fail. Did you mean to use React.forwardRef()?%s%s 
+
+Check the render method of `PopChild`. 
+    at ProjectCard (webpack-internal:///(app-pages-browser)/./src/components/sections/ProjectsSection.tsx:29:11)
+    at PopChildMeasure (webpack-internal:///(app-pages-browser)/./node_modules/framer-motion/dist/es/components/AnimatePresence/PopChild.mjs:16:5)
+    at PopChild (webpack-internal:///(app-pages-browser)/./node_modules/framer-motion/dist/es/components/AnimatePresence/PopChild.mjs:36:11)
+    at PresenceChild (webpack-internal:///(app-pages-browser)/./node_modules/framer-motion/dist/es/components/AnimatePresence/PresenceChild.mjs:18:11)
+    at AnimatePresence (webpack-internal:///(app-pages-browser)/./node_modules/framer-motion/dist/es/components/AnimatePresence/index.mjs:55:11)
+    at div
+    at MotionComponent (webpack-internal:///(app-pages-browser)/./node_modules/framer-motion/dist/es/motion/index.mjs:54:65)
+    at div
+    at div
+    at section
+    at SectionWrapper (webpack-internal:///(app-pages-browser)/./src/components/ui/SectionWrapper.tsx:22:11)
+    at ProjectsSection (webpack-internal:///(app-pages-browser)/./src/components/sections/ProjectsSection.tsx:351:80)
+    at Suspense
+    at div
+    at Home (webpack-internal:///(app-pages-browser)/./src/app/page.tsx:65:86)
+    at ClientPageRoot (webpack-internal:///(app-pages-browser)/./node_modules/next/dist/client/components/client-page.js:14:11)
+    at InnerLayoutRouter (webpack-internal:///(app-pages-browser)/./node_modules/next/dist/client/components/layout-router.js:243:11)
+    at RedirectErrorBoundary (webpack-internal:///(app-pages-browser)/./node_modules/next/dist/client/components/redirect-boundary.js:74:9)
+    at RedirectBoundary (webpack-internal:///(app-pages-browser)/./node_modules/next/dist/client/components/redirect-boundary.js:82:11)
+    at NotFoundErrorBoundary (webpack-internal:///(app-pages-browser)/./node_modules/next/dist/client/components/not-found-boundary.js:76:9)
+    at NotFoundBoundary (webpack-internal:///(app-pages-browser)/./node_modules/next/dist/client/components/not-found-boundary.js:84:11)
+    at Suspense
+    at LoadingBoundary (webpack-internal:///(app-pages-browser)/./node_modules/next/dist/client/components/layout-router.js:349:11)
+    at ErrorBoundary (webpack-internal:///(app-pages-browser)/./node_modules/next/dist/client/components/error-boundary.js:160:11)
+    at InnerScrollAndFocusHandler (webpack-internal:///(app-pages-browser)/./node_modules/next/dist/client/components/layout-router.js:153:9)
+    at ScrollAndFocusHandler (webpack-internal:///(app-pages-browser)/./node_modules/next/dist/client/components/layout-router.js:228:11)
+    at RenderFromTemplateContext (webpack-internal:///(app-pages-browser)/./node_modules/next/dist/client/components/render-from-template-context.js:16:44)
+    at OuterLayoutRouter (webpack-internal:///(app-pages-browser)/./node_modules/next/dist/client/components/layout-router.js:370:11)
+    at main
+    at O (webpack-internal:///(app-pages-browser)/./node_modules/next-themes/dist/index.mjs:28:24)
+    at z (webpack-internal:///(app-pages-browser)/./node_modules/next-themes/dist/index.mjs:21:47)
+    at ThemeProvider (webpack-internal:///(app-pages-browser)/./src/components/providers/ThemeProvider.tsx:10:11)
+    at body
+    at html
+    at RootLayout (Server)
+    at RedirectErrorBoundary (webpack-internal:///(app-pages-browser)/./node_modules/next/dist/client/components/redirect-boundary.js:74:9)
+    at RedirectBoundary (webpack-internal:///(app-pages-browser)/./node_modules/next/dist/client/components/redirect-boundary.js:82:11)
+    at NotFoundErrorBoundary (webpack-internal:///(app-pages-browser)/./node_modules/next/dist/client/components/not-found-boundary.js:76:9)
+    at NotFoundBoundary (webpack-internal:///(app-pages-browser)/./node_modules/next/dist/client/components/not-found-boundary.js:84:11)
+    at DevRootNotFoundBoundary (webpack-internal:///(app-pages-browser)/./node_modules/next/dist/client/components/dev-root-not-found-boundary.js:33:11)
+    at ReactDevOverlay (webpack-internal:///(app-pages-browser)/./node_modules/next/dist/client/components/react-dev-overlay/app/ReactDevOverlay.js:87:9)
+    at HotReload (webpack-internal:///(app-pages-browser)/./node_modules/next/dist/client/components/react-dev-overlay/app/hot-reloader-client.js:321:11)
+    at Router (webpack-internal:///(app-pages-browser)/./node_modules/next/dist/client/components/app-router.js:207:11)
+    at ErrorBoundaryHandler (webpack-internal:///(app-pages-browser)/./node_modules/next/dist/client/components/error-boundary.js:113:9)
+    at ErrorBoundary (webpack-internal:///(app-pages-browser)/./node_modules/next/dist/client/components/error-boundary.js:160:11)
+    at AppRouter (webpack-internal:///(app-pages-browser)/./node_modules/next/dist/client/components/app-router.js:585:13)
+    at ServerRoot (webpack-internal:///(app-pages-browser)/./node_modules/next/dist/client/app-index.js:112:27)
+    at Root (webpack-internal:///(app-pages-browser)/./node_modules/next/dist/client/app-index.js:117:11) @ webpack-internal:///(app-pages-browser)/./node_modules/next/dist/client/app-index.js:32
+[ 1372440ms] [WARNING] Please ensure that the container has a non-static position, like 'relative', 'fixed', or 'absolute' to ensure scroll offset is calculated correctly. @ webpack-internal:///(app-pages-browser)/./node_modules/framer-motion/dist/es/utils/warn-once.mjs:8
+[ 1486067ms] [LOG] [Fast Refresh] rebuilding @ webpack-internal:///(app-pages-browser)/./node_modules/next/dist/client/components/react-dev-overlay/app/hot-reloader-client.js:186
+[ 1487817ms] [LOG] HEXGRID MOUNT: element not found in DOM @ webpack-internal:///(app-pages-browser)/./src/components/effects/HexagonGrid.tsx:104
+[ 1487826ms] [LOG] HEXGRID MOUNT: element not found in DOM @ webpack-internal:///(app-pages-browser)/./src/components/effects/HexagonGrid.tsx:104
+[ 1487829ms] [LOG] [Fast Refresh] done in 1762ms @ webpack-internal:///(app-pages-browser)/./node_modules/next/dist/client/components/react-dev-overlay/app/hot-reloader-client.js:43
+[ 1487851ms] [LOG] HEXGRID MOUNT {backgroundImage: url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3…d%22%20opacity%3D%220.9%22%2F%3E%0A%3C%2Fsvg%3E"), opacity: 0.6, mixBlendMode: normal, zIndex: -6, backgroundSize: 20.7846px 31.2px} @ webpack-internal:///(app-pages-browser)/./src/components/effects/HexagonGrid.tsx:95
+[ 1490934ms] [LOG] HEXGRID MOUNT {backgroundImage: url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3…d%22%20opacity%3D%220.9%22%2F%3E%0A%3C%2Fsvg%3E"), opacity: 0.6, mixBlendMode: normal, zIndex: -6, backgroundSize: 20.7846px 31.2px} @ webpack-internal:///(app-pages-browser)/./src/components/effects/HexagonGrid.tsx:95
+[ 1535406ms] [LOG] [Fast Refresh] rebuilding @ webpack-internal:///(app-pages-browser)/./node_modules/next/dist/client/components/react-dev-overlay/app/hot-reloader-client.js:186
+[ 1538232ms] [LOG] [Fast Refresh] done in 2826ms @ webpack-internal:///(app-pages-browser)/./node_modules/next/dist/client/components/react-dev-overlay/app/hot-reloader-client.js:43
+[ 1674129ms] [LOG] [Fast Refresh] rebuilding @ webpack-internal:///(app-pages-browser)/./node_modules/next/dist/client/components/react-dev-overlay/app/hot-reloader-client.js:186
+[ 1677137ms] [LOG] [Fast Refresh] done in 3008ms @ webpack-internal:///(app-pages-browser)/./node_modules/next/dist/client/components/react-dev-overlay/app/hot-reloader-client.js:43

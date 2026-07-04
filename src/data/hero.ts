@@ -11,3 +11,12 @@ export const taglines = [
   'Full-stack developer. React specialist.',
   'Clean code. Fast delivery. Real impact.',
 ]
+
+export const techTags = [
+  'Next.js',
+  'TypeScript',
+  'React',
+  'Node.js',
+  'Tailwind CSS',
+  'Framer Motion',
+]

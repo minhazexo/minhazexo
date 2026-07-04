@@ -1,223 +1,351 @@
 'use client'
 
-import { useRef } from 'react'
-import { motion, useScroll, useTransform } from 'framer-motion'
-import { Rocket, Github } from 'lucide-react'
-import Image from 'next/image'
-import { stats, taglines } from '@/data/hero'
-import { imageAssets } from '@/data/assets'
-import { CinematicText, RevealText } from '@/components/effects/CinematicText'
-import { TypingEffect } from '@/components/effects/TypingEffect'
-import { cinematicEase } from '@/hooks/useCinematicReveal'
+import { useRef, useEffect, useState } from 'react'
+import { motion, useScroll, useTransform, useMotionValue, useSpring } from 'framer-motion'
+import { ArrowRight, Github } from 'lucide-react'
+import { techTags } from '@/data/hero'
 
 export function HeroSection() {
   const containerRef = useRef<HTMLElement>(null)
-
   const { scrollYProgress } = useScroll({
     target: containerRef,
     offset: ['start start', 'end start'],
   })
 
-  const backgroundY = useTransform(scrollYProgress, [0, 1], ['0%', '40%'])
-  const contentY = useTransform(scrollYProgress, [0, 1], ['0%', '20%'])
-  const contentOpacity = useTransform(scrollYProgress, [0, 0.5], [1, 0])
-  const blurOpacity = useTransform(scrollYProgress, [0.3, 0.5], [0, 1])
+  const headingY = useTransform(scrollYProgress, [0, 1], ['0%', '10px'])
+  const descY = useTransform(scrollYProgress, [0, 1], ['0%', '8px'])
+  const ctaY = useTransform(scrollYProgress, [0, 1], ['0%', '6px'])
+  const auroraY = useTransform(scrollYProgress, [0, 1], ['0%', '40px'])
+
+  const [isDesktop, setIsDesktop] = useState(false)
+  const mouseX = useMotionValue(0)
+  const mouseY = useMotionValue(0)
+  const springX = useSpring(mouseX, { stiffness: 100, damping: 30 })
+  const springY = useSpring(mouseY, { stiffness: 100, damping: 30 })
+
+  useEffect(() => {
+    const mq = window.matchMedia('(min-width: 1024px) and (hover: hover) and (pointer: fine)')
+    setIsDesktop(mq.matches)
+    const handler = (e: MediaQueryListEvent) => setIsDesktop(e.matches)
+    mq.addEventListener('change', handler)
+    return () => mq.removeEventListener('change', handler)
+  }, [])
+
+  const handleMouseMove = (e: React.MouseEvent) => {
+    if (!isDesktop) return
+    const rect = containerRef.current?.getBoundingClientRect()
+    if (!rect) return
+    const centerX = rect.left + rect.width / 2
+    const centerY = rect.top + rect.height / 2
+    const dx = (e.clientX - centerX) / rect.width
+    const dy = (e.clientY - centerY) / rect.height
+    mouseX.set(dx * 16)
+    mouseY.set(dy * 16)
+  }
 
   return (
     <section
       ref={containerRef}
       id="hero"
-      className="min-h-screen flex flex-col relative overflow-hidden"
+      onMouseMove={handleMouseMove}
+      style={{
+        position: 'relative',
+        minHeight: '100vh',
+        display: 'flex',
+        flexDirection: 'column',
+        overflow: 'hidden',
+        textAlign: 'center',
+      }}
     >
-      <div className="absolute inset-0 z-0 bg-gradient-to-br from-[var(--bg-void)] via-[var(--bg-primary)] to-[var(--bg-void)]" aria-hidden="true" />
-
-      <motion.div className="absolute inset-0 z-[1]" style={{ y: backgroundY }}>
-        <Image
-          src={imageAssets.heroBg}
-          alt=""
-          fill
-          sizes="100vw"
-          className="object-cover opacity-40"
-          priority
-        />
-        <div className="absolute inset-0 bg-gradient-to-b from-transparent via-[var(--bg-primary)]/40 via-60% to-[var(--bg-primary)]" />
-      </motion.div>
-
       <motion.div
-        className="absolute inset-0 z-[2] pointer-events-none"
-        style={{ opacity: blurOpacity }}
+        style={{
+          position: 'absolute',
+          top: '20%',
+          left: '50%',
+          x: '-50%',
+          width: '900px',
+          height: '900px',
+          borderRadius: '50%',
+          background: 'var(--glow-color)',
+          filter: 'blur(220px)',
+          opacity: 0.18,
+          zIndex: 0,
+          y: auroraY,
+          transition: 'opacity 0.5s ease, background 0.5s ease',
+        }}
+        aria-hidden="true"
+      />
+
+      <div
+        style={{
+          position: 'absolute',
+          bottom: 0,
+          left: 0,
+          right: 0,
+          height: 256,
+          pointerEvents: 'none',
+          zIndex: 10,
+          background: 'linear-gradient(to bottom, transparent 0%, var(--background) 100%)',
+        }}
+        aria-hidden="true"
+      />
+
+      <div
+        style={{
+          flex: 1,
+          display: 'flex',
+          alignItems: 'center',
+          position: 'relative',
+          zIndex: 10,
+          paddingTop: 120,
+          paddingBottom: 120,
+        }}
       >
-        <div className="w-full h-full backdrop-blur-sm" />
-      </motion.div>
-
-      <div className="h-20 flex-shrink-0 relative z-10" />
-
-      <div className="flex-1 flex items-center justify-center relative z-10">
         <motion.div
-          className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full"
-          style={{ y: contentY, opacity: contentOpacity }}
+          style={{
+            maxWidth: 720,
+            margin: '0 auto',
+            padding: '0 32px',
+            width: '100%',
+            x: springX,
+            y: springY,
+          }}
         >
-          <div className="grid lg:grid-cols-2 gap-12 items-center">
-            <div className="max-w-xl lg:max-w-2xl">
-              <RevealText delay={0.1}>
-                <div className="inline-block px-5 py-2.5 rounded-full glass border-accent-subtle bg-accent-subtle mb-8">
-                  <span className="text-[var(--primary)] text-sm font-medium flex items-center gap-2">
-                    <motion.span
-                      className="w-2 h-2 rounded-full"
-                      style={{ backgroundColor: 'var(--accent)' }}
-                      animate={{ scale: [1, 1.2, 1], opacity: [1, 0.7, 1] }}
-                      transition={{ duration: 2, repeat: Infinity }}
-                    />
-                    Available for hire
-                  </span>
-                </div>
-              </RevealText>
-
-              <div className="mb-4">
-                <CinematicText
-                  as="h1"
-                  className="text-[clamp(1.75rem,5vw,4rem)] lg:text-[clamp(2.5rem,4vw,4.5rem)] font-orbitron font-bold gradient-text tracking-tight whitespace-nowrap"
-                  delay={0.3}
-                  staggerAmount={0.03}
-                  type="characters"
-                >
-                  Mehrab Hossain
-                </CinematicText>
-              </div>
-
-              <RevealText delay={0.8} className="mb-4">
-                <div className="flex flex-wrap items-center gap-x-4 gap-y-2">
-                  <span className="text-lg md:text-xl text-[var(--primary)] font-semibold">
-                    Web Developer
-                  </span>
-                  <span className="text-gray-500 hidden sm:inline">|</span>
-                  <span className="text-base md:text-lg text-gray-400 font-light">
-                    Code Architect
-                  </span>
-                  <span className="text-gray-500 hidden sm:inline">|</span>
-                  <span className="text-base md:text-lg text-gray-400 font-light">
-                    React Specialist
-                  </span>
-                </div>
-              </RevealText>
-
-              <TypingEffect
-                lines={taglines}
-                speed={55}
-                className="h-8 mb-10"
+          <motion.div
+            style={{
+              display: 'inline-flex',
+              alignItems: 'center',
+              gap: 'var(--space-2)',
+              height: 38,
+              padding: '12px 18px',
+              borderRadius: '999px',
+              background: 'var(--glass-bg)',
+              backdropFilter: 'blur(12px)',
+              WebkitBackdropFilter: 'blur(12px)',
+              border: '1px solid var(--border)',
+              marginBottom: 'var(--space-9)',
+              cursor: 'default',
+              transition: 'transform 250ms ease, box-shadow 250ms ease',
+            }}
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, delay: 0.2, ease: [0.16, 1, 0.3, 1] }}
+            whileHover={{ scale: 1.02, boxShadow: '0 0 20px var(--glow-color)' }}
+          >
+            <span style={{ position: 'relative', width: 8, height: 8 }}>
+              <motion.span
+                style={{ position: 'absolute', inset: 0, borderRadius: '50%', backgroundColor: 'var(--primary)', opacity: 0.4 }}
+                animate={{ scale: [1, 2, 1], opacity: [0.4, 0, 0.4] }}
+                transition={{ duration: 2, repeat: Infinity }}
               />
+              <span style={{ position: 'relative', display: 'block', width: 8, height: 8, borderRadius: '50%', backgroundColor: 'var(--primary)' }} />
+            </span>
+            <span style={{ fontSize: 14, fontWeight: 500, color: 'var(--text-muted)' }}>
+              Available for new projects
+            </span>
+          </motion.div>
 
-              <motion.div
-                className="flex gap-4 sm:gap-6 mb-8"
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.5 }}
+          <motion.h1
+            style={{
+              fontSize: 'clamp(42px, 6.25vw, 80px)',
+              fontWeight: 800,
+              letterSpacing: '-0.02em',
+              lineHeight: 1.08,
+              color: 'var(--text)',
+              maxWidth: 900,
+              margin: '0 auto var(--space-5)',
+              y: headingY,
+            }}
+            initial={{ opacity: 0, y: 30 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.4, ease: [0.16, 1, 0.3, 1] }}
+          >
+            Crafting digital{' '}
+            <span
+              style={{
+                background: 'var(--gradient-primary)',
+                WebkitBackgroundClip: 'text',
+                WebkitTextFillColor: 'transparent',
+                backgroundClip: 'text',
+              }}
+            >
+              experiences
+            </span>
+            <br />
+            that matter.
+          </motion.h1>
+
+          <motion.p
+            style={{
+              fontSize: 18,
+              lineHeight: 1.8,
+              maxWidth: 680,
+              margin: '0 auto',
+              color: 'var(--text-secondary)',
+              fontWeight: 400,
+              marginBottom: 40,
+              y: descY,
+            }}
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, delay: 0.6, ease: [0.16, 1, 0.3, 1] }}
+          >
+            I build fast, reliable web applications
+            that deliver real value for users and businesses.
+          </motion.p>
+
+          <motion.div
+            style={{
+              display: 'flex',
+              flexWrap: 'wrap',
+              justifyContent: 'center',
+              gap: 16,
+              marginBottom: 40,
+              y: ctaY,
+            }}
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, delay: 0.8, ease: [0.16, 1, 0.3, 1] }}
+          >
+            <motion.a
+              href="#projects"
+              onClick={(e) => { e.preventDefault(); document.querySelector('#projects')?.scrollIntoView({ behavior: 'smooth' }) }}
+              style={{
+                display: 'inline-flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                gap: 10,
+                height: 54,
+                padding: '18px 32px',
+                borderRadius: '999px',
+                fontSize: 16,
+                fontWeight: 600,
+                color: 'var(--text)',
+                background: 'var(--gradient-primary)',
+                border: '1px solid var(--border)',
+                boxShadow: '0 0 24px var(--glow-color)',
+                cursor: 'pointer',
+                textDecoration: 'none',
+              }}
+              whileHover={{ y: -2, scale: 1.02, boxShadow: '0 0 36px var(--glow-color)' }}
+              whileFocus={{ y: -2, scale: 1.02, boxShadow: '0 0 36px var(--glow-color)' }}
+              whileTap={{ scale: 0.98 }}
+              transition={{ duration: 0.25 }}
+            >
+              View my work
+              <ArrowRight style={{ width: 20, height: 20 }} />
+            </motion.a>
+
+            <motion.a
+              href="https://github.com/minhazexo"
+              target="_blank"
+              rel="noopener noreferrer"
+              style={{
+                display: 'inline-flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                gap: 10,
+                height: 54,
+                padding: '18px 32px',
+                borderRadius: '999px',
+                fontSize: 16,
+                fontWeight: 500,
+                color: 'var(--text-secondary)',
+                background: 'var(--glass-bg)',
+                backdropFilter: 'blur(20px)',
+                WebkitBackdropFilter: 'blur(20px)',
+                border: '1px solid var(--border)',
+                cursor: 'pointer',
+                textDecoration: 'none',
+              }}
+              whileHover={{ color: 'var(--text)', background: 'var(--glass-hover)', borderColor: 'var(--border-strong)', y: -1 }}
+              whileFocus={{ color: 'var(--text)', background: 'var(--glass-hover)', borderColor: 'var(--border-strong)', y: -1 }}
+              whileTap={{ scale: 0.98 }}
+              transition={{ duration: 0.25 }}
+            >
+              <Github style={{ width: 20, height: 20 }} />
+              GitHub
+            </motion.a>
+          </motion.div>
+
+          <motion.div
+            style={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'center', gap: 12 }}
+            initial={{ opacity: 0, y: 15 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.4, delay: 1.0, ease: [0.16, 1, 0.3, 1] }}
+          >
+            {techTags.map((tag) => (
+              <motion.span
+                key={tag}
+                style={{
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  height: 34,
+                  padding: '10px 16px',
+                  borderRadius: '999px',
+                  fontSize: 13,
+                  fontWeight: 500,
+                  color: 'var(--text-secondary)',
+                  background: 'var(--glass-bg)',
+                  backdropFilter: 'blur(12px)',
+                  WebkitBackdropFilter: 'blur(12px)',
+                  border: '1px solid var(--border)',
+                  cursor: 'default',
+                  transition: 'transform 250ms ease, box-shadow 250ms ease, border-color 250ms ease',
+                }}
+                whileHover={{
+                  y: -2,
+                  boxShadow: '0 0 12px var(--glow-color)',
+                  borderColor: 'var(--border-strong)',
+                }}
               >
-                {stats.map((stat, index) => (
-                  <motion.div
-                    key={stat.label}
-                    className="relative px-4 text-center"
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: 0.5 + index * 0.1 }}
-                  >
-                    <div className="text-xl sm:text-2xl md:text-3xl font-orbitron font-bold gradient-text">
-                      {stat.value}
-                    </div>
-                    <div className="text-xs text-gray-300 mt-0.5">{stat.label}</div>
-                    {index < stats.length - 1 && (
-                      <div className="hidden sm:block absolute right-0 top-1/4 h-1/2 w-px bg-white/10" />
-                    )}
-                  </motion.div>
-                ))}
-              </motion.div>
-
-              <motion.div
-                className="flex flex-wrap items-center gap-4"
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.8 }}
-              >
-                <motion.a
-                  href="#projects"
-                  className="group px-8 py-3.5 rounded-full bg-gradient-to-r from-[var(--primary)] to-[var(--primary-dark)] text-white font-semibold flex items-center gap-2 shadow-neon"
-                  whileHover={{ scale: 1.05, boxShadow: '0 0 50px var(--shadow-neon)' }}
-                  whileTap={{ scale: 0.95 }}
-                >
-                  <Rocket className="w-5 h-5 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform duration-200" />
-                  View Projects
-                </motion.a>
-                <motion.a
-                  href="https://github.com/minhazexo"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="px-6 py-3 rounded-full border border-white/10 text-gray-300 font-medium flex items-center gap-2 hover:text-white hover:border-white/30 transition-all duration-300"
-                  whileHover={{ scale: 1.03 }}
-                  whileTap={{ scale: 0.95 }}
-                >
-                  <Github className="w-4 h-4" />
-                  GitHub
-                </motion.a>
-              </motion.div>
-            </div>
-
-            <div className="hidden lg:flex items-center justify-center">
-              <motion.div
-                className="relative w-72 h-72 xl:w-96 xl:h-96"
-                initial={{ opacity: 0, x: 40 }}
-                animate={{ opacity: 1, x: 0 }}
-                transition={{ duration: 0.8, delay: 0.4, ease: cinematicEase }}
-              >
-                <div
-                  className="absolute -inset-4 rounded-2xl opacity-20 blur-3xl"
-                  style={{
-                    background: 'linear-gradient(135deg, var(--primary), var(--secondary), var(--accent))',
-                  }}
-                  aria-hidden="true"
-                />
-
-                <div className="relative w-full h-full rounded-2xl bg-gradient-to-br from-[var(--primary)] via-[var(--secondary)] to-[var(--accent)] p-[2px] shadow-2xl">
-                  <div className="w-full h-full rounded-2xl overflow-hidden" style={{ backgroundColor: 'var(--bg-primary)' }}>
-                    <motion.div
-                      className="relative w-full h-full"
-                      whileHover={{ scale: 1.04 }}
-                      transition={{ duration: 0.4, ease: cinematicEase }}
-                    >
-                      <Image
-                        src={imageAssets.chessImage}
-                        alt="Chess piece representing strategic thinking"
-                        fill
-                        sizes="(max-width: 1280px) 288px, 384px"
-                        className="object-cover"
-                        priority
-                      />
-                    </motion.div>
-                  </div>
-                </div>
-              </motion.div>
-            </div>
-          </div>
+                {tag}
+              </motion.span>
+            ))}
+          </motion.div>
         </motion.div>
       </div>
 
-      <div className="h-20 flex items-end justify-center relative z-10 pb-6">
+      <div style={{
+        height: 96,
+        display: 'flex',
+        alignItems: 'flex-end',
+        justifyContent: 'center',
+        position: 'relative',
+        zIndex: 10,
+        paddingBottom: 'var(--space-7)',
+      }}>
         <motion.div
-          initial={{ opacity: 0, y: -20 }}
-          animate={{ opacity: 1, y: 0 }}
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
           transition={{ delay: 1.2 }}
         >
           <motion.div
-            animate={{ y: [0, 10, 0] }}
-            transition={{ duration: 1.5, repeat: Infinity, ease: cinematicEase }}
-            className="flex flex-col items-center gap-2"
+            animate={{ y: [0, 6, 0] }}
+            transition={{ duration: 1.8, repeat: Infinity, ease: 'easeInOut' }}
+            style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 'var(--space-2)' }}
           >
-            <span className="text-gray-500 text-xs tracking-widest">SCROLL</span>
-            <div className="w-6 h-10 rounded-full border-2 border-accent-subtle flex justify-center pt-2">
+            <span style={{ fontSize: 10, letterSpacing: '0.2em', color: 'var(--text-muted)' }}>
+              SCROLL
+            </span>
+            <div style={{
+              width: 24,
+              height: 40,
+              borderRadius: '999px',
+              border: '1px solid var(--border-strong)',
+              display: 'flex',
+              justifyContent: 'center',
+              paddingTop: 8,
+            }}>
               <motion.div
-                className="w-1.5 h-3 rounded-full"
-                style={{ backgroundColor: 'var(--primary)' }}
+                style={{
+                  width: 2,
+                  height: 10,
+                  borderRadius: '999px',
+                  backgroundColor: 'var(--text-muted)',
+                }}
                 animate={{ y: [0, 12, 0], opacity: [1, 0.3, 1] }}
-                transition={{ duration: 1.5, repeat: Infinity, ease: cinematicEase }}
+                transition={{ duration: 1.8, repeat: Infinity, ease: 'easeInOut' }}
               />
             </div>
           </motion.div>

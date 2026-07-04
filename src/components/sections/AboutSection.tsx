@@ -1,321 +1,299 @@
 'use client'
 
-import { useRef, useState } from 'react'
+import { useRef } from 'react'
 import { motion, useInView } from 'framer-motion'
-import Image from 'next/image'
-import { milestones, skills } from '@/data/about'
-import { imageAssets } from '@/data/assets'
-import { SectionHeader } from '@/components/effects/CinematicSection'
-import { TiltCard } from '@/components/effects/TiltCard'
-import { cinematicEase } from '@/hooks/useCinematicReveal'
-
-function EnergySkillBar({ name, level, index, isInView }: { name: string; level: number; index: number; isInView: boolean }) {
-  const [isHovered, setIsHovered] = useState(false)
-
-  return (
-    <motion.div
-      className="relative group"
-      initial={{ opacity: 0, x: 20 }}
-      animate={isInView ? { opacity: 1, x: 0 } : {}}
-      transition={{ delay: 0.4 + index * 0.1, ease: cinematicEase }}
-      onMouseEnter={() => setIsHovered(true)}
-      onMouseLeave={() => setIsHovered(false)}
-    >
-      <div className="flex justify-between mb-2">
-        <motion.span
-          className="text-white font-medium font-mono tracking-wide text-sm"
-          animate={isHovered ? { x: 5 } : { x: 0 }}
-        >
-          {`> ${name}`}
-        </motion.span>
-        <motion.span
-          className="text-indigo-400 font-orbitron text-sm"
-          animate={isHovered ? { scale: 1.1, opacity: 1 } : { scale: 1, opacity: 0.7 }}
-        >
-          {level}%
-        </motion.span>
-      </div>
-      <div className="h-2 bg-indigo-950/50 rounded-full overflow-hidden border border-indigo-500/10 relative">
-        <motion.div
-          className="h-full rounded-full relative"
-          style={{
-            background: 'linear-gradient(90deg, #4f46e5, #818cf8, #6366f1)',
-            boxShadow: isHovered ? '0 0 15px rgba(99,102,241,0.5)' : 'none',
-          }}
-          initial={{ width: 0 }}
-          animate={isInView ? { width: `${level}%` } : {}}
-          transition={{ duration: 1.5, delay: 0.5 + index * 0.1, ease: 'easeOut' }}
-        >
-          {/* Energy pulse effect */}
-          <motion.div
-            className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent"
-            animate={{ x: ['-100%', '200%'] }}
-            transition={{ duration: 2, repeat: Infinity, ease: 'linear', delay: index * 0.2 }}
-          />
-        </motion.div>
-        {/* Grid overlay on hover */}
-        {isHovered && (
-          <motion.div
-            className="absolute inset-0 opacity-20"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            style={{
-              backgroundImage: 'repeating-linear-gradient(90deg, transparent, transparent 4px, rgba(99,102,241,0.3) 4px, rgba(99,102,241,0.3) 5px)',
-            }}
-          />
-        )}
-      </div>
-    </motion.div>
-  )
-}
-
-function ConstellationNode({ year, title, description, color, index, isInView, isLeft }: {
-  year: string;
-  title: string;
-  description: string;
-  color: string;
-  index: number;
-  isInView: boolean;
-  isLeft: boolean;
-}) {
-  return (
-    <motion.div
-      className={`flex items-center ${isLeft ? 'md:flex-row' : 'md:flex-row-reverse'} flex-col md:flex-row group`}
-      initial={{ opacity: 0, y: 40 }}
-      animate={isInView ? { opacity: 1, y: 0 } : {}}
-      transition={{ delay: 0.7 + index * 0.15, ease: cinematicEase }}
-    >
-      {/* Content Card */}
-      <div className={`w-full md:w-5/12 ${isLeft ? 'md:text-right md:pr-8' : 'md:text-left md:pl-8'}`}>
-        <motion.div
-          className="relative p-6 rounded-xl overflow-hidden"
-          style={{
-            background: 'linear-gradient(135deg, rgba(15,15,35,0.9), rgba(30,10,60,0.6))',
-            border: `1px solid ${color}30`,
-          }}
-          whileHover={{ scale: 1.03, y: -5 }}
-          transition={{ type: 'spring', stiffness: 300, damping: 20 }}
-        >
-          {/* Constellation connection lines */}
-          <div className="absolute inset-0 opacity-5" style={{
-            backgroundImage: `radial-gradient(circle at 50% 50%, ${color} 1px, transparent 1px)`,
-            backgroundSize: '20px 20px',
-          }} />
-          
-          {/* Year with glow */}
-          <motion.span
-            className="font-orbitron font-bold text-2xl tracking-wider"
-            style={{ color }}
-            animate={{ textShadow: [`0 0 10px ${color}40`, `0 0 20px ${color}60`, `0 0 10px ${color}40`] }}
-            transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut' }}
-          >
-            {year}
-          </motion.span>
-          
-          <h4 className="text-white font-bold mt-2 text-lg font-mono tracking-tight">{title}</h4>
-          <p className="text-gray-400 text-sm mt-1 leading-relaxed">{description}</p>
-          
-          {/* Decorative corner accents */}
-          <div className="absolute top-2 left-2 w-3 h-3 border-t border-l" style={{ borderColor: `${color}40` }} />
-          <div className="absolute top-2 right-2 w-3 h-3 border-t border-r" style={{ borderColor: `${color}40` }} />
-          <div className="absolute bottom-2 left-2 w-3 h-3 border-b border-l" style={{ borderColor: `${color}40` }} />
-          <div className="absolute bottom-2 right-2 w-3 h-3 border-b border-r" style={{ borderColor: `${color}40` }} />
-        </motion.div>
-      </div>
-      
-      {/* Center Star Node */}
-      <div className="w-full md:w-2/12 flex justify-center my-4 md:my-0 relative z-10">
-        <motion.div
-          className="w-6 h-6 rounded-full relative"
-          style={{
-            backgroundColor: color,
-            boxShadow: `0 0 25px ${color}80, 0 0 50px ${color}40`,
-          }}
-          initial={{ scale: 0, rotate: -180 }}
-          animate={isInView ? { scale: 1, rotate: 0 } : {}}
-          transition={{ delay: 0.8 + index * 0.15, type: 'spring', stiffness: 200 }}
-          whileHover={{ scale: 1.5 }}
-        >
-          {/* Inner pulse */}
-          <motion.div
-            className="absolute inset-0 rounded-full"
-            style={{ backgroundColor: color }}
-            animate={{ scale: [1, 1.5, 1], opacity: [0.5, 0, 0.5] }}
-            transition={{ duration: 2, repeat: Infinity, delay: index * 0.3 }}
-          />
-        </motion.div>
-      </div>
-      
-      {/* Empty Space */}
-      <div className="hidden md:block md:w-5/12" />
-    </motion.div>
-  )
-}
+import { ArrowRight, Download, CheckCircle } from 'lucide-react'
+import { aboutInfoItems, aboutStats } from '@/data/about'
+import { StatsCard } from '@/components/ui/StatsCard'
 
 export function AboutSection() {
-  const sectionRef = useRef<HTMLElement>(null)
-  const isInView = useInView(sectionRef, { once: true, margin: '-100px' })
+  const ref = useRef<HTMLElement>(null)
+  const isInView = useInView(ref, { once: true, margin: '-80px' })
 
   return (
     <section
-      ref={sectionRef}
+      ref={ref}
       id="about"
-      className="py-24 relative overflow-hidden"
-      aria-label="About Me"
+      style={{
+        position: 'relative',
+        overflow: 'hidden',
+        paddingTop: 0,
+        paddingBottom: 0,
+      }}
     >
-      {/* Subtle background grid */}
-      <div className="absolute inset-0 opacity-[0.02]" style={{
-        backgroundImage: 'linear-gradient(rgba(99,102,241,0.3) 1px, transparent 1px), linear-gradient(90deg, rgba(99,102,241,0.3) 1px, transparent 1px)',
-        backgroundSize: '60px 60px',
-      }} />
+      <div style={{ maxWidth: 1280, margin: '0 auto', padding: '0 var(--space-6)', position: 'relative', zIndex: 1 }}>
+        {/* Section label */}
+        <motion.div
+          style={{ display: 'flex', alignItems: 'center', gap: 'var(--space-2)', marginBottom: 'var(--space-4)' }}
+          initial={{ opacity: 0, y: 10 }}
+          animate={isInView ? { opacity: 1, y: 0 } : {}}
+          transition={{ duration: 0.4, ease: 'easeOut' }}
+        >
+          <span style={{ width: 24, height: 1, backgroundColor: 'var(--primary)', opacity: 0.4 }} />
+          <span style={{ fontSize: 12, letterSpacing: '0.15em', textTransform: 'uppercase', color: 'var(--primary)' }}>
+            About
+          </span>
+        </motion.div>
 
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-        {/* Section Header with cinematic reveal */}
-        <SectionHeader
-          label="// who_i_am"
-          title="ABOUT ME"
-          subtitle="Passionate about creating digital experiences that make a difference"
-          isInView={isInView}
-        />
-
-        {/* Content Grid */}
-        <div className="grid lg:grid-cols-2 gap-16 items-center">
-          {/* Left - Profile Image */}
-          <motion.div
-            className="relative flex items-center justify-center"
-            initial={{ opacity: 0, x: -50 }}
-            animate={isInView ? { opacity: 1, x: 0 } : {}}
-            transition={{ duration: 0.8, ease: cinematicEase, delay: 0.2 }}
-          >
-            <div className="relative w-72 h-72 md:w-96 md:h-96">
-              <div className="absolute inset-0 rounded-full bg-gradient-to-br from-indigo-500/20 to-purple-500/20 blur-3xl" />
-              <Image
-                src={imageAssets.profile}
-                alt="MD Mehrab Hossain - Profile"
-                fill
-                className="object-cover rounded-2xl"
-                sizes="(max-width: 768px) 288px, 384px"
-                priority
-              />
-              <div className="absolute inset-0 rounded-2xl ring-1 ring-indigo-500/20" />
-            </div>
-          </motion.div>
-
-          {/* Right - Content */}
-          <motion.div
-            initial={{ opacity: 0, x: 50 }}
-            animate={isInView ? { opacity: 1, x: 0 } : {}}
-            transition={{ duration: 0.8, ease: cinematicEase, delay: 0.3 }}
-          >
-            <div className="space-y-4 mb-8">
-  <motion.p
-    className="text-lg text-gray-300 leading-relaxed"
-    initial={{ opacity: 0, y: 20 }}
-    animate={isInView ? { opacity: 1, y: 0 } : {}}
-    transition={{ delay: 0.4, ease: cinematicEase }}
-  >
-    I'm a passionate web developer with over 3 years of experience creating
-    stunning digital experiences. My journey began with a curiosity for how
-    things work on the web, which evolved into a deep love for crafting
-    beautiful, functional applications.
-  </motion.p>
-
-  <motion.p
-    className="text-lg text-gray-300 leading-relaxed"
-    initial={{ opacity: 0, y: 20 }}
-    animate={isInView ? { opacity: 1, y: 0 } : {}}
-    transition={{ delay: 0.5, ease: cinematicEase }}
-  >
-    I specialize in React, Next.js, and Node.js, with a keen eye for design
-    and user experience. Every project I undertake is an opportunity to push
-    boundaries and create something extraordinary.
-  </motion.p>
-</div>
-
-            {/* Skills with Energy Flow */}
-            <div className="space-y-4" role="list" aria-label="Core skills proficiency levels">
-              <motion.h3
-                className="text-xl font-mono font-bold text-white mb-4 flex items-center gap-2"
-                initial={{ opacity: 0, y: 10 }}
-                animate={isInView ? { opacity: 1, y: 0 } : {}}
-                transition={{ delay: 0.55, ease: cinematicEase }}
-              >
-                <span className="text-indigo-400">{'>'}</span>
-                CORE_SKILLS
-                <span className="w-2 h-5 bg-indigo-400 animate-pulse" />
-              </motion.h3>
-              {skills.map((skill, index) => (
-                <EnergySkillBar
-                  key={skill.name}
-                  name={skill.name}
-                  level={skill.level}
-                  index={index}
-                  isInView={isInView}
-                />
-              ))}
-            </div>
-          </motion.div>
-        </div>
-
-        {/* Constellation Timeline */}
-        <div className="mt-24">
-          <motion.h3
-            className="text-2xl md:text-3xl font-orbitron font-bold text-center mb-16"
-            initial={{ opacity: 0, y: 20 }}
-            animate={isInView ? { opacity: 1, y: 0 } : {}}
-            transition={{ delay: 0.6, ease: cinematicEase }}
-          >
-            <span className="gradient-text">JOURNEY_CONSTELLATION</span>
-          </motion.h3>
-          
-          <div className="relative" aria-label="Career timeline">
-            {/* Constellation connecting line */}
-            <div className="absolute left-1/2 transform -translate-x-1/2 h-full w-[2px] hidden md:block" aria-hidden="true">
-              <motion.div
-                className="h-full w-full"
+        {/* Two-column layout: 48/52 split */}
+        <div
+          style={{
+            display: 'grid',
+            gridTemplateColumns: '48fr 52fr',
+            gap: 80,
+            alignItems: 'start',
+          }}
+          className="about-grid"
+        >
+          {/* Left Column */}
+          <div>
+            <motion.h2
+              style={{
+                fontSize: 'clamp(32px, 4vw, 48px)',
+                fontWeight: 700,
+                letterSpacing: '-0.015em',
+                lineHeight: 1.15,
+                color: 'var(--text)',
+                marginBottom: 'var(--space-5)',
+              }}
+              initial={{ opacity: 0, y: 20 }}
+              animate={isInView ? { opacity: 1, y: 0 } : {}}
+              transition={{ duration: 0.5, delay: 0.05, ease: 'easeOut' }}
+            >
+              Building the{' '}
+              <span
                 style={{
-                  background: 'linear-gradient(to bottom, #4f46e5, #818cf8, #a78bfa, #6366f1)',
+                  background: 'var(--gradient-primary)',
+                  WebkitBackgroundClip: 'text',
+                  WebkitTextFillColor: 'transparent',
+                  backgroundClip: 'text',
                 }}
-                initial={{ scaleY: 0 }}
-                animate={isInView ? { scaleY: 1 } : {}}
-                transition={{ duration: 2, ease: 'easeOut' }}
-              />
-            </div>
-            
-            {/* Constellation dots along the line */}
-            <div className="absolute left-1/2 transform -translate-x-1/2 h-full w-12 hidden md:flex flex-col items-center justify-between py-4" aria-hidden="true">
-              {milestones.map((_, i) => (
-                <motion.div
-                  key={i}
-                  className="w-1 h-1 rounded-full bg-indigo-400"
-                  initial={{ opacity: 0 }}
-                  animate={isInView ? { opacity: 0.3 } : {}}
-                  transition={{ delay: 0.7 + i * 0.15 }}
-                  style={{
-                    marginTop: i === 0 ? 0 : 'auto',
-                    marginBottom: i === milestones.length - 1 ? 0 : 'auto',
-                  }}
-                />
+              >
+                future
+              </span>
+              , one project at a time
+            </motion.h2>
+
+            <motion.p
+              style={{
+                fontSize: 16,
+                lineHeight: 1.7,
+                maxWidth: 620,
+                color: 'var(--text-secondary)',
+                marginBottom: 'var(--space-8)',
+              }}
+              initial={{ opacity: 0, y: 10 }}
+              animate={isInView ? { opacity: 1, y: 0 } : {}}
+              transition={{ duration: 0.4, delay: 0.1, ease: 'easeOut' }}
+            >
+              I&apos;m a full-stack developer with 3+ years of experience crafting premium
+              digital experiences. I specialize in React, Next.js, and Node.js, turning
+              complex requirements into elegant, performant applications that users love.
+            </motion.p>
+
+            {/* Stats grid - 4 columns */}
+            <div
+              style={{
+                display: 'grid',
+                gridTemplateColumns: 'repeat(4, 1fr)',
+                gap: 24,
+                marginBottom: 'var(--space-8)',
+              }}
+              className="about-stats-grid"
+            >
+              {aboutStats.map((stat, index) => (
+                <StatsCard key={stat.label} stat={stat} index={index} isInView={isInView} />
               ))}
             </div>
-            
-            <div className="space-y-12" role="list" aria-label="Career milestones">
-              {milestones.map((milestone, index) => (
-                <ConstellationNode
-                  key={milestone.year}
-                  year={milestone.year}
-                  title={milestone.title}
-                  description={milestone.description}
-                  color={milestone.color}
-                  index={index}
-                  isInView={isInView}
-                  isLeft={index % 2 === 0}
-                />
-              ))}
-            </div>
+
+            {/* CTAs */}
+            <motion.div
+              style={{ display: 'flex', flexWrap: 'wrap', gap: 12 }}
+              initial={{ opacity: 0, y: 10 }}
+              animate={isInView ? { opacity: 1, y: 0 } : {}}
+              transition={{ duration: 0.4, delay: 0.3, ease: 'easeOut' }}
+            >
+              <motion.a
+                href="/resume.pdf"
+                target="_blank"
+                rel="noopener noreferrer"
+                style={{
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  gap: 10,
+                  height: 48,
+                  padding: '14px 24px',
+                  borderRadius: '999px',
+                  fontSize: 15,
+                  fontWeight: 600,
+                  color: '#fff',
+                  background: 'var(--gradient-primary)',
+                  border: 'var(--glass-border)',
+                  boxShadow: '0 0 20px var(--glow-color)',
+                  cursor: 'pointer',
+                  textDecoration: 'none',
+                }}
+                whileHover={{ y: -2, scale: 1.02, boxShadow: '0 0 30px var(--glow-color)' }}
+                whileTap={{ scale: 0.98 }}
+                transition={{ duration: 0.25 }}
+              >
+                <Download style={{ width: 18, height: 18 }} />
+                Download Resume
+              </motion.a>
+
+              <motion.a
+                href="#contact"
+                onClick={(e) => { e.preventDefault(); document.querySelector('#contact')?.scrollIntoView({ behavior: 'smooth' }) }}
+                style={{
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  gap: 10,
+                  height: 48,
+                  padding: '14px 24px',
+                  borderRadius: '999px',
+                  fontSize: 15,
+                  fontWeight: 500,
+                  color: 'var(--text-secondary)',
+                  background: 'var(--glass-bg)',
+                  backdropFilter: 'blur(20px)',
+                  WebkitBackdropFilter: 'blur(20px)',
+                  border: 'var(--glass-border)',
+                  cursor: 'pointer',
+                  textDecoration: 'none',
+                }}
+                whileHover={{ color: 'var(--text)', background: 'var(--glass-hover-bg)', borderColor: 'var(--border-strong)', y: -1 }}
+                whileTap={{ scale: 0.98 }}
+                transition={{ duration: 0.25 }}
+              >
+                Contact Me
+                <ArrowRight style={{ width: 18, height: 18 }} />
+              </motion.a>
+            </motion.div>
           </div>
+
+          {/* Right Column - Glass Info Panel */}
+          <motion.div
+            initial={{ opacity: 0, x: 20 }}
+            animate={isInView ? { opacity: 1, x: 0 } : {}}
+            transition={{ duration: 0.6, delay: 0.15, ease: 'easeOut' }}
+          >
+            <div
+              style={{
+                padding: 40,
+                borderRadius: 32,
+                background: 'var(--glass-bg)',
+                backdropFilter: 'blur(20px)',
+                WebkitBackdropFilter: 'blur(20px)',
+                border: 'var(--glass-border)',
+              }}
+            >
+              {/* Short Bio */}
+              <p
+                style={{
+                  fontSize: 15,
+                  lineHeight: 1.7,
+                  color: 'var(--text-secondary)',
+                  marginBottom: 28,
+                }}
+              >
+                I transform ideas into polished digital products. With expertise across the
+                full stack, I deliver solutions that are as beautiful as they are functional.
+                Every line of code is an opportunity to create something extraordinary.
+              </p>
+
+              {/* Checklist items */}
+              <div style={{ display: 'flex', flexDirection: 'column' }}>
+                {aboutInfoItems.map((item, i) => {
+                  const ItemIcon = item.icon
+                  return (
+                    <div key={item.label}>
+                      <div
+                        style={{
+                          display: 'flex',
+                          alignItems: 'center',
+                          gap: 16,
+                          height: 48,
+                          cursor: 'default',
+                          transition: 'background 250ms ease',
+                          borderRadius: 8,
+                          padding: '0 8px',
+                          margin: '0 -8px',
+                        }}
+                        onMouseEnter={(e) => { e.currentTarget.style.background = 'var(--glass-bg)' }}
+                        onMouseLeave={(e) => { e.currentTarget.style.background = 'transparent' }}
+                      >
+                        <div
+                          style={{
+                            width: 32,
+                            height: 32,
+                            borderRadius: 10,
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                            background: 'var(--glass-bg)',
+                            flexShrink: 0,
+                          }}
+                        >
+                          <ItemIcon style={{ width: 16, height: 16, color: 'var(--primary)' }} />
+                        </div>
+                        <span style={{ fontSize: 14, color: 'var(--text-muted)', minWidth: 80, flexShrink: 0 }}>
+                          {item.label}
+                        </span>
+                        <span style={{ fontSize: 14, color: 'var(--text)', fontWeight: 500 }}>
+                          {item.value}
+                        </span>
+                      </div>
+                      {i < aboutInfoItems.length - 1 && (
+                        <div style={{ height: 1, background: 'var(--divider)', margin: '0 8px' }} />
+                      )}
+                    </div>
+                  )
+                })}
+              </div>
+
+              {/* Current Status Badge */}
+              <div
+                style={{
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  gap: 8,
+                  marginTop: 24,
+                  padding: '8px 16px',
+                  borderRadius: '999px',
+                  background: 'var(--glass-bg)',
+                  backdropFilter: 'blur(12px)',
+                  WebkitBackdropFilter: 'blur(12px)',
+                  border: 'var(--glass-border)',
+                }}
+              >
+                <span style={{ position: 'relative', width: 8, height: 8 }}>
+                  <motion.span
+                    style={{ position: 'absolute', inset: 0, borderRadius: '50%', backgroundColor: 'var(--primary)', opacity: 0.4 }}
+                    animate={{ scale: [1, 2, 1], opacity: [0.4, 0, 0.4] }}
+                    transition={{ duration: 2, repeat: Infinity }}
+                  />
+                  <span style={{ position: 'relative', display: 'block', width: 8, height: 8, borderRadius: '50%', backgroundColor: 'var(--primary)' }} />
+                </span>
+                <span style={{ fontSize: 13, color: 'var(--text-secondary)' }}>
+                  Available for Freelance
+                </span>
+              </div>
+            </div>
+          </motion.div>
         </div>
       </div>
+
+      <style>{`
+        @media (max-width: 1024px) {
+          .about-grid { grid-template-columns: 1fr !important; gap: 60px !important; }
+          .about-stats-grid { grid-template-columns: repeat(2, 1fr) !important; }
+        }
+        @media (max-width: 640px) {
+          .about-stats-grid { grid-template-columns: 1fr !important; }
+        }
+      `}</style>
     </section>
   )
 }

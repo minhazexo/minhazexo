@@ -57,23 +57,37 @@ export function KeyboardShortcutProvider({ children }: { children: React.ReactNo
           aria-modal="true"
           aria-label="Keyboard shortcuts"
         >
-          <div
-            className="bg-[var(--bg-secondary)] border border-white/10 rounded-xl p-6 max-w-sm w-full mx-4 shadow-2xl"
-            onClick={e => e.stopPropagation()}
-          >
-            <h2 className="text-lg font-semibold text-white mb-4 font-heading">Keyboard Shortcuts</h2>
-            <ul className="space-y-2">
-              {shortcuts.map(s => (
-                <li key={s.key} className="flex items-center justify-between text-sm">
-                  <span className="text-gray-400">{s.label}</span>
-                  <kbd className="px-2 py-0.5 bg-white/10 rounded text-white font-mono text-xs border border-white/10">
-                    {s.key === 'k' ? 'CMD+K' : s.key.toUpperCase()}
-                  </kbd>
-                </li>
-              ))}
-            </ul>
-            <p className="text-gray-500 text-xs mt-4 text-center">Press CMD+K to toggle</p>
-          </div>
+            <div
+              style={{
+                background: 'var(--surface)',
+                border: '1px solid var(--border)',
+                borderRadius: 16,
+                padding: 24,
+                maxWidth: 384,
+                width: 'calc(100% - 32px)',
+                margin: '0 16px',
+                boxShadow: 'var(--shadow-large)',
+              }}
+              onClick={e => e.stopPropagation()}
+            >
+              <h2 style={{ fontSize: 18, fontWeight: 600, color: 'var(--text)', marginBottom: 16 }}>Keyboard Shortcuts</h2>
+              <ul style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+                {shortcuts.map(s => (
+                  <li key={s.key} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', fontSize: 14 }}>
+                    <span style={{ color: 'var(--text-secondary)' }}>{s.label}</span>
+                    <kbd style={{
+                      padding: '2px 8px', borderRadius: 6,
+                      background: 'var(--glass-bg)', color: 'var(--text)',
+                      fontFamily: 'var(--font-mono)', fontSize: 12,
+                      border: '1px solid var(--border)',
+                    }}>
+                      {s.key === 'k' ? 'CMD+K' : s.key.toUpperCase()}
+                    </kbd>
+                  </li>
+                ))}
+              </ul>
+              <p style={{ color: 'var(--text-muted)', fontSize: 12, marginTop: 16, textAlign: 'center' }}>Press CMD+K to toggle</p>
+            </div>
         </div>
       )}
     </>

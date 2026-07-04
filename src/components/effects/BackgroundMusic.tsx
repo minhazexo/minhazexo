@@ -191,29 +191,39 @@ export function BackgroundMusic() {
               setShowControls(!showControls)
             }
           }}
-          className="w-14 h-14 rounded-full glass-strong flex items-center justify-center text-white shadow-neon relative group"
+          style={{
+            width: 56, height: 56, borderRadius: '50%',
+            display: 'flex', alignItems: 'center', justifyContent: 'center',
+            color: 'var(--text)',
+            background: 'var(--glass-hover-bg)',
+            backdropFilter: 'blur(20px)',
+            border: '1px solid var(--border-strong)',
+            cursor: 'pointer',
+            position: 'relative',
+          }}
           whileHover={{ scale: 1.1 }}
           whileTap={{ scale: 0.9 }}
           animate={{
             boxShadow: isPlaying
-              ? '0 0 30px color-mix(in srgb, var(--primary) 60%, transparent), 0 0 60px color-mix(in srgb, var(--primary) 30%, transparent)'
+              ? '0 0 30px var(--glow-color)'
               : '0 0 20px rgba(255, 255, 255, 0.1)',
           }}
           title={!hasInteracted ? 'Enable background music' : isPlaying ? 'Pause background music' : 'Play background music'}
           aria-label={!hasInteracted ? 'Enable background music' : isPlaying ? 'Pause background music' : 'Play background music'}
         >
           {!hasInteracted ? (
-            <Music className="w-6 h-6 text-accent" aria-hidden="true" />
+            <Music style={{ width: 24, height: 24, color: 'var(--primary)' }} aria-hidden="true" />
           ) : isPlaying ? (
-            <Pause className="w-6 h-6 text-accent" aria-hidden="true" />
+            <Pause style={{ width: 24, height: 24, color: 'var(--primary)' }} aria-hidden="true" />
           ) : (
-            <Play className="w-6 h-6 text-accent" aria-hidden="true" />
+            <Play style={{ width: 24, height: 24, color: 'var(--primary)' }} aria-hidden="true" />
           )}
 
           {/* Pulse animation when playing */}
           {isPlaying && (
             <motion.div
-              className="absolute inset-0 rounded-full border-2 border-accent"
+              className="absolute inset-0 rounded-full"
+              style={{ border: '2px solid var(--primary)' }}
               animate={{ scale: [1, 1.5, 1], opacity: [1, 0, 1] }}
               transition={{ duration: 2, repeat: Infinity }}
             />
@@ -227,7 +237,14 @@ export function BackgroundMusic() {
               initial={{ opacity: 0, y: 20, scale: 0.9 }}
               animate={{ opacity: 1, y: 0, scale: 1 }}
               exit={{ opacity: 0, y: 20, scale: 0.9 }}
-              className="absolute bottom-20 right-0 glass-strong rounded-2xl p-4 w-64 space-y-4"
+              style={{
+                position: 'absolute', bottom: 80, right: 0, width: 256,
+                padding: 16, borderRadius: 20,
+                background: 'var(--glass-hover-bg)',
+                backdropFilter: 'blur(20px)',
+                border: '1px solid var(--border-strong)',
+                display: 'flex', flexDirection: 'column', gap: 16,
+              }}
             >
               {/* Close button */}
               <button
@@ -242,7 +259,12 @@ export function BackgroundMusic() {
               {/* Play/Pause */}
               <button
                 onClick={togglePlay}
-                className="w-full flex items-center justify-center gap-2 py-2 rounded-lg bg-gradient-to-r from-[var(--primary)] to-[var(--primary-dark)] text-white font-medium hover:opacity-90 transition-opacity"
+                style={{
+                  width: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center',
+                  gap: 8, padding: '8px 0', borderRadius: 12,
+                  background: 'var(--gradient-primary)', color: '#fff', fontWeight: 500,
+                  border: 'none', cursor: 'pointer', fontSize: 14,
+                }}
               >
                 {isPlaying ? (
                   <>
@@ -274,7 +296,7 @@ export function BackgroundMusic() {
                   step="0.01"
                   value={volume}
                   onChange={handleVolumeChange}
-                  className="w-full accent-cyan-400 cursor-pointer"
+                  style={{ width: '100%', cursor: 'pointer', accentColor: 'var(--primary)' }}
                   aria-label="Volume control"
                 />
               </div>
@@ -296,27 +318,41 @@ export function BackgroundMusic() {
             initial={{ opacity: 0, y: 50 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: 50 }}
-            className="fixed bottom-24 right-6 z-50 glass-strong rounded-2xl p-4 max-w-xs"
+            style={{
+              position: 'fixed', bottom: 96, right: 24, zIndex: 50,
+              padding: 16, borderRadius: 20, maxWidth: 320,
+              background: 'var(--glass-hover-bg)',
+              backdropFilter: 'blur(20px)',
+              border: '1px solid var(--border-strong)',
+            }}
           >
-            <div className="flex items-start gap-3">
-              <div className="w-10 h-10 rounded-full bg-gradient-to-r from-[var(--primary)] to-[var(--secondary)] flex items-center justify-center flex-shrink-0">
-                <Music className="w-5 h-5 text-white" />
+              <div className="flex items-start gap-3">
+              <div style={{ width: 40, height: 40, borderRadius: '50%', background: 'var(--gradient-primary)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+                <Music style={{ width: 20, height: 20, color: '#fff' }} />
               </div>
-              <div className="flex-1">
-                <h4 className="text-white font-medium text-sm mb-1">Background Music</h4>
-                <p className="text-gray-400 text-xs mb-3">
+              <div style={{ flex: 1 }}>
+                <h4 style={{ color: 'var(--text)', fontWeight: 500, fontSize: 14, marginBottom: 4 }}>Background Music</h4>
+                <p style={{ color: 'var(--text-secondary)', fontSize: 12, marginBottom: 12 }}>
                   Enjoy copyright-free ambient music while browsing my portfolio.
                 </p>
                 <div className="flex gap-2">
                   <button
                     onClick={togglePlay}
-                    className="flex-1 py-2 rounded-lg bg-gradient-to-r from-[var(--primary)] to-[var(--primary-dark)] text-white text-xs font-medium hover:opacity-90 transition-opacity"
+                    style={{
+                      flex: 1, padding: '8px 0', borderRadius: 12,
+                      background: 'var(--gradient-primary)', color: '#fff',
+                      fontSize: 12, fontWeight: 500, border: 'none', cursor: 'pointer',
+                    }}
                   >
                     Enable
                   </button>
                   <button
                     onClick={dismissPrompt}
-                    className="flex-1 py-2 rounded-lg glass text-gray-300 text-xs font-medium hover:bg-white/10 transition-colors"
+                    style={{
+                      flex: 1, padding: '8px 0', borderRadius: 12,
+                      background: 'var(--glass-bg)', color: 'var(--text-secondary)',
+                      fontSize: 12, fontWeight: 500, border: '1px solid var(--border)', cursor: 'pointer',
+                    }}
                   >
                     No Thanks
                   </button>
