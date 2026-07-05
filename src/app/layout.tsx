@@ -2,6 +2,8 @@ import type { Metadata, Viewport } from 'next'
 import { Inter, IBM_Plex_Mono } from 'next/font/google'
 import Script from 'next/script'
 import { ThemeProvider } from '@/components/providers/ThemeProvider'
+import { ThemeAutoCycle } from '@/components/providers/ThemeAutoCycle'
+import { ThemeTransition } from '@/components/providers/ThemeTransition'
 import { Background } from '@/components/background/Background'
 import { CursorGlow } from '@/components/effects/CursorGlow'
 import { ScrollProgress } from '@/components/effects/ScrollProgress'
@@ -114,10 +116,12 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       <body className="antialiased" style={{ fontFamily: 'var(--font-inter), system-ui, sans-serif', color: 'var(--text)' }}>
         <a href="#main-content" className="skip-to-content">Skip to main content</a>
         <ThemeProvider attribute="data-theme" defaultTheme="blue" enableSystem={false}>
+          <ThemeAutoCycle />
+          <ThemeTransition />
           <ScrollProgress />
           <Background />
           <CursorGlow />
-          <main id="main-content" role="main" tabIndex={-1}>
+          <main id="main-content" role="main" tabIndex={-1} style={{ position: 'relative', zIndex: 10 }}>
             {children}
           </main>
           <BackgroundMusic />

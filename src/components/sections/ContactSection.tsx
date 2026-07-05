@@ -41,13 +41,17 @@ export function ContactSection() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(formData),
       })
-      if (!res.ok) throw new Error('Failed')
+      const body = await res.json()
+      if (!res.ok) {
+        setErrors(body.errors || { message: body.error || 'Failed to send. Try again.' })
+        return
+      }
       setIsSubmitted(true)
       setShowConfirm(true)
       setFormData({ name: '', email: '', message: '' })
       setTimeout(() => { setIsSubmitted(false); setShowConfirm(false) }, 5000)
     } catch {
-      setErrors({ message: 'Failed to send. Try again.' })
+      setErrors({ message: 'Network error. Please check your connection.' })
     } finally {
       setIsSubmitting(false)
     }

@@ -1,13 +1,40 @@
 'use client'
 
-import { useRef, memo } from 'react'
+import { useRef, useMemo, memo } from 'react'
 import { motion, useInView } from 'framer-motion'
-import { skillCategories } from '@/data/skills'
+import { Monitor, Server, Terminal } from 'lucide-react'
+import { skillCategories as fallbackCategories } from '@/data/skills'
 import { SectionWrapper, cinematicEase } from '@/components/ui/SectionWrapper'
+import { useApiData } from '@/hooks/useApiData'
+
+const categoryMeta: Record<string, { icon: any; color: string }> = {
+  Frontend: { icon: Monitor, color: '#00E5FF' },
+  Backend: { icon: Server, color: '#00F593' },
+  'Tools & Others': { icon: Terminal, color: '#FF2D95' },
+}
 
 export const SkillsSection = memo(function SkillsSection() {
   const ref = useRef<HTMLDivElement>(null)
   const isInView = useInView(ref, { once: true, margin: '-80px' })
+
+  const { data: dbSkills } = useApiData<any>('/api/skills', [])
+
+  const skillCategories = useMemo(() => {
+    if (dbSkills.length === 0) return fallbackCategories
+
+    const grouped: Record<string, { skills: string[] }> = {}
+    for (const s of dbSkills) {
+      if (!grouped[s.category]) grouped[s.category] = { skills: [] }
+      grouped[s.category].skills.push(s.name)
+    }
+
+    return Object.entries(grouped).map(([name, { skills }]) => ({
+      name,
+      icon: categoryMeta[name]?.icon || Monitor,
+      color: categoryMeta[name]?.color || '#00E5FF',
+      skills,
+    }))
+  }, [dbSkills])
 
   return (
     <SectionWrapper

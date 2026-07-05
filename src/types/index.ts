@@ -36,14 +36,6 @@ export interface OrbitSkill {
   angle: number
 }
 
-// About / Timeline
-export interface Milestone {
-  year: string
-  title: string
-  description: string
-  color: string
-}
-
 // Social Links
 export interface SocialLink {
   icon: ComponentType<{ className?: string; style?: React.CSSProperties }>
@@ -95,14 +87,6 @@ export interface LoadingScreenProps {
   onComplete: () => void
   progress: number
   isReady: boolean
-}
-
-// Theme Provider
-export interface ThemeProviderProps {
-  children: React.ReactNode
-  attribute?: string
-  defaultTheme?: string
-  enableSystem?: boolean
 }
 
 // Feature Cards

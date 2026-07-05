@@ -3,13 +3,16 @@
 import { useRef, useState } from 'react'
 import { motion, useInView } from 'framer-motion'
 import { ChevronLeft, ChevronRight, Star } from 'lucide-react'
-import { testimonials } from '@/data/testimonials'
+import { testimonials as fallbackTestimonials } from '@/data/testimonials'
 import { SectionWrapper, cinematicEase } from '@/components/ui/SectionWrapper'
+import { useApiData } from '@/hooks/useApiData'
 
 export function TestimonialsSection() {
   const [current, setCurrent] = useState(0)
   const ref = useRef<HTMLDivElement>(null)
   const isInView = useInView(ref, { once: true, margin: '-80px' })
+
+  const { data: testimonials } = useApiData<any>('/api/testimonials', fallbackTestimonials)
 
   const next = () => setCurrent((prev) => (prev + 1) % testimonials.length)
   const prev = () => setCurrent((prev) => (prev - 1 + testimonials.length) % testimonials.length)
@@ -79,7 +82,7 @@ export function TestimonialsSection() {
                     border: `1px solid ${t.color}30`,
                   }}
                 >
-                  {t.name.split(' ').map(n => n[0]).join('')}
+                  {t.name.split(' ').map((n: string) => n[0]).join('')}
                 </div>
                 <div>
                   <div style={{ fontSize: 15, fontWeight: 500, color: 'var(--text)' }}>{t.name}</div>

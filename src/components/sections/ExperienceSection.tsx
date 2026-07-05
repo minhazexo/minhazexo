@@ -2,12 +2,15 @@
 
 import { useRef, useState } from 'react'
 import { motion, useInView } from 'framer-motion'
-import { experiences } from '@/data/experience'
+import { experiences as fallbackExperiences } from '@/data/experience'
 import { SectionWrapper, cinematicEase } from '@/components/ui/SectionWrapper'
+import { useApiData } from '@/hooks/useApiData'
 
 export function ExperienceSection() {
   const ref = useRef<HTMLDivElement>(null)
   const isInView = useInView(ref, { once: true, margin: '-80px' })
+
+  const { data: experiences } = useApiData<any>('/api/experience', fallbackExperiences)
 
   return (
     <SectionWrapper
@@ -19,7 +22,7 @@ export function ExperienceSection() {
       pb={6}
     >
       <div ref={ref} style={{ maxWidth: 680, margin: '0 auto' }}>
-        {experiences.map((exp, index) => (
+        {experiences.map((exp: any, index: number) => (
           <ExperienceCard key={exp.id} experience={exp} index={index} isInView={isInView} />
         ))}
       </div>
@@ -34,7 +37,7 @@ export function ExperienceSection() {
 }
 
 function ExperienceCard({ experience, index, isInView }: {
-  experience: typeof experiences[0];
+  experience: any;
   index: number;
   isInView: boolean;
 }) {
@@ -100,7 +103,7 @@ function ExperienceCard({ experience, index, isInView }: {
             style={{ overflow: 'hidden' }}
           >
             <div style={{ marginBottom: 'var(--space-4)' }}>
-              {experience.highlights.map((h, i) => (
+              {experience.highlights.map((h: string, i: number) => (
                 <div key={i} style={{ display: 'flex', gap: 'var(--space-2)', marginBottom: 'var(--space-2)', fontSize: 14, color: 'var(--text-secondary)' }}>
                   <span style={{ width: 4, height: 4, borderRadius: 'var(--radius-full)', marginTop: 8, flexShrink: 0, backgroundColor: experience.color }} />
                   {h}
@@ -111,7 +114,7 @@ function ExperienceCard({ experience, index, isInView }: {
 
           {/* Tech */}
           <div style={{ display: 'flex', flexWrap: 'wrap', gap: 'var(--space-1)' }}>
-            {experience.tech.map((tech) => (
+            {experience.tech.map((tech: string) => (
               <span key={tech} className="tag">{tech}</span>
             ))}
           </div>

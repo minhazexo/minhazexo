@@ -109,7 +109,7 @@ export function FloatingParticles({ count }: { count?: number }) {
       window.removeEventListener('mousemove', handleMouseMove)
       cancelAnimationFrame(rafRef.current)
     }
-  }, [reducedMotion, theme])
+  }, [reducedMotion, theme, count])
 
   return (
     <canvas

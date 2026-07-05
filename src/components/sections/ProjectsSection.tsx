@@ -4,12 +4,13 @@ import { useState, useRef, useCallback, memo } from 'react'
 import { motion, useInView, AnimatePresence } from 'framer-motion'
 import { ExternalLink, Code2, Eye, ChevronRight } from 'lucide-react'
 import Image from 'next/image'
-import { projects, categories } from '@/data/projects'
+import { projects as fallbackProjects, categories as fallbackCategories } from '@/data/projects'
 import { SectionWrapper, cinematicEase } from '@/components/ui/SectionWrapper'
 import ProjectDetailModal from '@/components/effects/ProjectDetailModal'
+import { useApiData } from '@/hooks/useApiData'
 
 const ProjectCard = memo(function ProjectCard({ project, index, isInView, onClick }: {
-  project: typeof projects[0];
+  project: any;
   index: number;
   isInView: boolean;
   onClick: () => void;
@@ -81,7 +82,7 @@ const ProjectCard = memo(function ProjectCard({ project, index, isInView, onClic
 
           {/* Tech */}
           <div style={{ display: 'flex', flexWrap: 'wrap', gap: 'var(--space-1)', marginBottom: 'var(--space-4)' }}>
-            {project.tech.slice(0, 4).map((tech) => (
+            {project.tech.slice(0, 4).map((tech: string) => (
               <span key={tech} className="tag">{tech}</span>
             ))}
             {project.tech.length > 4 && (
@@ -115,11 +116,14 @@ const ProjectCard = memo(function ProjectCard({ project, index, isInView, onClic
 
 export const ProjectsSection = memo(function ProjectsSection() {
   const [filter, setFilter] = useState('All')
-  const [selectedProject, setSelectedProject] = useState<typeof projects[0] | null>(null)
+  const [selectedProject, setSelectedProject] = useState<any | null>(null)
   const ref = useRef<HTMLDivElement>(null)
   const isInView = useInView(ref, { once: true, margin: '-80px' })
 
-  const filteredProjects = filter === 'All' ? projects : projects.filter((p) => p.category === filter)
+  const { data: projects } = useApiData<any>('/api/projects', fallbackProjects)
+  const categories = ['All', ...Array.from(new Set(projects.map((p: any) => p.category)))]
+
+  const filteredProjects = filter === 'All' ? projects : projects.filter((p: any) => p.category === filter)
 
   return (
     <>

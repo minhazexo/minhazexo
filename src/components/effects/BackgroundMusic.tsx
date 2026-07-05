@@ -17,6 +17,14 @@ export function BackgroundMusic() {
   const playAttemptedRef = useRef(false)
   const playInProgressRef = useRef(false)
   const mountedRef = useRef(true)
+  const [isMobile, setIsMobile] = useState(false)
+
+  useEffect(() => {
+    const check = () => setIsMobile(window.innerWidth < 640)
+    check()
+    window.addEventListener('resize', check)
+    return () => window.removeEventListener('resize', check)
+  }, [])
 
   const { backgroundMusic: musicUrl } = audioAssets
 
@@ -177,7 +185,7 @@ export function BackgroundMusic() {
 
       {/* Music Control Button */}
       <motion.div
-        className="fixed bottom-6 right-6 z-50"
+        className={`fixed z-50 ${isMobile ? 'bottom-4 right-4' : 'bottom-6 right-6'}`}
         initial={{ opacity: 0, scale: 0.8 }}
         animate={{ opacity: 1, scale: 1 }}
         transition={{ delay: 1.5 }}
@@ -192,7 +200,7 @@ export function BackgroundMusic() {
             }
           }}
           style={{
-            width: 56, height: 56, borderRadius: '50%',
+            width: isMobile ? 44 : 56, height: isMobile ? 44 : 56, borderRadius: '50%',
             display: 'flex', alignItems: 'center', justifyContent: 'center',
             color: 'var(--text)',
             background: 'var(--glass-hover-bg)',
@@ -212,11 +220,11 @@ export function BackgroundMusic() {
           aria-label={!hasInteracted ? 'Enable background music' : isPlaying ? 'Pause background music' : 'Play background music'}
         >
           {!hasInteracted ? (
-            <Music style={{ width: 24, height: 24, color: 'var(--primary)' }} aria-hidden="true" />
+            <Music style={{ width: isMobile ? 18 : 24, height: isMobile ? 18 : 24, color: 'var(--primary)' }} aria-hidden="true" />
           ) : isPlaying ? (
-            <Pause style={{ width: 24, height: 24, color: 'var(--primary)' }} aria-hidden="true" />
+            <Pause style={{ width: isMobile ? 18 : 24, height: isMobile ? 18 : 24, color: 'var(--primary)' }} aria-hidden="true" />
           ) : (
-            <Play style={{ width: 24, height: 24, color: 'var(--primary)' }} aria-hidden="true" />
+            <Play style={{ width: isMobile ? 18 : 24, height: isMobile ? 18 : 24, color: 'var(--primary)' }} aria-hidden="true" />
           )}
 
           {/* Pulse animation when playing */}
@@ -234,17 +242,19 @@ export function BackgroundMusic() {
         <AnimatePresence>
           {showControls && hasInteracted && (
             <motion.div
-              initial={{ opacity: 0, y: 20, scale: 0.9 }}
-              animate={{ opacity: 1, y: 0, scale: 1 }}
-              exit={{ opacity: 0, y: 20, scale: 0.9 }}
-              style={{
-                position: 'absolute', bottom: 80, right: 0, width: 256,
-                padding: 16, borderRadius: 20,
-                background: 'var(--glass-hover-bg)',
-                backdropFilter: 'blur(20px)',
-                border: '1px solid var(--border-strong)',
-                display: 'flex', flexDirection: 'column', gap: 16,
-              }}
+          initial={{ opacity: 0, y: 20, scale: 0.9 }}
+          animate={{ opacity: 1, y: 0, scale: 1 }}
+          exit={{ opacity: 0, y: 20, scale: 0.9 }}
+          style={{
+            position: 'absolute', bottom: 80, right: 0,
+            width: isMobile ? 'min(200px, calc(100vw - 48px))' : 'min(256px, calc(100vw - 48px))',
+            padding: isMobile ? 12 : 16,
+            borderRadius: isMobile ? 16 : 20,
+            background: 'var(--glass-hover-bg)',
+            backdropFilter: 'blur(20px)',
+            border: '1px solid var(--border-strong)',
+            display: 'flex', flexDirection: 'column', gap: isMobile ? 12 : 16,
+          }}
             >
               {/* Close button */}
               <button
@@ -261,18 +271,18 @@ export function BackgroundMusic() {
                 onClick={togglePlay}
                 style={{
                   width: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center',
-                  gap: 8, padding: '8px 0', borderRadius: 12,
+                  gap: 8, padding: isMobile ? '6px 0' : '8px 0', borderRadius: isMobile ? 10 : 12,
                   background: 'var(--gradient-primary)', color: '#fff', fontWeight: 500,
-                  border: 'none', cursor: 'pointer', fontSize: 14,
+                  border: 'none', cursor: 'pointer', fontSize: isMobile ? 13 : 14,
                 }}
               >
                 {isPlaying ? (
                   <>
-                    <Pause className="w-4 h-4" /> Pause
+                    <Pause className={isMobile ? 'w-3.5 h-3.5' : 'w-4 h-4'} /> Pause
                   </>
                 ) : (
                   <>
-                    <Play className="w-4 h-4" /> Play
+                    <Play className={isMobile ? 'w-3.5 h-3.5' : 'w-4 h-4'} /> Play
                   </>
                 )}
               </button>
@@ -302,8 +312,8 @@ export function BackgroundMusic() {
               </div>
 
               {/* Music Info */}
-              <div className="text-center text-xs text-gray-500 border-t border-white/10 pt-3">
-                <Music className="w-3 h-3 inline-block mr-1" />
+              <div className={`text-center text-gray-500 border-t border-white/10 ${isMobile ? 'pt-2 text-[11px]' : 'pt-3 text-xs'}`}>
+                <Music className={`inline-block mr-1 ${isMobile ? 'w-2.5 h-2.5' : 'w-3 h-3'}`} />
                 Copyright-free ambient music
               </div>
             </motion.div>
@@ -319,29 +329,30 @@ export function BackgroundMusic() {
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: 50 }}
             style={{
-              position: 'fixed', bottom: 96, right: 24, zIndex: 50,
-              padding: 16, borderRadius: 20, maxWidth: 320,
+              position: 'fixed', bottom: isMobile ? 80 : 96, right: isMobile ? 16 : 24, zIndex: 50,
+              padding: isMobile ? 12 : 16, borderRadius: isMobile ? 16 : 20,
+              width: isMobile ? 'min(260px, calc(100vw - 32px))' : 'min(320px, calc(100vw - 48px))',
               background: 'var(--glass-hover-bg)',
               backdropFilter: 'blur(20px)',
               border: '1px solid var(--border-strong)',
             }}
           >
               <div className="flex items-start gap-3">
-              <div style={{ width: 40, height: 40, borderRadius: '50%', background: 'var(--gradient-primary)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
-                <Music style={{ width: 20, height: 20, color: '#fff' }} />
+              <div style={{ width: isMobile ? 32 : 40, height: isMobile ? 32 : 40, borderRadius: '50%', background: 'var(--gradient-primary)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+                <Music style={{ width: isMobile ? 16 : 20, height: isMobile ? 16 : 20, color: '#fff' }} />
               </div>
               <div style={{ flex: 1 }}>
-                <h4 style={{ color: 'var(--text)', fontWeight: 500, fontSize: 14, marginBottom: 4 }}>Background Music</h4>
-                <p style={{ color: 'var(--text-secondary)', fontSize: 12, marginBottom: 12 }}>
+                <h4 style={{ color: 'var(--text)', fontWeight: 500, fontSize: isMobile ? 13 : 14, marginBottom: 4 }}>Background Music</h4>
+                <p style={{ color: 'var(--text-secondary)', fontSize: isMobile ? 11 : 12, marginBottom: isMobile ? 10 : 12 }}>
                   Enjoy copyright-free ambient music while browsing my portfolio.
                 </p>
                 <div className="flex gap-2">
                   <button
                     onClick={togglePlay}
                     style={{
-                      flex: 1, padding: '8px 0', borderRadius: 12,
+                      flex: 1, padding: isMobile ? '6px 0' : '8px 0', borderRadius: isMobile ? 10 : 12,
                       background: 'var(--gradient-primary)', color: '#fff',
-                      fontSize: 12, fontWeight: 500, border: 'none', cursor: 'pointer',
+                      fontSize: isMobile ? 11 : 12, fontWeight: 500, border: 'none', cursor: 'pointer',
                     }}
                   >
                     Enable
@@ -349,9 +360,9 @@ export function BackgroundMusic() {
                   <button
                     onClick={dismissPrompt}
                     style={{
-                      flex: 1, padding: '8px 0', borderRadius: 12,
+                      flex: 1, padding: isMobile ? '6px 0' : '8px 0', borderRadius: isMobile ? 10 : 12,
                       background: 'var(--glass-bg)', color: 'var(--text-secondary)',
-                      fontSize: 12, fontWeight: 500, border: '1px solid var(--border)', cursor: 'pointer',
+                      fontSize: isMobile ? 11 : 12, fontWeight: 500, border: '1px solid var(--border)', cursor: 'pointer',
                     }}
                   >
                     No Thanks

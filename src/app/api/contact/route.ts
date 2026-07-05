@@ -1,11 +1,23 @@
 import { NextRequest, NextResponse } from 'next/server'
+import { Resend } from 'resend'
 
-// Rate limiting: simple in-memory store
-// Note: On serverless (Netlify/Vercel), this resets on cold starts.
-// For production-grade limiting, use Upstash Redis with @upstash/ratelimit.
+// Rate limiting: simple in-memory store with periodic cleanup
 const rateLimitMap = new Map<string, { count: number; resetTime: number }>()
-const RATE_LIMIT = 5 // max requests
-const RATE_LIMIT_WINDOW = 60 * 1000 // 1 minute window
+const RATE_LIMIT = 5
+const RATE_LIMIT_WINDOW = 60 * 1000
+let lastCleanup = Date.now()
+const CLEANUP_INTERVAL = 5 * 60 * 1000
+
+function cleanupRateLimitMap() {
+  const now = Date.now()
+  if (now - lastCleanup < CLEANUP_INTERVAL) return
+  lastCleanup = now
+  const expired: string[] = []
+  rateLimitMap.forEach((record, ip) => {
+    if (now > record.resetTime) expired.push(ip)
+  })
+  expired.forEach(ip => rateLimitMap.delete(ip))
+}
 
 interface ContactFormData {
   name: string
@@ -27,7 +39,6 @@ function validateFormData(data: unknown): { valid: boolean; errors: Record<strin
     message: '',
   }
 
-  // Validate name
   if (!name || typeof name !== 'string') {
     errors.name = 'Name is required'
   } else {
@@ -36,14 +47,11 @@ function validateFormData(data: unknown): { valid: boolean; errors: Record<strin
       errors.name = 'Name must be at least 2 characters'
     } else if (trimmed.length > 100) {
       errors.name = 'Name must be less than 100 characters'
-    } else if (!/^[a-zA-Z\s\-'.]+$/.test(trimmed)) {
-      errors.name = 'Name contains invalid characters'
     } else {
       sanitized.name = trimmed
     }
   }
 
-  // Validate email
   if (!email || typeof email !== 'string') {
     errors.email = 'Email is required'
   } else {
@@ -57,7 +65,6 @@ function validateFormData(data: unknown): { valid: boolean; errors: Record<strin
     }
   }
 
-  // Validate message
   if (!message || typeof message !== 'string') {
     errors.message = 'Message is required'
   } else {
@@ -79,6 +86,7 @@ function validateFormData(data: unknown): { valid: boolean; errors: Record<strin
 }
 
 function checkRateLimit(ip: string): boolean {
+  cleanupRateLimitMap()
   const now = Date.now()
   const record = rateLimitMap.get(ip)
 
@@ -87,9 +95,7 @@ function checkRateLimit(ip: string): boolean {
     return true
   }
 
-  if (record.count >= RATE_LIMIT) {
-    return false
-  }
+  if (record.count >= RATE_LIMIT) return false
 
   record.count++
   return true
@@ -100,8 +106,7 @@ async function sendEmail(data: ContactFormData): Promise<void> {
   const toEmail = process.env.CONTACT_EMAIL || 'mehrabhossain7102@gmail.com'
 
   if (!apiKey) {
-    // In development or if key not configured, just log a warning
-    console.warn('[Contact] RESEND_API_KEY not set — email not delivered. Form data:', {
+    console.warn('[Contact] RESEND_API_KEY not set — email not delivered.', {
       name: data.name,
       email: data.email,
       messageLength: data.message.length,
@@ -109,7 +114,6 @@ async function sendEmail(data: ContactFormData): Promise<void> {
     return
   }
 
-  const { Resend } = await import('resend')
   const resend = new Resend(apiKey)
 
   const { error } = await resend.emails.send({

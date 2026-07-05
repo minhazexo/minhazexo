@@ -53,7 +53,7 @@ export default function Home() {
       setLoadProgress(100)
       setTimeout(() => setIsReady(true), 300)
     }
-    img.src = '/webp/for chess.webp'
+    img.src = '/hero-astronaut.jpg'
 
     return () => { clearTimeout(timer); clearInterval(interval) }
   }, [])
