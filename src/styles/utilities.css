@@ -110,6 +110,50 @@
   }
 }
 
+/* ---------- RESPONSIVE VARIABLES ---------- */
+@media (max-width: 1024px) {
+  :root {
+    --space-14: 72px;
+    --space-15: 96px;
+    --space-16: 112px;
+    --space-17: 128px;
+  }
+}
+
+@media (max-width: 640px) {
+  :root {
+    --space-13: 64px;
+    --space-14: 56px;
+    --space-15: 72px;
+    --space-16: 88px;
+    --space-17: 104px;
+    --button-height: 48px;
+    --button-padding: 14px 24px;
+  }
+}
+
+@media (max-width: 374px) {
+  :root {
+    --space-6: 20px;
+    --space-7: 24px;
+    --space-8: 32px;
+  }
+}
+
+/* ---------- Responsive Grid Helpers ---------- */
+@media (max-width: 640px) {
+  .hide-mobile { display: none !important; }
+  .show-mobile { display: block !important; }
+  .text-center-mobile { text-align: center !important; }
+}
+
+/* ---------- Section spacing responsive ---------- */
+@media (max-width: 640px) {
+  .section-spacing-lg { height: 80px !important; }
+  .section-spacing-md { height: 60px !important; }
+  .section-spacing-sm { height: 40px !important; }
+}
+
 /* ---------- Grid System (12/8/4 columns) ---------- */
 .grid-12 {
   display: grid;

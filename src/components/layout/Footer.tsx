@@ -13,8 +13,8 @@ export function Footer() {
       }}
     >
       <div style={{ maxWidth: 'var(--content-width)', margin: '0 auto', padding: '0 var(--space-6)' }}>
-        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: 'var(--space-4)' }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--space-3)' }}>
+        <div className="footer-inner" style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: 'var(--space-4)' }}>
+          <div className="footer-brand" style={{ display: 'flex', alignItems: 'center', gap: 'var(--space-3)' }}>
             <div
               style={{
                 width: 28, height: 28, borderRadius: 'var(--radius-sm)',
@@ -30,7 +30,7 @@ export function Footer() {
             </span>
           </div>
 
-          <div style={{ display: 'flex', gap: 'var(--space-4)' }}>
+          <div className="footer-links" style={{ display: 'flex', gap: 'var(--space-4)' }}>
             {footerSocialLinks.map((link) => {
               const Icon = link.icon
               return (
@@ -48,6 +48,13 @@ export function Footer() {
             })}
           </div>
         </div>
+
+        <style>{`
+          @media (max-width: 640px) {
+            .footer-inner { flex-direction: column !important; text-align: center !important; gap: 16px !important; }
+            .footer-links { flex-wrap: wrap !important; justify-content: center !important; gap: 16px !important; }
+          }
+        `}</style>
       </div>
     </footer>
   )

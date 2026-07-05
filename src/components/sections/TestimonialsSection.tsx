@@ -28,6 +28,7 @@ export function TestimonialsSection() {
           {testimonials.map((t, i) => (
             <motion.div
               key={t.id}
+              className="testimonial-card"
               style={{
                 position: 'absolute',
                 inset: 0,
@@ -120,6 +121,11 @@ export function TestimonialsSection() {
           </div>
         </div>
       </div>
+      <style>{`
+        @media (max-width: 640px) {
+          .testimonial-card { padding: 24px !important; border-radius: 20px !important; }
+        }
+      `}</style>
     </SectionWrapper>
   )
 }

@@ -18,7 +18,7 @@ export const SkillsSection = memo(function SkillsSection() {
       pt={6}
       pb={6}
     >
-      <div ref={ref} style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: 'var(--space-5)' }}>
+      <div className="skills-grid" ref={ref} style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: 'var(--space-5)' }}>
         {skillCategories.map((category, ci) => (
           <motion.div
             key={category.name}
@@ -63,6 +63,11 @@ export const SkillsSection = memo(function SkillsSection() {
           </motion.div>
         ))}
       </div>
+      <style>{`
+        @media (max-width: 640px) {
+          .skills-grid { grid-template-columns: 1fr !important; }
+        }
+      `}</style>
     </SectionWrapper>
   )
 })

@@ -23,6 +23,12 @@ export function ExperienceSection() {
           <ExperienceCard key={exp.id} experience={exp} index={index} isInView={isInView} />
         ))}
       </div>
+      <style>{`
+        @media (max-width: 640px) {
+          .exp-card { padding: 20px !important; }
+          .exp-card-inner { gap: 12px !important; }
+        }
+      `}</style>
     </SectionWrapper>
   )
 }
@@ -57,8 +63,9 @@ function ExperienceCard({ experience, index, isInView }: {
       </div>
 
       {/* Card */}
-      <div style={{ flex: 1, paddingBottom: index < 2 ? 'var(--space-3)' : 0 }}>
+      <div className="exp-card-inner" style={{ flex: 1, paddingBottom: index < 2 ? 'var(--space-3)' : 0 }}>
         <div
+          className="exp-card"
           style={{
             padding: 'var(--space-6)',
             borderRadius: 'var(--radius-glass)',

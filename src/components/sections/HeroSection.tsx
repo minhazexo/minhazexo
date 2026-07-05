@@ -57,24 +57,25 @@ export function HeroSection() {
         textAlign: 'center',
       }}
     >
-      <motion.div
-        style={{
-          position: 'absolute',
-          top: '20%',
-          left: '50%',
-          x: '-50%',
-          width: '900px',
-          height: '900px',
-          borderRadius: '50%',
-          background: 'var(--glow-color)',
-          filter: 'blur(220px)',
-          opacity: 0.18,
-          zIndex: 0,
-          y: auroraY,
-          transition: 'opacity 0.5s ease, background 0.5s ease',
-        }}
-        aria-hidden="true"
-      />
+        <motion.div
+          className="hero-aurora"
+          style={{
+            position: 'absolute',
+            top: '20%',
+            left: '50%',
+            x: '-50%',
+            width: '900px',
+            height: '900px',
+            borderRadius: '50%',
+            background: 'var(--glow-color)',
+            filter: 'blur(220px)',
+            opacity: 0.18,
+            zIndex: 0,
+            y: auroraY,
+            transition: 'opacity 0.5s ease, background 0.5s ease',
+          }}
+          aria-hidden="true"
+        />
 
       <div
         style={{
@@ -102,6 +103,7 @@ export function HeroSection() {
         }}
       >
         <motion.div
+          className="hero-content"
           style={{
             maxWidth: 720,
             margin: '0 auto',
@@ -306,7 +308,7 @@ export function HeroSection() {
         </motion.div>
       </div>
 
-      <div style={{
+      <div className="hero-scroll" style={{
         height: 96,
         display: 'flex',
         alignItems: 'flex-end',
@@ -351,6 +353,18 @@ export function HeroSection() {
           </motion.div>
         </motion.div>
       </div>
+
+      <style>{`
+        @media (max-width: 640px) {
+          .hero-content { padding: 0 20px !important; }
+          .hero-aurora { width: 500px !important; height: 500px !important; top: 10% !important; }
+          .hero-scroll { height: 64px !important; }
+        }
+        @media (max-width: 374px) {
+          .hero-content { padding: 0 16px !important; }
+          .hero-aurora { width: 360px !important; height: 360px !important; }
+        }
+      `}</style>
     </section>
   )
 }

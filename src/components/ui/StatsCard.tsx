@@ -17,6 +17,7 @@ export function StatsCard({ stat, index, isInView }: StatsCardProps) {
       transition={{ duration: 0.5, delay: 0.1 + index * 0.08, ease: 'easeOut' }}
     >
       <div
+        className="stats-card-inner"
         style={{
           height: 160,
           padding: 28,
@@ -40,6 +41,7 @@ export function StatsCard({ stat, index, isInView }: StatsCardProps) {
         }}
       >
         <div
+          className="stats-card-value"
           style={{
             fontSize: 56,
             fontWeight: 700,
@@ -54,13 +56,21 @@ export function StatsCard({ stat, index, isInView }: StatsCardProps) {
         >
           {stat.value}
         </div>
-        <div style={{ fontSize: 18, fontWeight: 600, color: 'var(--text)', marginBottom: 2 }}>
+        <div className="stats-card-label" style={{ fontSize: 18, fontWeight: 600, color: 'var(--text)', marginBottom: 2 }}>
           {stat.label}
         </div>
-        <div style={{ fontSize: 14, color: 'var(--text-muted)' }}>
+        <div className="stats-card-desc" style={{ fontSize: 14, color: 'var(--text-muted)' }}>
           {stat.description}
         </div>
       </div>
+      <style>{`
+        @media (max-width: 640px) {
+          .stats-card-inner { height: 120px !important; padding: 20px !important; }
+          .stats-card-value { font-size: 40px !important; }
+          .stats-card-label { font-size: 15px !important; }
+          .stats-card-desc { font-size: 12px !important; }
+        }
+      `}</style>
     </motion.div>
   )
 }

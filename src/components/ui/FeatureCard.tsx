@@ -20,6 +20,7 @@ export function FeatureCard({ feature, index, isInView }: FeatureCardProps) {
       style={{ height: '100%' }}
     >
       <div
+        className="feature-card-inner"
         style={{
           position: 'relative',
           height: '100%',
@@ -67,6 +68,7 @@ export function FeatureCard({ feature, index, isInView }: FeatureCardProps) {
 
         {/* Icon container */}
         <div
+          className="feature-icon-box"
           style={{
             width: 64,
             height: 64,
@@ -89,6 +91,7 @@ export function FeatureCard({ feature, index, isInView }: FeatureCardProps) {
 
         {/* Title */}
         <h3
+          className="feature-title"
           style={{
             fontSize: 22,
             fontWeight: 700,
@@ -103,6 +106,7 @@ export function FeatureCard({ feature, index, isInView }: FeatureCardProps) {
 
         {/* Description */}
         <p
+          className="feature-desc"
           style={{
             fontSize: 16,
             lineHeight: 1.75,
@@ -113,6 +117,15 @@ export function FeatureCard({ feature, index, isInView }: FeatureCardProps) {
           {feature.description}
         </p>
       </div>
+      <style>{`
+        @media (max-width: 640px) {
+          .feature-card-inner { min-height: 220px !important; padding: 24px !important; }
+          .feature-icon-box { width: 52px !important; height: 52px !important; border-radius: 16px !important; }
+          .feature-icon-box svg { width: 22px !important; height: 22px !important; }
+          .feature-title { font-size: 18px !important; }
+          .feature-desc { font-size: 14px !important; }
+        }
+      `}</style>
     </motion.div>
   )
 }

@@ -97,7 +97,10 @@ const ProjectCard = memo(function ProjectCard({ project, index, isInView, onClic
               <Code2 style={{ width: 14, height: 14 }} /> Source
             </a>
             {project.demo !== '#' && (
-              <a href={project.demo} target="_blank" rel="noopener noreferrer"
+              <a
+                href={project.demo}
+                target="_blank"
+                rel="noopener noreferrer"
                 style={{ display: 'flex', alignItems: 'center', gap: 'var(--space-1)', fontSize: 13, color: 'var(--text-muted)' }}
                 onClick={(e) => e.stopPropagation()}>
                 <ExternalLink style={{ width: 14, height: 14 }} /> Live Demo
@@ -166,7 +169,7 @@ export const ProjectsSection = memo(function ProjectsSection() {
         </motion.div>
 
         {/* Grid */}
-        <motion.div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(340px, 1fr))', gap: 'var(--space-6)' }} layout>
+        <motion.div className="projects-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(340px, 1fr))', gap: 'var(--space-6)' }} layout>
           <AnimatePresence mode="popLayout">
             {filteredProjects.map((project, index) => (
               <ProjectCard key={project.id} project={project} index={index} isInView={isInView} onClick={() => setSelectedProject(project)} />
@@ -192,6 +195,12 @@ export const ProjectsSection = memo(function ProjectsSection() {
           </a>
         </motion.div>
       </div>
+
+      <style>{`
+        @media (max-width: 640px) {
+          .projects-grid { grid-template-columns: 1fr !important; }
+        }
+      `}</style>
     </SectionWrapper>
     </>
   )

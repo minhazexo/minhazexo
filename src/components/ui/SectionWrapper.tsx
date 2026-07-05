@@ -120,6 +120,14 @@ export function SectionWrapper({
         )}
         {children}
       </div>
+
+      <style>{`
+        @media (max-width: 640px) {
+          .section-wrapper-label { font-size: 10px !important; }
+          .section-wrapper-title { font-size: clamp(24px, 6.4vw, 28px) !important; }
+          .section-wrapper-subtitle { font-size: 14px !important; }
+        }
+      `}</style>
     </section>
   )
 }

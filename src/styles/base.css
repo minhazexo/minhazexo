@@ -87,3 +87,11 @@ section[id] {
   .safe-top { padding-top: env(safe-area-inset-top); }
 }
 
+/* Mobile typography */
+@media (max-width: 640px) {
+  h1 { font-size: clamp(28px, 8vw, 36px) !important; }
+  h2 { font-size: clamp(24px, 6.4vw, 28px) !important; }
+  h3 { font-size: clamp(20px, 5.3vw, 24px) !important; }
+  h4 { font-size: clamp(18px, 4.8vw, 22px) !important; }
+}
+

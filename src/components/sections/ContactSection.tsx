@@ -66,6 +66,7 @@ export function ContactSection() {
     >
       <div ref={ref} style={{ maxWidth: 560, margin: '0 auto' }}>
         <motion.div
+          className="contact-card"
           style={{
             padding: 'var(--space-8) var(--space-9)',
             borderRadius: 'var(--radius-glass)',
@@ -169,6 +170,11 @@ export function ContactSection() {
             </motion.div>
           </motion.div>
         )}
+      <style>{`
+        @media (max-width: 640px) {
+          .contact-card { padding: 24px !important; }
+        }
+      `}</style>
       </AnimatePresence>
     </SectionWrapper>
   )

@@ -78,59 +78,59 @@ export default function Home() {
           <Navigation />
           <HeroSection />
 
-          {/* Hero → Features: 120px */}
-          <div style={{ height: 120 }} />
+          {/* Hero → Features: 120px / 80px mobile */}
+          <div className="section-spacing-lg" style={{ height: 120 }} />
 
           <Suspense fallback={<div style={{ height: 400 }} />}>
             <FeaturesSection />
           </Suspense>
 
-          {/* Features → About: 144px */}
-          <div style={{ height: 144 }} />
+          {/* Features → About: 144px / 96px mobile */}
+          <div className="section-spacing-lg" style={{ height: 144 }} />
 
           <Suspense fallback={<div style={{ height: '100vh' }} />}>
             <AboutSection />
           </Suspense>
 
-          {/* About → Projects: 144px + SectionDivider */}
-          <div style={{ height: 72 }} />
+          {/* About → Projects: 144px + SectionDivider / 88px mobile */}
+          <div className="section-spacing-md" style={{ height: 72 }} />
           <SectionDivider />
-          <div style={{ height: 71 }} />
+          <div className="section-spacing-md" style={{ height: 71 }} />
 
           <Suspense fallback={<div style={{ height: '100vh' }} />}>
             <ProjectsSection />
           </Suspense>
 
-          {/* Projects → Skills: 120px */}
-          <div style={{ height: 120 }} />
+          {/* Projects → Skills: 120px / 80px mobile */}
+          <div className="section-spacing-lg" style={{ height: 120 }} />
 
           <Suspense fallback={<div style={{ height: '100vh' }} />}>
             <SkillsSection />
           </Suspense>
 
-          {/* Skills → Experience: 120px */}
-          <div style={{ height: 120 }} />
+          {/* Skills → Experience: 120px / 80px mobile */}
+          <div className="section-spacing-lg" style={{ height: 120 }} />
 
           <Suspense fallback={<div style={{ height: '100vh' }} />}>
             <ExperienceSection />
           </Suspense>
 
-          {/* Experience → Testimonials: 120px (not in spec, reasonable gap) */}
-          <div style={{ height: 120 }} />
+          {/* Experience → Testimonials: 120px / 80px mobile */}
+          <div className="section-spacing-lg" style={{ height: 120 }} />
 
           <Suspense fallback={<div style={{ height: '100vh' }} />}>
             <TestimonialsSection />
           </Suspense>
 
-          {/* Testimonials → Contact: 144px */}
-          <div style={{ height: 144 }} />
+          {/* Testimonials → Contact: 144px / 96px mobile */}
+          <div className="section-spacing-lg" style={{ height: 144 }} />
 
           <Suspense fallback={<div style={{ height: '100vh' }} />}>
             <ContactSection />
           </Suspense>
 
-          {/* Contact → Footer: 160px + Footer Bottom 48px */}
-          <div style={{ height: 160 }} />
+          {/* Contact → Footer: 160px / 96px mobile */}
+          <div className="section-spacing-lg" style={{ height: 160 }} />
 
           <Suspense fallback={null}>
             <Footer />

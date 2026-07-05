@@ -108,6 +108,7 @@ export function AboutSection() {
 
             {/* CTAs */}
             <motion.div
+              className="about-cta"
               style={{ display: 'flex', flexWrap: 'wrap', gap: 12 }}
               initial={{ opacity: 0, y: 10 }}
               animate={isInView ? { opacity: 1, y: 0 } : {}}
@@ -180,6 +181,7 @@ export function AboutSection() {
             transition={{ duration: 0.6, delay: 0.15, ease: 'easeOut' }}
           >
             <div
+              className="about-glass-panel"
               style={{
                 padding: 40,
                 borderRadius: 32,
@@ -292,6 +294,9 @@ export function AboutSection() {
         }
         @media (max-width: 640px) {
           .about-stats-grid { grid-template-columns: 1fr !important; }
+          .about-glass-panel { padding: 24px !important; border-radius: 24px !important; }
+          .about-cta { flex-direction: column !important; }
+          .about-cta a { width: 100% !important; }
         }
       `}</style>
     </section>
