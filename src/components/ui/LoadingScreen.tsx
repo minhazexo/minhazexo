@@ -1,93 +1,99 @@
 'use client'
 
-import { useState, useEffect, useRef } from 'react'
-import { motion } from 'framer-motion'
+import { useState, useEffect, useRef, useMemo } from 'react'
+import { motion, AnimatePresence } from 'framer-motion'
 import type { LoadingScreenProps } from '@/types'
 
-/**
- * Cinematic Loading Screen - Animated galaxy spinner with system messages
- * Tracks real progress: fonts loaded, images loaded, minimum display time
- */
+function generateStars(count: number) {
+  return Array.from({ length: count }, (_, i) => ({
+    id: i,
+    x: Math.random() * 100,
+    y: Math.random() * 100,
+    size: Math.random() * 2.5 + 0.5,
+    baseOpacity: Math.random() * 0.5 + 0.4,
+    duration: Math.random() * 3 + 2,
+    delay: Math.random() * 3,
+  }))
+}
+
+const floatShapes = [
+  { id: 0, size: 80, x: 10, y: 18, radius: '50%', rotate: 0 },
+  { id: 1, size: 60, x: 82, y: 10, radius: '25%', rotate: 30 },
+  { id: 2, size: 70, x: 15, y: 78, radius: '50%', rotate: 0 },
+  { id: 3, size: 50, x: 83, y: 82, radius: '0%', rotate: 45 },
+]
+
+const auroraLayers = [
+  { w: '60%', h: '40%', t: '8%', l: '15%', color: 'var(--aurora-1)', dur: 12, op: [0.4, 0.7, 0.4], x: ['-6%', '6%', '-3%', '4%', '-6%'], y: ['0%', '-4%', '3%', '-2%', '0%'] },
+  { w: '50%', h: '35%', t: '55%', l: '45%', color: 'var(--aurora-2)', dur: 16, op: [0.3, 0.55, 0.3], x: ['5%', '-5%', '3%', '-4%', '5%'], y: ['0%', '4%', '-2%', '3%', '0%'] },
+  { w: '45%', h: '30%', t: '30%', l: '28%', color: 'var(--aurora-3)', dur: 20, op: [0.2, 0.45, 0.2], x: ['-3%', '4%', '-5%', '2%', '-3%'], y: ['-2%', '3%', '-3%', '2%', '-2%'] },
+]
+
+const ORBIT_RADIUS = 64
+const INNER_ORBIT_RADIUS = 38
+
 export function LoadingScreen({ onComplete, progress: externalProgress, isReady }: LoadingScreenProps) {
   const [displayProgress, setDisplayProgress] = useState(0)
   const [fontsLoaded, setFontsLoaded] = useState(false)
   const [minTimeElapsed, setMinTimeElapsed] = useState(false)
   const [showSkip, setShowSkip] = useState(false)
   const hasCompleted = useRef(false)
+  const stars = useMemo(() => generateStars(80), [])
 
-  // Show skip button: immediately for returning users, after 2s for first-timers
   useEffect(() => {
     const isReturning = localStorage.getItem('visited-before') === 'true'
-    const delay = isReturning ? 500 : 2000
-    const timer = setTimeout(() => setShowSkip(true), delay)
+    const timer = setTimeout(() => setShowSkip(true), isReturning ? 500 : 2000)
     return () => clearTimeout(timer)
   }, [])
 
-  // Mark as visited on mount
   useEffect(() => {
     localStorage.setItem('visited-before', 'true')
   }, [])
 
-  // Wait for web fonts to load
   useEffect(() => {
-    document.fonts.ready.then(() => {
-      setFontsLoaded(true)
-    })
+    document.fonts.ready.then(() => setFontsLoaded(true))
   }, [])
 
-  // Enforce minimum display time (1.5s) for dramatic effect
   useEffect(() => {
-    const timer = setTimeout(() => {
-      setMinTimeElapsed(true)
-    }, 1500)
+    const timer = setTimeout(() => setMinTimeElapsed(true), 1500)
     return () => clearTimeout(timer)
   }, [])
 
-  // Smoothly animate progress toward the real external progress
   useEffect(() => {
     if (displayProgress >= externalProgress) return
-
     const interval = setInterval(() => {
       setDisplayProgress((prev) => {
         const target = Math.max(externalProgress, fontsLoaded ? 40 : 20)
-        if (prev >= target) {
-          clearInterval(interval)
-          return target
-        }
-        // Accelerate toward target
-        const diff = target - prev
-        const increment = Math.max(1, Math.ceil(diff / 8))
-        return Math.min(prev + increment, target)
+        if (prev >= target) { clearInterval(interval); return target }
+        return Math.min(prev + Math.max(1, Math.ceil((target - prev) / 8)), target)
       })
     }, 40)
-
     return () => clearInterval(interval)
   }, [externalProgress, fontsLoaded, displayProgress])
 
-  // Check if everything is ready and complete loading
   useEffect(() => {
     if (hasCompleted.current) return
-    if (!isReady || !fontsLoaded || !minTimeElapsed) return
-    if (displayProgress < 100) return
-
+    if (!isReady || !fontsLoaded || !minTimeElapsed || displayProgress < 100) return
     hasCompleted.current = true
     setTimeout(onComplete, 600)
   }, [isReady, fontsLoaded, minTimeElapsed, displayProgress, onComplete])
 
-  // Status messages tied to real progress + font status
   const getStatusMessage = () => {
     if (!fontsLoaded) return 'Loading fonts...'
     if (externalProgress < 30) return 'Initializing core modules...'
     if (externalProgress < 60) return 'Loading assets...'
     if (externalProgress < 85) return 'Compiling shaders...'
     if (!minTimeElapsed) return 'Calibrating display...'
-    return 'Ready for launch...'
+    return 'Ready for launch'
   }
+
+  const progressRingStyle = (progress: number) =>
+    `conic-gradient(from 270deg, var(--primary) ${progress}%, transparent ${progress}%)`
 
   return (
     <motion.div
-      className="fixed inset-0 z-[9999] flex flex-col items-center justify-center"
-      style={{ background: 'linear-gradient(135deg, #0A0A0F 0%, #0A0A1A 50%, #0F0F1A 100%)' }}
+      className="fixed inset-0 z-[9999] flex flex-col items-center justify-center overflow-hidden select-none"
+      style={{ background: 'var(--background)' }}
       initial={{ opacity: 1 }}
       exit={{ opacity: 0 }}
       transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
@@ -97,167 +103,285 @@ export function LoadingScreen({ onComplete, progress: externalProgress, isReady 
       aria-valuemax={100}
       aria-label="Page is loading"
     >
-      {/* Ambient glow background */}
-      <div className="absolute inset-0 overflow-hidden" aria-hidden="true">
-        <motion.div
-          className="absolute top-1/4 left-1/4 w-64 h-64 rounded-full"
-          style={{
-            background: 'radial-gradient(circle, rgba(0, 212, 255, 0.15) 0%, transparent 70%)',
-            filter: 'blur(40px)',
-          }}
-          animate={{
-            scale: [1, 1.2, 1],
-            opacity: [0.3, 0.5, 0.3],
-          }}
-          transition={{ duration: 4, repeat: Infinity }}
-          aria-hidden="true"
-        />
-        <motion.div
-          className="absolute bottom-1/4 right-1/4 w-48 h-48 rounded-full"
-          style={{
-            background: 'radial-gradient(circle, rgba(255, 0, 170, 0.12) 0%, transparent 70%)',
-            filter: 'blur(40px)',
-          }}
-          animate={{
-            scale: [1.2, 1, 1.2],
-            opacity: [0.4, 0.2, 0.4],
-          }}
-          transition={{ duration: 5, repeat: Infinity }}
-          aria-hidden="true"
-        />
+      {/* Starfield */}
+      <div className="absolute inset-0" aria-hidden="true">
+        {stars.map((star) => (
+          <motion.div
+            key={star.id}
+            className="absolute rounded-full bg-white"
+            style={{
+              left: `${star.x}%`,
+              top: `${star.y}%`,
+              width: star.size,
+              height: star.size,
+            }}
+            animate={{
+              opacity: [star.baseOpacity * 0.2, star.baseOpacity, star.baseOpacity * 0.2],
+            }}
+            transition={{
+              duration: star.duration,
+              repeat: Infinity,
+              delay: star.delay,
+              ease: 'easeInOut',
+            }}
+          />
+        ))}
       </div>
 
+      {/* Aurora ribbons */}
+      <div className="absolute inset-0 overflow-hidden" aria-hidden="true">
+        {auroraLayers.map((layer, i) => (
+          <motion.div
+            key={i}
+            className="absolute rounded-full"
+            style={{
+              width: layer.w,
+              height: layer.h,
+              top: layer.t,
+              left: layer.l,
+              background: `radial-gradient(ellipse, ${layer.color} 0%, transparent 70%)`,
+              filter: 'blur(80px)',
+            }}
+            animate={{
+              x: layer.x,
+              y: layer.y,
+              scale: [1, 1.06, 0.97, 1.04, 1],
+              opacity: layer.op,
+            }}
+            transition={{ duration: layer.dur, repeat: Infinity, ease: 'easeInOut' }}
+          />
+        ))}
+      </div>
+
+      {/* Floating geometric shapes */}
+      <div className="absolute inset-0 overflow-hidden pointer-events-none" aria-hidden="true">
+        {floatShapes.map((shape) => (
+          <motion.div
+            key={shape.id}
+            className="absolute"
+            style={{
+              left: `${shape.x}%`,
+              top: `${shape.y}%`,
+              width: shape.size,
+              height: shape.size,
+              borderRadius: shape.radius,
+              border: '1px solid var(--border)',
+              background: 'var(--glass)',
+              backdropFilter: 'blur(4px)',
+              transform: `rotate(${shape.rotate}deg)`,
+            }}
+            animate={{
+              x: [0, 28, -18, 12, 0],
+              y: [0, -18, 14, -12, 0],
+              rotate: [shape.rotate, shape.rotate + 25, shape.rotate - 15, shape.rotate + 10, shape.rotate],
+              opacity: [0.2, 0.45, 0.25, 0.4, 0.2],
+            }}
+            transition={{
+              duration: 18 + shape.id * 5,
+              repeat: Infinity,
+              ease: 'easeInOut',
+            }}
+          />
+        ))}
+      </div>
+
+      {/* Scan line overlay */}
+      <div
+        className="absolute inset-0 pointer-events-none opacity-[0.02]"
+        style={{
+          backgroundImage: 'repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(255,255,255,0.03) 2px, rgba(255,255,255,0.03) 4px)',
+          backgroundSize: '100% 4px',
+        }}
+        aria-hidden="true"
+      />
+
       {/* Galaxy Spinner */}
-      <div className="relative w-32 h-32 sm:w-40 sm:h-40 mb-6 sm:mb-8">
+      <motion.div
+        className="relative w-36 h-36 sm:w-44 sm:h-44 mb-8 sm:mb-10"
+        initial={{ scale: 0.85, opacity: 0 }}
+        animate={{ scale: 1, opacity: 1 }}
+        transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
+      >
         {/* Outer glow */}
         <motion.div
           className="absolute inset-0 rounded-full"
           style={{
-            boxShadow: '0 0 60px rgba(0, 212, 255, 0.4), 0 0 100px rgba(0, 212, 255, 0.2)',
+            boxShadow: '0 0 80px var(--glow-color), 0 0 150px var(--glow-color)',
           }}
-          animate={{ opacity: [0.5, 0.8, 0.5] }}
-          transition={{ duration: 2, repeat: Infinity }}
+          animate={{
+            opacity: [0.3, 0.65, 0.3],
+            scale: [1, 1.06, 1],
+          }}
+          transition={{ duration: 3, repeat: Infinity, ease: 'easeInOut' }}
           aria-hidden="true"
         />
 
-        {/* Outer Ring */}
+        {/* Circular progress ring */}
         <motion.div
           className="absolute inset-0 rounded-full"
           style={{
-            border: '2px solid transparent',
-            background: 'conic-gradient(from 0deg, #00D4FF, #FF00FF, #00FF88, #00D4FF)',
-            WebkitMask: 'linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0)',
-            mask: 'linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0)',
-            WebkitMaskComposite: 'exclude',
-            maskComposite: 'exclude',
-            padding: '3px',
+            background: progressRingStyle(displayProgress),
+            WebkitMask: 'radial-gradient(farthest-side, transparent calc(100% - 3px), #000 calc(100% - 3px))',
+            mask: 'radial-gradient(farthest-side, transparent calc(100% - 3px), #000 calc(100% - 3px))',
           }}
-          animate={{ rotate: 360 }}
-          transition={{ duration: 4, repeat: Infinity, ease: 'linear' }}
+          aria-hidden="true"
+        />
+        <motion.div
+          className="absolute inset-0 rounded-full opacity-25 blur-[3px]"
+          style={{
+            background: progressRingStyle(displayProgress),
+            WebkitMask: 'radial-gradient(farthest-side, transparent calc(100% - 5px), #000 calc(100% - 5px))',
+            mask: 'radial-gradient(farthest-side, transparent calc(100% - 5px), #000 calc(100% - 5px))',
+          }}
           aria-hidden="true"
         />
 
-        {/* Middle Ring */}
+        {/* Rotating gradient ring */}
         <motion.div
-          className="absolute inset-3 rounded-full"
-          style={{ border: '1px solid rgba(255,255,255,0.08)' }}
-          animate={{ rotate: -360 }}
-          transition={{ duration: 6, repeat: Infinity, ease: 'linear' }}
-          aria-hidden="true"
-        />
-
-        {/* Inner Ring */}
-        <motion.div
-          className="absolute inset-6 rounded-full"
-          style={{ border: '1px solid rgba(255,255,255,0.05)' }}
+          className="absolute inset-[3px] rounded-full"
+          style={{
+            background: 'conic-gradient(from 0deg, var(--primary), var(--primary-secondary), var(--primary-accent), var(--primary))',
+            WebkitMask: 'radial-gradient(farthest-side, transparent calc(100% - 1.5px), #000 calc(100% - 1.5px))',
+            mask: 'radial-gradient(farthest-side, transparent calc(100% - 1.5px), #000 calc(100% - 1.5px))',
+            opacity: 0.4,
+          }}
           animate={{ rotate: 360 }}
           transition={{ duration: 8, repeat: Infinity, ease: 'linear' }}
           aria-hidden="true"
         />
 
-        {/* Core */}
+        {/* Middle ring */}
         <motion.div
-          className="absolute inset-10 rounded-full flex items-center justify-center"
-          style={{ background: 'var(--gradient-primary)' }}
-        >
-          <motion.span
-            className="font-bold text-white"
-            style={{ fontSize: 24 }}
-            key={displayProgress}
-            initial={{ scale: 0.8, opacity: 0 }}
-            animate={{ scale: 1, opacity: 1 }}
-            transition={{ duration: 0.2 }}
-          >
-            {displayProgress}
-          </motion.span>
-        </motion.div>
+          className="absolute inset-[18px] rounded-full"
+          style={{
+            border: '1px solid rgba(255,255,255,0.07)',
+          }}
+          animate={{ rotate: -360 }}
+          transition={{ duration: 14, repeat: Infinity, ease: 'linear' }}
+          aria-hidden="true"
+        />
 
-        {/* Orbiting dots */}
+        {/* Outer orbit particles */}
         {[0, 120, 240].map((angle, i) => (
           <motion.div
-            key={i}
-            className="absolute"
+            key={`o${i}`}
+            className="absolute w-2 h-2 rounded-full"
             style={{
-              width: 8, height: 8, borderRadius: '50%',
               top: '50%',
               left: '50%',
               marginTop: -4,
               marginLeft: -4,
-              backgroundColor: 'var(--primary)',
-              boxShadow: '0 0 10px var(--primary)',
+              background: 'var(--primary)',
+              boxShadow: '0 0 12px var(--primary)',
             }}
             animate={{
               rotate: 360,
-              x: Math.sin((angle * Math.PI) / 180) * 70,
-              y: -Math.cos((angle * Math.PI) / 180) * 70,
+              x: Math.sin((angle * Math.PI) / 180) * ORBIT_RADIUS,
+              y: -Math.cos((angle * Math.PI) / 180) * ORBIT_RADIUS,
             }}
             transition={{
-              duration: 3 + i,
+              duration: 4 + i * 0.5,
               repeat: Infinity,
               ease: 'linear',
             }}
             aria-hidden="true"
           />
         ))}
-      </div>
+
+        {/* Inner orbit particles */}
+        {[60, 180, 300].map((angle, i) => (
+          <motion.div
+            key={`i${i}`}
+            className="absolute w-[5px] h-[5px] rounded-full"
+            style={{
+              top: '50%',
+              left: '50%',
+              marginTop: -2.5,
+              marginLeft: -2.5,
+              background: 'var(--primary-accent)',
+              boxShadow: '0 0 8px var(--primary-accent)',
+            }}
+            animate={{
+              rotate: -360,
+              x: Math.sin((angle * Math.PI) / 180) * INNER_ORBIT_RADIUS,
+              y: -Math.cos((angle * Math.PI) / 180) * INNER_ORBIT_RADIUS,
+            }}
+            transition={{
+              duration: 3 + i * 0.3,
+              repeat: Infinity,
+              ease: 'linear',
+            }}
+            aria-hidden="true"
+          />
+        ))}
+
+        {/* Core */}
+        <motion.div
+          className="absolute inset-[38px] rounded-full flex items-center justify-center"
+          style={{ background: 'var(--gradient-primary)' }}
+          animate={{
+            boxShadow: [
+              '0 0 20px var(--glow-color)',
+              '0 0 50px var(--glow-color)',
+              '0 0 20px var(--glow-color)',
+            ],
+          }}
+          transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut' }}
+        >
+          <motion.span
+            className="font-bold text-white"
+            style={{ fontSize: 22, fontFamily: 'var(--font-mono)' }}
+            key={displayProgress}
+            initial={{ scale: 0.8, opacity: 0, y: 5 }}
+            animate={{ scale: 1, opacity: 1, y: 0 }}
+            transition={{ duration: 0.15, ease: 'easeOut' }}
+          >
+            {displayProgress}
+          </motion.span>
+        </motion.div>
+      </motion.div>
 
       {/* Progress bar */}
-      <div className="w-48 sm:w-64 h-1 bg-white/10 rounded-full overflow-hidden mb-4 sm:mb-6" aria-hidden="true">
+      <div
+        className="w-56 sm:w-72 h-[2px] rounded-full overflow-hidden mb-5"
+        style={{ background: 'rgba(255,255,255,0.06)' }}
+        aria-hidden="true"
+      >
         <motion.div
           className="h-full rounded-full"
           style={{
-            background: 'linear-gradient(90deg, #00D4FF, #FF00FF, #00FF88)',
-            boxShadow: '0 0 10px var(--primary)',
+            background: 'linear-gradient(90deg, var(--primary), var(--primary-accent), var(--primary-secondary))',
+            boxShadow: '0 0 12px var(--glow-color)',
           }}
           animate={{ width: `${displayProgress}%` }}
-          transition={{ duration: 0.3 }}
+          transition={{ duration: 0.3, ease: 'easeOut' }}
         />
       </div>
 
-        {/* Status Text */}
-      <motion.div
-        className="text-center"
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.3 }}
-      >
-        <p
-          style={{ color: 'var(--primary)', fontSize: 13, letterSpacing: '0.3em', marginBottom: 12, fontFamily: 'var(--font-mono)' }}
-          aria-live="polite"
-          aria-atomic="true"
-        >
-          {getStatusMessage()}
-        </p>
+      {/* Status */}
+      <div className="text-center" aria-live="polite" aria-atomic="true">
+        <AnimatePresence mode="wait">
+          <motion.p
+            key={getStatusMessage()}
+            className="font-mono text-xs sm:text-[13px]"
+            style={{ color: 'var(--primary)', letterSpacing: '0.35em' }}
+            initial={{ opacity: 0, y: 8 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -8 }}
+            transition={{ duration: 0.25 }}
+          >
+            {getStatusMessage()}
+          </motion.p>
+        </AnimatePresence>
 
-        {/* Animated dots */}
-        <div className="flex justify-center gap-1.5" aria-hidden="true">
+        <div className="flex justify-center gap-1.5 mt-3" aria-hidden="true">
           {[...Array(3)].map((_, i) => (
             <motion.div
               key={i}
               className="rounded-full"
-              style={{ width: 6, height: 6, backgroundColor: 'var(--primary)' }}
+              style={{ width: 5, height: 5, background: 'var(--primary)' }}
               animate={{
-                scale: [1, 1.8, 1],
+                scale: [1, 1.6, 1],
                 opacity: [0.3, 1, 0.3],
               }}
               transition={{
@@ -269,20 +393,20 @@ export function LoadingScreen({ onComplete, progress: externalProgress, isReady 
           ))}
         </div>
 
-        {/* Skip button for returning users */}
         {showSkip && (
           <motion.button
             onClick={() => { hasCompleted.current = true; onComplete() }}
-            className="mt-6 text-gray-500 text-xs font-mono underline hover:text-gray-300 transition-colors cursor-pointer bg-transparent border-none"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
+            className="mt-6 font-mono text-xs underline cursor-pointer bg-transparent border-none"
+            style={{ color: 'var(--text-muted)' }}
+            initial={{ opacity: 0, y: 5 }}
+            animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.3 }}
             aria-label="Skip loading animation"
           >
-            Skip to content
+            Skip to content &rarr;
           </motion.button>
         )}
-      </motion.div>
+      </div>
     </motion.div>
   )
 }
