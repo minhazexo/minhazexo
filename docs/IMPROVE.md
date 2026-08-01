@@ -214,7 +214,7 @@ import Script from 'next/script'
 Install `@next/bundle-analyzer`:
 
 ```bash
-npm install -D @next/bundle-analyzer
+bun add -d @next/bundle-analyzer@14
 ```
 
 Add to `next.config.mjs`:
@@ -226,7 +226,7 @@ const withBundleAnalyzer = require('@next/bundle-analyzer')({
 export default withBundleAnalyzer(nextConfig)
 ```
 
-Then `ANALYZE=true npm run build` to see what's actually bundled.
+Then `ANALYZE=true bun run build` to see what's actually bundled.
 
 ### 8. Preload Critical Fonts
 
@@ -282,7 +282,7 @@ export default function sitemap() {
 **Action:**
 
 ```bash
-npm install -D vitest @testing-library/react @testing-library/jest-dom jsdom
+bun add -d vitest @testing-library/react @testing-library/jest-dom jsdom
 ```
 
 Test the data layer:
@@ -331,8 +331,8 @@ Add to `package.json`:
 
 ```json
 "scripts": {
-  "optimize:images": "node scripts/optimize-images.mjs",
-  "build": "npm run optimize:images && next build"
+  "optimize:images": "bun scripts/optimize-images.mjs",
+  "build": "next build"
 }
 ```
 
@@ -358,24 +358,20 @@ Add explicit `width`/`height` to ALL images to prevent CLS. Currently some use `
 <link rel="preload" href="/hero-astronaut.jpg" as="image" />
 ```
 
-### 14. Cache Strategy for Netlify
+### 14. Cache Strategy for Vercel
 
-**Problem:** `public/_headers` has basic security/static cache rules. Netlify's Next.js plugin handles ISR/SSR caching, but images could use more aggressive CDN caching.
+**Problem:** `vercel.json` has security/static cache rules. Vercel's Next.js platform handles ISR/SSR caching, but images could use more aggressive CDN caching.
 
-**Action:** Update `public/_headers`:
+**Action:** Tune `vercel.json` headers (already created — migrated from the old Netlify `_headers`):
 
-```
-# Static assets — cache forever (fingerprinted by Next.js)
-/_next/static/*
-  Cache-Control: public, max-age=31536000, immutable
-
-# Images — cache for 30 days
-/public/*
-  Cache-Control: public, max-age=2592000, stale-while-revalidate=86400
-
-# HTML — no cache (Next.js handles CDN)
-/*.html
-  Cache-Control: public, max-age=0, must-revalidate
+```json
+{
+  "headers": [
+    { "source": "/_next/static/(.*)", "headers": [{ "key": "Cache-Control", "value": "public, max-age=31536000, immutable" }] },
+    { "source": "/webp/(.*)", "headers": [{ "key": "Cache-Control", "value": "public, max-age=2592000, stale-while-revalidate=86400" }] },
+    { "source": "/(.*)\.html", "headers": [{ "key": "Cache-Control", "value": "public, max-age=0, must-revalidate" }] }
+  ]
+}
 ```
 
 ---
@@ -480,7 +476,7 @@ useEffect(() => {
 | **P1** | Low | **High** | Preload critical hero image |
 | **P1** | Low | **Medium** | Remove duplicate .jpg/.png pairs |
 | **P1** | Medium | **Medium** | Add unit tests (Vitest) |
-| **P1** | Medium | **Medium** | Cache strategy for Netlify CDN |
+| **P1** | Medium | **Medium** | Cache strategy for Vercel CDN (`vercel.json`) |
 | **P2** | Medium | **Medium** | Auto-generate sitemap from project data |
 | **P2** | Medium | **Low** | Add image optimization build script |
 | **P2** | Medium | **Low** | Dynamic breadcrumb schema in modals |
@@ -509,8 +505,8 @@ rm public/project-*.png  # if keeping .jpg; or vice versa
 # 5. Add service worker (copy sw.js template above)
 
 # 6. Run bundle analysis
-npm install -D @next/bundle-analyzer
-ANALYZE=true npm run build
+bun add -d @next/bundle-analyzer@14
+ANALYZE=true bun run build
 
 # 7. Run WebPageTest after deployment to verify
 ```

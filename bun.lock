@@ -20,7 +20,7 @@
         "sharp": "^0.35.3",
       },
       "devDependencies": {
-        "@next/bundle-analyzer": "^16.2.10",
+        "@next/bundle-analyzer": "^14.2.5",
         "@playwright/test": "^1.60.0",
         "@testing-library/jest-dom": "^6.9.1",
         "@testing-library/react": "^16.3.2",
@@ -223,7 +223,7 @@
 
     "@neondatabase/serverless": ["@neondatabase/serverless@1.1.0", "", {}, "sha512-r3ZZhRjEcfEdKIZnoB1RusNgvHuaBRqfCzV4Gi+5A9yUX0S4HTws/ASWqt13wL4y4I+0rqsWGdA2w7EQXHi3+Q=="],
 
-    "@next/bundle-analyzer": ["@next/bundle-analyzer@16.2.10", "", { "dependencies": { "webpack-bundle-analyzer": "4.10.1" } }, "sha512-KcepWhb3IVniZgm00GSSCQDEUQqZXuXtuXRh8J6e3Un342TcQ77iK4DedeEkct+fcx7yFEDL2J6z4Jeho5JDAw=="],
+    "@next/bundle-analyzer": ["@next/bundle-analyzer@14.2.35", "", { "dependencies": { "webpack-bundle-analyzer": "4.10.1" } }, "sha512-br772Uozk44eJq3a0Z+sTyNII+29d7ue1a0s4xd+9MlUQl3HhKo/wLqxZPFngMbwr6YnAWh/uKoVEpEOV35Fzw=="],
 
     "@next/env": ["@next/env@14.2.5", "", {}, "sha512-/zZGkrTOsraVfYjGP8uM0p6r0BDT6xWpkjdVbcz66PJVSpwXX3yNiRycxAuDfBKGWBrZBXRuK/YVlkNgxHGwmA=="],
 

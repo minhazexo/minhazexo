@@ -51,8 +51,8 @@ A modern, performant portfolio website built with Next.js 14. Features a dynamic
 
 ### Prerequisites
 
+- **Bun** 1.x (package manager + runtime — see `bun.lock`)
 - **Node.js** 20+ (see `.nvmrc`)
-- **Bun** (package manager)
 - **PostgreSQL** database — [Neon](https://neon.tech) (serverless) recommended
 
 ### Installation
@@ -62,8 +62,8 @@ A modern, performant portfolio website built with Next.js 14. Features a dynamic
 git clone https://github.com/minhazexo/mehrab-portfolio.git
 cd mehrab-portfolio
 
-# Install dependencies
-npm install
+# Install dependencies (bun is the package manager — bun.lock is committed)
+bun install
 
 # Set up environment variables
 cp .env.example .env.local
@@ -84,13 +84,13 @@ NEXT_PUBLIC_GA_ID=G-XXXXXXXXXX     # Optional — Google Analytics
 
 ```bash
 # Generate Drizzle schema
-npm run db:generate
+bun run db:generate
 
 # Push schema to database
-npm run db:push
+bun run db:push
 
 # Seed admin user + content data
-npm run db:seed
+bun run db:seed
 ```
 
 Default admin credentials: `admin` / `admin123` (change immediately after first login).
@@ -98,7 +98,7 @@ Default admin credentials: `admin` / `admin123` (change immediately after first 
 ### Development
 
 ```bash
-npm run dev
+bun run dev
 ```
 
 Open [http://localhost:4000](http://localhost:4000). Admin panel at [http://localhost:4000/admin](http://localhost:4000/admin).
@@ -106,8 +106,8 @@ Open [http://localhost:4000](http://localhost:4000). Admin panel at [http://loca
 ### Build
 
 ```bash
-npm run build
-npm start
+bun run build
+bun run start
 ```
 
 ---
@@ -186,48 +186,52 @@ src/
 
 | Script | Description |
 |---|---|
-| `npm run dev` | Start development server (port 4000) |
-| `npm run build` | Production build |
-| `npm start` | Start production server (port 4000) |
-| `npm run lint` | Run ESLint |
-| `npm run test` | Run Playwright E2E tests |
-| `npm run test:unit` | Run Vitest unit tests |
-| `npm run analyze` | Build with bundle analyzer |
-| `npm run db:generate` | Generate Drizzle schema files |
-| `npm run db:push` | Push schema to database |
-| `npm run db:seed` | Seed admin user + content data |
-| `npm run optimize:images` | Convert images to WebP |
+| `bun run dev` | Start development server (port 4000) |
+| `bun run build` | Production build |
+| `bun run start` | Start production server (port 4000) |
+| `bun run lint` | Run ESLint |
+| `bun run test` | Run Playwright E2E tests |
+| `bun run test:unit` | Run Vitest unit tests |
+| `bun run analyze` | Build with bundle analyzer |
+| `bun run db:generate` | Generate Drizzle schema files |
+| `bun run db:push` | Push schema to database |
+| `bun run db:seed` | Seed admin user + content data |
+| `bun run optimize:images` | Convert images to WebP |
 
 ---
 
 ## Deployment
 
-### Netlify (recommended)
+### Vercel (recommended)
 
-The project includes a `netlify.toml` configured for the Netlify Next.js plugin:
+The project ships with Vercel-ready config (`vercel.json` — build/install commands + security & cache headers) and a full step-by-step guide:
 
-```bash
-# Install Netlify CLI
-npm install -g netlify-cli
+📖 **[docs/VERCEL_DEPLOY.md](./docs/VERCEL_DEPLOY.md)**
 
-# Deploy
-netlify deploy --prod
-```
+Quick start:
 
-Set environment variables in Netlify dashboard:
-- `DATABASE_URL`
-- `ADMIN_JWT_SECRET`
-- `RESEND_API_KEY` (optional)
+1. Push the repo to GitHub.
+2. Import it at [vercel.com/new](https://vercel.com/new) — framework auto-detected as **Next.js**.
+3. Add the environment variables below.
+4. Deploy. Then seed the database once: `bun run db:push && bun run db:seed`.
+
+Environment variables to set in the Vercel dashboard:
+- `DATABASE_URL` (Neon PostgreSQL — required)
+- `ADMIN_JWT_SECRET` (required)
+- `RESEND_API_KEY` (optional — contact form)
 - `CONTACT_EMAIL` (optional)
+- `NEXT_PUBLIC_SITE_URL` (optional)
 - `NEXT_PUBLIC_GA_ID` (optional)
 
-### Vercel
+CLI alternative:
 
 ```bash
+bun add -g vercel
+vercel login
+vercel link
+vercel env add DATABASE_URL   # repeat for each variable
 vercel --prod
 ```
-
-Set the same environment variables in Vercel dashboard.
 
 ---
 

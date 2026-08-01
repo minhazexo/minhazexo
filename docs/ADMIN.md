@@ -37,7 +37,7 @@ Fields: name, role, company, avatar path, content, rating (1–5), color hex.
 If the database is empty, run:
 
 ```bash
-npm run db:seed
+bun run db:seed
 ```
 
 This populates all tables with the default portfolio content.
@@ -73,7 +73,7 @@ If the database API is unavailable, the public site falls back to static data fi
 | Manage skills | `/admin` → Skills tab |
 | Manage experience | `/admin` → Experience tab |
 | Manage testimonials | `/admin` → Testimonials tab |
-| Seed database | `npm run db:seed` |
+| Seed database | `bun run db:seed` |
 | Database schema | `src/lib/db/schema.ts` |
 | Public API routes | `src/app/api/{projects,skills,experience,testimonials}/` |
 | Admin API routes | `src/app/api/admin/{projects,skills,experience,testimonials}/` |
