@@ -1,4 +1,4 @@
-const CACHE = 'mehrab-portfolio-v1'
+const CACHE = 'mehrab-portfolio-v2'
 const PRECACHE_URLS = [
   '/',
   '/manifest.json',
@@ -22,16 +22,30 @@ self.addEventListener('activate', (e) => {
 
 self.addEventListener('fetch', (e) => {
   if (e.request.method !== 'GET') return
+
+  const url = new URL(e.request.url)
+
+  // Never cache API responses — always fetch fresh data from the network.
+  // This keeps admin edits and DB updates visible immediately.
+  if (url.pathname.startsWith('/api/')) {
+    e.respondWith(fetch(e.request).catch(() => new Response('', { status: 503 })))
+    return
+  }
+
+  // Same-origin assets only; don't cache cross-origin requests.
+  if (url.origin !== self.location.origin) return
+
+  // Cache-first for static assets.
   e.respondWith(
     caches.match(e.request).then((r) => {
-      const fetchPromise = fetch(e.request).then((res) => {
+      if (r) return r
+      return fetch(e.request).then((res) => {
         if (res.ok) {
           const cache = caches.open(CACHE)
           cache.then((c) => c.put(e.request, res.clone()))
         }
         return res
-      }).catch(() => caches.match('/') as Promise<Response>)
-      return r || fetchPromise
+      })
     })
   )
 })
