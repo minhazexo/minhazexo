@@ -70,10 +70,10 @@ export function SectionWrapper({
 
       <div style={{ maxWidth: 'var(--content-width)', margin: '0 auto', padding: '0 var(--space-6)', position: 'relative', zIndex: 1 }}>
         {(label || title) && (
-          <div style={{ marginBottom: 'var(--space-11)' }}>
+          <div style={{ marginBottom: 'var(--space-11)', textAlign: 'center' }}>
             {label && (
               <motion.div
-                style={{ display: 'flex', alignItems: 'center', gap: 'var(--space-2)', marginBottom: 'var(--space-4)' }}
+                style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 'var(--space-2)', marginBottom: 'var(--space-4)' }}
                 initial={{ opacity: 0, y: 10 }}
                 animate={isInView ? { opacity: 1, y: 0 } : {}}
                 transition={{ duration: 0.4, ease: 'easeOut' }}
@@ -82,6 +82,7 @@ export function SectionWrapper({
                 <span style={{ fontSize: 12, letterSpacing: '0.15em', textTransform: 'uppercase', color: 'var(--primary)' }}>
                   {label}
                 </span>
+                <span style={{ width: 24, height: 1, backgroundColor: 'var(--primary)', opacity: 0.4 }} />
               </motion.div>
             )}
             {title && (
@@ -107,6 +108,7 @@ export function SectionWrapper({
                   fontSize: 16,
                   lineHeight: 1.7,
                   maxWidth: 560,
+                  margin: '0 auto',
                   color: 'var(--text-secondary)',
                 }}
                 initial={{ opacity: 0, y: 10 }}

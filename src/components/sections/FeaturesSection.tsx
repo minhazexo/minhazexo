@@ -81,16 +81,6 @@ export function FeaturesSection() {
         </div>
       </div>
 
-      <style>{`
-        @media (max-width: 1024px) {
-          .features-grid { grid-template-columns: repeat(2, 1fr) !important; }
-          .features-section { padding-top: 100px !important; padding-bottom: 100px !important; }
-        }
-        @media (max-width: 640px) {
-          .features-grid { grid-template-columns: 1fr !important; }
-          .features-section { padding-top: 72px !important; padding-bottom: 72px !important; }
-        }
-      `}</style>
     </section>
   )
 }

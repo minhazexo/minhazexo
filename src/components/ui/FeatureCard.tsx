@@ -117,15 +117,6 @@ export function FeatureCard({ feature, index, isInView }: FeatureCardProps) {
           {feature.description}
         </p>
       </div>
-      <style>{`
-        @media (max-width: 640px) {
-          .feature-card-inner { min-height: 220px !important; padding: 24px !important; }
-          .feature-icon-box { width: 52px !important; height: 52px !important; border-radius: 16px !important; }
-          .feature-icon-box svg { width: 22px !important; height: 22px !important; }
-          .feature-title { font-size: 18px !important; }
-          .feature-desc { font-size: 14px !important; }
-        }
-      `}</style>
     </motion.div>
   )
 }

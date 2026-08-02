@@ -55,12 +55,6 @@ export default function NotFound() {
         >
           Return Home
         </Link>
-        <style>{`
-          .not-found-cta:hover {
-            transform: translateY(-2px) scale(1.02) !important;
-            box-shadow: 0 0 36px var(--glow-color) !important;
-          }
-        `}</style>
       </div>
     </div>
   )

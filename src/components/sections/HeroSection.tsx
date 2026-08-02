@@ -354,17 +354,6 @@ export function HeroSection() {
         </motion.div>
       </div>
 
-      <style>{`
-        @media (max-width: 640px) {
-          .hero-content { padding: 0 20px !important; }
-          .hero-aurora { width: 500px !important; height: 500px !important; top: 10% !important; }
-          .hero-scroll { height: 64px !important; }
-        }
-        @media (max-width: 374px) {
-          .hero-content { padding: 0 16px !important; }
-          .hero-aurora { width: 360px !important; height: 360px !important; }
-        }
-      `}</style>
     </section>
   )
 }

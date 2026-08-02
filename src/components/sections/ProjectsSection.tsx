@@ -24,6 +24,7 @@ const ProjectCard = memo(function ProjectCard({ project, index, isInView, onClic
       transition={{ duration: 0.5, delay: index * 0.08, ease: cinematicEase }}
     >
       <div
+        className="project-card"
         style={{
           borderRadius: 'var(--radius-glass)',
           overflow: 'hidden',
@@ -59,7 +60,6 @@ const ProjectCard = memo(function ProjectCard({ project, index, isInView, onClic
           {/* Hover overlay */}
           <div style={{
             position: 'absolute', inset: 0, display: 'flex', alignItems: 'center', justifyContent: 'center',
-            opacity: 0, transition: 'opacity 0.3s ease',
           }}
             className="project-hover-overlay"
           >
@@ -143,7 +143,7 @@ export const ProjectsSection = memo(function ProjectsSection() {
         <div ref={ref}>
         {/* Filter */}
         <motion.div
-          style={{ display: 'flex', flexWrap: 'wrap', gap: 'var(--space-2)', marginBottom: 'var(--space-10)' }}
+          style={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'center', gap: 'var(--space-2)', marginBottom: 'var(--space-10)' }}
           initial={{ opacity: 0, y: 20 }}
           animate={isInView ? { opacity: 1, y: 0 } : {}}
           transition={{ delay: 0.15, ease: cinematicEase }}
@@ -200,11 +200,6 @@ export const ProjectsSection = memo(function ProjectsSection() {
         </motion.div>
       </div>
 
-      <style>{`
-        @media (max-width: 640px) {
-          .projects-grid { grid-template-columns: 1fr !important; }
-        }
-      `}</style>
     </SectionWrapper>
     </>
   )

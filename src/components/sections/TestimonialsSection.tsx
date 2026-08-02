@@ -1,21 +1,48 @@
 'use client'
 
-import { useRef, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { motion, useInView } from 'framer-motion'
 import { ChevronLeft, ChevronRight, Star } from 'lucide-react'
 import { testimonials as fallbackTestimonials } from '@/data/testimonials'
 import { SectionWrapper, cinematicEase } from '@/components/ui/SectionWrapper'
 import { useApiData } from '@/hooks/useApiData'
+import { useReducedMotion } from '@/hooks/useReducedMotion'
+
+const AUTO_INTERVAL_MS = 5000
 
 export function TestimonialsSection() {
   const [current, setCurrent] = useState(0)
+  // Hover and focus tracked separately so autoplay stays paused while
+  // either is active (avoids a mouseleave/focus race on the controls)
+  const [isHovered, setIsHovered] = useState(false)
+  const [isFocused, setIsFocused] = useState(false)
+  const isPaused = isHovered || isFocused
+  // Bumped on manual interaction to reset the auto-advance timer
+  const [nonce, setNonce] = useState(0)
   const ref = useRef<HTMLDivElement>(null)
-  const isInView = useInView(ref, { once: true, margin: '-80px' })
+  const isInView = useInView(ref, { margin: '-80px' })
+  const prefersReduced = useReducedMotion()
 
   const { data: testimonials } = useApiData<any>('/api/testimonials', fallbackTestimonials)
 
-  const next = () => setCurrent((prev) => (prev + 1) % testimonials.length)
-  const prev = () => setCurrent((prev) => (prev - 1 + testimonials.length) % testimonials.length)
+  const next = () => {
+    setCurrent((prev) => (prev + 1) % testimonials.length)
+    setNonce((n) => n + 1)
+  }
+  const prev = () => {
+    setCurrent((prev) => (prev - 1 + testimonials.length) % testimonials.length)
+    setNonce((n) => n + 1)
+  }
+  // Auto-advance: only when visible, not paused (hover/focus), and motion is allowed
+  useEffect(() => {
+    if (prefersReduced || !isInView || isPaused || testimonials.length < 2) return
+    const timer = setInterval(() => {
+      setCurrent((prev) => (prev + 1) % testimonials.length)
+    }, AUTO_INTERVAL_MS)
+    return () => clearInterval(timer)
+  }, [prefersReduced, isInView, isPaused, nonce, testimonials.length])
+
+  const isAutoPlaying = isInView && !isPaused && !prefersReduced && testimonials.length > 1
 
   return (
     <SectionWrapper
@@ -26,15 +53,21 @@ export function TestimonialsSection() {
       pt={6}
       pb={6}
     >
-      <div ref={ref} style={{ maxWidth: 680, margin: '0 auto' }}>
-        <div style={{ position: 'relative', minHeight: 300 }}>
+      <div
+        ref={ref}
+        style={{ maxWidth: 680, margin: '0 auto' }}
+        onMouseEnter={() => setIsHovered(true)}
+        onMouseLeave={() => setIsHovered(false)}
+        onFocus={() => setIsFocused(true)}
+        onBlur={() => setIsFocused(false)}
+      >
+        <div style={{ display: 'grid', minHeight: 300 }}>
           {testimonials.map((t, i) => (
             <motion.div
               key={t.id}
               className="testimonial-card"
               style={{
-                position: 'absolute',
-                inset: 0,
+                gridArea: '1 / 1',
                 padding: 'var(--space-8) var(--space-9)',
                 borderRadius: 'var(--radius-glass)',
                 border: '1px solid var(--border)',
@@ -43,6 +76,7 @@ export function TestimonialsSection() {
                 display: 'flex',
                 flexDirection: 'column',
                 justifyContent: 'center',
+                minWidth: 0,
               }}
               initial={{ opacity: 0, x: 40 }}
               animate={i === current ? { opacity: 1, x: 0 } : { opacity: 0, x: -40 }}
@@ -72,7 +106,7 @@ export function TestimonialsSection() {
               </div>
 
               {/* Author */}
-              <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--space-3)' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--space-3)', flexWrap: 'wrap', minWidth: 0 }}>
                 <div
                   style={{
                     width: 44, height: 44, borderRadius: 'var(--radius-full)',
@@ -93,27 +127,37 @@ export function TestimonialsSection() {
           ))}
         </div>
 
-        {/* Navigation */}
-        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginTop: 'var(--space-7)' }}>
-          <div style={{ display: 'flex', gap: 'var(--space-2)' }}>
-            {testimonials.map((_, i) => (
-              <button
-                key={i}
-                onClick={() => setCurrent(i)}
-                style={{
-                  width: i === current ? 24 : 8,
-                  height: 6,
-                  borderRadius: 'var(--radius-full)',
-                  border: 'none',
-                  cursor: 'pointer',
-                  transition: 'all var(--duration-normal) ease',
-                  backgroundColor: i === current ? 'var(--primary)' : 'var(--border)',
-                }}
-                aria-label={`Go to testimonial ${i + 1}`}
-              />
-            ))}
-          </div>
+        {/* Auto-advance progress bar */}
+        <div
+          aria-hidden="true"
+          style={{
+            marginTop: 'var(--space-6)',
+            height: 3,
+            borderRadius: 'var(--radius-full)',
+            background: 'var(--border)',
+            overflow: 'hidden',
+          }}
+        >
+          <motion.div
+            key={`${current}-${nonce}`}
+            initial={{ scaleX: 0 }}
+            animate={isAutoPlaying ? { scaleX: 1 } : { scaleX: 0 }}
+            transition={
+              isAutoPlaying
+                ? { duration: AUTO_INTERVAL_MS / 1000, ease: 'linear' }
+                : { duration: 0.25 }
+            }
+            style={{
+              height: '100%',
+              transformOrigin: 'left',
+              background: 'var(--gradient-primary)',
+              boxShadow: '0 0 8px var(--glow-color)',
+            }}
+          />
+        </div>
 
+        {/* Navigation */}
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', marginTop: 'var(--space-5)' }}>
           <div style={{ display: 'flex', gap: 'var(--space-2)' }}>
             <button onClick={prev} className="btn-secondary" style={{ width: 40, height: 40, padding: 0, display: 'flex', alignItems: 'center', justifyContent: 'center' }} aria-label="Previous">
               <ChevronLeft style={{ width: 16, height: 16 }} />
@@ -124,11 +168,6 @@ export function TestimonialsSection() {
           </div>
         </div>
       </div>
-      <style>{`
-        @media (max-width: 640px) {
-          .testimonial-card { padding: 24px !important; border-radius: 20px !important; }
-        }
-      `}</style>
     </SectionWrapper>
   )
 }

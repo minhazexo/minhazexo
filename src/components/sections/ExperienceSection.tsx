@@ -26,12 +26,6 @@ export function ExperienceSection() {
           <ExperienceCard key={exp.id} experience={exp} index={index} isInView={isInView} />
         ))}
       </div>
-      <style>{`
-        @media (max-width: 640px) {
-          .exp-card { padding: 20px !important; }
-          .exp-card-inner { gap: 12px !important; }
-        }
-      `}</style>
     </SectionWrapper>
   )
 }

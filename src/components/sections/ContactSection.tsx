@@ -174,11 +174,6 @@ export function ContactSection() {
             </motion.div>
           </motion.div>
         )}
-      <style>{`
-        @media (max-width: 640px) {
-          .contact-card { padding: 24px !important; }
-        }
-      `}</style>
       </AnimatePresence>
     </SectionWrapper>
   )

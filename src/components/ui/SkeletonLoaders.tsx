@@ -37,7 +37,7 @@ function SkeletonBlock({ className, style: customStyle }: { className?: string; 
 
 export function SectionSkeleton() {
   return (
-    <div className="section-skeleton" style={{ padding: '80px 0', position: 'relative', overflow: 'hidden' }} aria-hidden="true">
+    <div style={{ padding: '80px 0', position: 'relative', overflow: 'hidden' }} aria-hidden="true">
       <div style={{ maxWidth: 1280, margin: '0 auto', padding: '0 24px' }}>
         <div style={{ textAlign: 'center', marginBottom: 64 }}>
           <SkeletonBlock style={{ display: 'inline-block', height: 24, width: 128, borderRadius: 999, marginBottom: 16 }} />
@@ -74,7 +74,7 @@ export function HeroSkeleton() {
 
 export function FormSkeleton() {
   return (
-    <div className="form-skeleton" style={{ padding: '80px 0', position: 'relative', overflow: 'hidden' }} aria-hidden="true">
+    <div style={{ padding: '80px 0', position: 'relative', overflow: 'hidden' }} aria-hidden="true">
       <div style={{ maxWidth: 1280, margin: '0 auto', padding: '0 24px' }}>
         <div style={{ textAlign: 'center', marginBottom: 64 }}>
           <SkeletonBlock style={{ display: 'inline-block', height: 24, width: 144, borderRadius: 999, marginBottom: 16 }} />

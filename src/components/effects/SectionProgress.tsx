@@ -126,7 +126,6 @@ export function SectionProgress() {
         position: 'absolute', left: 3, top: 12, bottom: 12, width: 1,
         background: 'linear-gradient(to bottom, transparent, var(--border), transparent)',
       }} />
-      <style>{`@media (min-width: 1024px) { .section-progress-nav { display: flex !important; } }`}</style>
     </nav>
   )
 }

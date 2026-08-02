@@ -90,11 +90,6 @@ export const SkillsSection = memo(function SkillsSection() {
           </motion.div>
         ))}
       </div>
-      <style>{`
-        @media (max-width: 640px) {
-          .skills-grid { grid-template-columns: 1fr !important; }
-        }
-      `}</style>
     </SectionWrapper>
   )
 })

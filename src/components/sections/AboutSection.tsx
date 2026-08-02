@@ -287,18 +287,6 @@ export function AboutSection() {
         </div>
       </div>
 
-      <style>{`
-        @media (max-width: 1024px) {
-          .about-grid { grid-template-columns: 1fr !important; gap: 60px !important; }
-          .about-stats-grid { grid-template-columns: repeat(2, 1fr) !important; }
-        }
-        @media (max-width: 640px) {
-          .about-stats-grid { grid-template-columns: 1fr !important; }
-          .about-glass-panel { padding: 24px !important; border-radius: 24px !important; }
-          .about-cta { flex-direction: column !important; }
-          .about-cta a { width: 100% !important; }
-        }
-      `}</style>
     </section>
   )
 }

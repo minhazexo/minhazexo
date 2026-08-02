@@ -19,8 +19,8 @@ export function StatsCard({ stat, index, isInView }: StatsCardProps) {
       <div
         className="stats-card-inner"
         style={{
-          height: 160,
-          padding: 28,
+          height: 220,
+          padding: '28px 24px',
           borderRadius: 24,
           background: 'rgba(255,255,255,0.04)',
           backdropFilter: 'blur(20px)',
@@ -29,6 +29,9 @@ export function StatsCard({ stat, index, isInView }: StatsCardProps) {
           display: 'flex',
           flexDirection: 'column',
           justifyContent: 'center',
+          alignItems: 'flex-start',
+          boxSizing: 'border-box',
+          overflow: 'hidden',
           transition: 'transform 280ms ease, box-shadow 280ms ease',
         }}
         onMouseEnter={(e) => {
@@ -43,11 +46,11 @@ export function StatsCard({ stat, index, isInView }: StatsCardProps) {
         <div
           className="stats-card-value"
           style={{
-            fontSize: 56,
+            fontSize: 'clamp(40px, 3.5vw, 52px)',
             fontWeight: 700,
-            lineHeight: 1,
+            lineHeight: 1.1,
             letterSpacing: '-0.02em',
-            marginBottom: 4,
+            marginBottom: 8,
             background: 'var(--gradient-primary)',
             WebkitBackgroundClip: 'text',
             WebkitTextFillColor: 'transparent',
@@ -56,21 +59,13 @@ export function StatsCard({ stat, index, isInView }: StatsCardProps) {
         >
           {stat.value}
         </div>
-        <div className="stats-card-label" style={{ fontSize: 18, fontWeight: 600, color: 'var(--text)', marginBottom: 2 }}>
+        <div className="stats-card-label" style={{ fontSize: 16, fontWeight: 600, color: 'var(--text)', marginBottom: 6, lineHeight: 1.3 }}>
           {stat.label}
         </div>
-        <div className="stats-card-desc" style={{ fontSize: 14, color: 'var(--text-muted)' }}>
+        <div className="stats-card-desc" style={{ fontSize: 13, color: 'var(--text-muted)', lineHeight: 1.5 }}>
           {stat.description}
         </div>
       </div>
-      <style>{`
-        @media (max-width: 640px) {
-          .stats-card-inner { height: 120px !important; padding: 20px !important; }
-          .stats-card-value { font-size: 40px !important; }
-          .stats-card-label { font-size: 15px !important; }
-          .stats-card-desc { font-size: 12px !important; }
-        }
-      `}</style>
     </motion.div>
   )
 }

@@ -2,11 +2,11 @@
 
 import { useState, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import { Menu, X, Moon, Sun, Home, User, Code2, Briefcase, Sparkles, Send, Palette, Zap } from 'lucide-react'
+import { Menu, X, Home, User, Code2, Briefcase, Sparkles, Send, Zap } from 'lucide-react'
 import { useTheme } from 'next-themes'
+import Image from 'next/image'
 import { navLinks } from '@/data/navigation'
 import { themes } from '@/data/themes'
-import { useDarkMode } from '@/hooks/useDarkMode'
 
 const navIcons: Record<string, React.ReactNode> = {
   Home: <Home style={{ width: 18, height: 18 }} />,
@@ -17,53 +17,54 @@ const navIcons: Record<string, React.ReactNode> = {
   Contact: <Send style={{ width: 18, height: 18 }} />,
 }
 
-function DarkModeToggle() {
-  const { isDark, toggle } = useDarkMode()
+function ThemeColorDots({
+  className,
+  dotSize = 18,
+  gap = 10,
+  style,
+}: {
+  className?: string
+  dotSize?: number
+  gap?: number
+  style?: React.CSSProperties
+}) {
+  const { theme, setTheme } = useTheme()
 
   return (
-    <motion.button
-      onClick={toggle}
-      style={{
-        width: 54,
-        height: 30,
-        borderRadius: 999,
-        background: 'var(--glass-bg)',
-        backdropFilter: 'blur(20px)',
-        WebkitBackdropFilter: 'blur(20px)',
-        border: 'var(--glass-border)',
-        cursor: 'pointer',
-        position: 'relative',
-        flexShrink: 0,
-        outline: 'none',
-      }}
-      whileTap={{ scale: 0.95 }}
-      aria-label={isDark ? 'Switch to light mode' : 'Switch to dark mode'}
-    >
-      <motion.div
-        style={{
-          position: 'absolute',
-          top: 2,
-          left: 2,
-          width: 24,
-          height: 24,
-          borderRadius: '50%',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          background: 'var(--glass-bg)',
-          backdropFilter: 'blur(12px)',
-          border: 'var(--glass-border)',
-        }}
-        animate={{ x: isDark ? 0 : 26 }}
-        transition={{ type: 'spring', stiffness: 300, damping: 25 }}
-      >
-        {isDark ? (
-          <Moon style={{ width: 12, height: 12, color: 'var(--primary)' }} />
-        ) : (
-          <Sun style={{ width: 12, height: 12, color: 'var(--primary)' }} />
-        )}
-      </motion.div>
-    </motion.button>
+    <div className={className} style={{ gap, ...style }}>
+      {themes.map((t) => (
+        <motion.button
+          key={t.value}
+          onClick={() => setTheme(t.value)}
+          style={{
+            width: dotSize,
+            height: dotSize,
+            minWidth: dotSize,
+            minHeight: dotSize,
+            maxWidth: dotSize,
+            maxHeight: dotSize,
+            flexShrink: 0,
+            flexGrow: 0,
+            borderRadius: '50%',
+            backgroundColor: t.color,
+            border: theme === t.value
+              ? `2px solid ${t.color}`
+              : '2px solid rgba(255,255,255,0.10)',
+            boxShadow: theme === t.value
+              ? `0 0 24px ${t.color}60`
+              : 'none',
+            cursor: 'pointer',
+            outline: 'none',
+            padding: 0,
+          }}
+          whileHover={{ scale: 1.15 }}
+          whileTap={{ scale: 0.9 }}
+          transition={{ type: 'spring', stiffness: 300, damping: 20 }}
+          aria-label={`Switch to ${t.name} theme`}
+          title={t.name}
+        />
+      ))}
+    </div>
   )
 }
 
@@ -71,7 +72,6 @@ export function Navigation() {
   const [isScrolled, setIsScrolled] = useState(false)
   const [isMobileOpen, setIsMobileOpen] = useState(false)
   const [activeSection, setActiveSection] = useState('hero')
-  const { theme, setTheme } = useTheme()
 
   useEffect(() => {
     const handleScroll = () => {
@@ -87,22 +87,6 @@ export function Navigation() {
     }
     window.addEventListener('scroll', handleScroll, { passive: true })
     return () => window.removeEventListener('scroll', handleScroll)
-  }, [])
-
-  // Initialize data-mode from localStorage on first mount
-  useEffect(() => {
-    try {
-      const stored = localStorage.getItem('aurora-mode')
-      if (stored === 'light' || stored === 'dark') {
-        document.documentElement.setAttribute('data-mode', stored)
-      } else if (!document.documentElement.getAttribute('data-mode')) {
-        document.documentElement.setAttribute('data-mode', 'dark')
-      }
-    } catch {
-      if (!document.documentElement.getAttribute('data-mode')) {
-        document.documentElement.setAttribute('data-mode', 'dark')
-      }
-    }
   }, [])
 
   useEffect(() => {
@@ -154,46 +138,30 @@ export function Navigation() {
             overflow: 'hidden',
             boxShadow: isScrolled ? '0 20px 60px rgba(0,0,0,0.45)' : '0 18px 60px rgba(0,0,0,0.38)',
             transition: 'height 300ms ease, box-shadow 300ms ease',
+            position: 'relative',
           }}
           aria-label="Main navigation"
         >
-          {/* Logo */}
+          {/* Logo — brand logo (android-chrome-192x192) */}
           <motion.a
             href="#hero"
             onClick={(e) => { e.preventDefault(); handleNavClick('#hero') }}
             className="nav-logo flex items-center gap-3"
-            style={{ width: '220px' }}
-            whileHover={{ scale: 1.05, rotate: 3 }}
+            style={{ width: 'auto', textDecoration: 'none' }}
+            whileHover={{ scale: 1.05 }}
             transition={{ duration: 0.3 }}
+            aria-label="minhazexo — back to top"
           >
-            <div
-              style={{
-                width: 40,
-                height: 40,
-                borderRadius: 'var(--radius-glass)',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                fontSize: 18,
-                fontWeight: 700,
-                color: '#fff',
-                background: 'var(--gradient-primary)',
-                boxShadow: '0 0 20px var(--glow-color)',
-              }}
-            >
-              M
-            </div>
-            <span
-              className="nav-logo-text hidden sm:block"
-              style={{
-                fontSize: 20,
-                fontWeight: 700,
-                letterSpacing: '-0.01em',
-                color: 'var(--text)',
-              }}
-            >
-              minhazexo
-            </span>
+            <Image
+              src="/favicon_io/android-chrome-192x192.png"
+              alt="minhazexo logo"
+              width={192}
+              height={192}
+              priority
+              sizes="48px"
+              className="nav-logo-img"
+              style={{ height: 48, width: 'auto', display: 'block', borderRadius: 6 }}
+            />
           </motion.a>
 
           {/* Desktop Navigation Links */}
@@ -249,41 +217,29 @@ export function Navigation() {
             })}
           </div>
 
+          {/* Mobile Theme Picker — centered in the nav bar */}
+          <ThemeColorDots
+            className="md:hidden nav-mobile-theme-picker flex items-center"
+            dotSize={16}
+            gap={8}
+            style={{
+              position: 'absolute',
+              left: '50%',
+              transform: 'translateX(-50%)',
+              zIndex: 2,
+              padding: '6px 12px',
+              borderRadius: 999,
+              background: 'rgba(255,255,255,0.06)',
+              border: '1px solid rgba(255,255,255,0.08)',
+              backdropFilter: 'blur(8px)',
+              WebkitBackdropFilter: 'blur(8px)',
+            }}
+          />
+
           {/* Right Controls */}
           <div className="flex items-center" style={{ gap: '16px' }}>
-            {/* Dark Mode Toggle */}
-            <div className="hidden md:flex">
-              <DarkModeToggle />
-            </div>
-
-            {/* Inline Theme Picker */}
-            <div className="hidden md:flex items-center" style={{ gap: '10px' }}>
-              {themes.map((t) => (
-                <motion.button
-                  key={t.value}
-                  onClick={() => setTheme(t.value)}
-                  style={{
-                    width: 18,
-                    height: 18,
-                    borderRadius: '50%',
-                    backgroundColor: t.color,
-                    border: theme === t.value
-                      ? `2px solid ${t.color}`
-                      : '2px solid rgba(255,255,255,0.10)',
-                    boxShadow: theme === t.value
-                      ? `0 0 24px ${t.color}60`
-                      : 'none',
-                    cursor: 'pointer',
-                    outline: 'none',
-                  }}
-                  whileHover={{ scale: 1.15 }}
-                  whileTap={{ scale: 0.9 }}
-                  transition={{ type: 'spring', stiffness: 300, damping: 20 }}
-                  aria-label={`Switch to ${t.name} theme`}
-                  title={t.name}
-                />
-              ))}
-            </div>
+            {/* Inline Theme Picker (desktop) */}
+            <ThemeColorDots className="hidden md:flex items-center" />
 
             {/* Hire Me Button */}
             <motion.a
@@ -535,190 +491,11 @@ export function Navigation() {
                     })}
                   </div>
                 </nav>
-
-                {/* Bottom Section - Sticky */}
-                <div className="drawer-bottom" style={{ paddingTop: 20, borderTop: '1px solid var(--divider)', flexShrink: 0 }}>
-                  {/* Appearance + Theme */}
-                  <motion.div
-                    initial={{ opacity: 0, y: 8 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: 0.25 }}
-                    className="drawer-appearance"
-                    style={{
-                      position: 'relative',
-                      padding: 16,
-                      borderRadius: 16,
-                      background: 'linear-gradient(135deg, rgba(255,255,255,0.06) 0%, rgba(255,255,255,0.02) 100%)',
-                      border: '1px solid var(--border-strong)',
-                      boxShadow: '0 0 30px rgba(0,0,0,0.2), inset 0 1px 0 rgba(255,255,255,0.06)',
-                      marginBottom: 12,
-                      overflow: 'hidden',
-                    }}
-                  >
-                    <div style={{
-                      position: 'absolute', top: 0, left: 0, right: 0, height: 2,
-                      background: 'var(--gradient-primary)',
-                      opacity: 0.5,
-                    }} aria-hidden="true" />
-
-                    <div style={{
-                      position: 'absolute', top: '-40px', right: '-40px',
-                      width: 100, height: 100, borderRadius: '50%',
-                      background: 'var(--glow-color)',
-                      filter: 'blur(50px)',
-                      opacity: 0.08,
-                      pointerEvents: 'none',
-                    }} aria-hidden="true" />
-
-                    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 14, position: 'relative', zIndex: 1 }}>
-                      <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-                        <div style={{
-                          width: 28, height: 28, borderRadius: 8,
-                          display: 'flex', alignItems: 'center', justifyContent: 'center',
-                          background: 'linear-gradient(135deg, var(--primary) 0%, rgba(255,255,255,0.08) 100%)',
-                          border: '1px solid',
-                          borderColor: 'var(--border-strong)',
-                          boxShadow: '0 0 12px var(--glow-color)',
-                        }}>
-                          <Palette style={{ width: 14, height: 14, color: '#fff' }} />
-                        </div>
-                        <div>
-                          <span style={{ fontSize: 13, fontWeight: 600, color: 'var(--text)', letterSpacing: '-0.01em' }}>Appearance</span>
-                          <span style={{ fontSize: 9, color: 'var(--text-muted)', display: 'block', marginTop: 1, letterSpacing: '0.05em' }}>
-                            Customize your view
-                          </span>
-                        </div>
-                      </div>
-                      <DarkModeToggle />
-                    </div>
-
-                    <div style={{ position: 'relative', zIndex: 1 }}>
-                      <div style={{
-                        display: 'flex', alignItems: 'center', gap: 8, marginBottom: 12,
-                      }}>
-                        <div style={{ width: 1, height: 12, background: 'var(--primary)', opacity: 0.3, borderRadius: '999px' }} />
-                        <span style={{
-                          fontSize: 10, color: 'var(--text-muted)', letterSpacing: '0.1em',
-                          textTransform: 'uppercase', fontWeight: 600,
-                        }}>
-                          Theme
-                        </span>
-                        <div style={{ flex: 1, height: 1, background: 'var(--divider)' }} />
-                      </div>
-                      <div style={{ display: 'flex', flexWrap: 'wrap', gap: 10 }}>
-                        {themes.map((t) => {
-                          const isCurrentTheme = theme === t.value
-                          return (
-                            <motion.button
-                              key={t.value}
-                              onClick={() => setTheme(t.value)}
-                              className="drawer-theme-dot"
-                              style={{
-                                position: 'relative',
-                                width: 28, height: 28,
-                                borderRadius: '50%',
-                                background: `linear-gradient(135deg, ${t.color}, ${t.color}cc)`,
-                                border: isCurrentTheme
-                                  ? `2px solid ${t.color}`
-                                  : '2px solid var(--border)',
-                                boxShadow: isCurrentTheme
-                                  ? `0 0 14px ${t.color}60, inset 0 1px 0 rgba(255,255,255,0.25)`
-                                  : 'inset 0 1px 0 rgba(255,255,255,0.08)',
-                                cursor: 'pointer', outline: 'none',
-                                transition: 'all 0.2s ease',
-                              }}
-                              whileHover={{
-                                scale: 1.15,
-                                boxShadow: `0 0 20px ${t.color}80`,
-                              }}
-                              whileTap={{ scale: 0.9 }}
-                              aria-label={`Switch to ${t.name} theme`}
-                              title={t.name}
-                            >
-                              {isCurrentTheme && (
-                                <motion.div
-                                  initial={{ scale: 0, rotate: -90 }}
-                                  animate={{ scale: 1, rotate: 0 }}
-                                  transition={{ type: 'spring', stiffness: 400, damping: 20 }}
-                                  style={{
-                                    position: 'absolute', inset: 0,
-                                    display: 'flex', alignItems: 'center', justifyContent: 'center',
-                                  }}
-                                >
-                                  <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
-                                    <path d="M2.5 6L5 8.5L9.5 3.5" stroke="white" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
-                                  </svg>
-                                </motion.div>
-                              )}
-                              {!isCurrentTheme && (
-                                <div style={{
-                                  position: 'absolute', inset: 0,
-                                  display: 'flex', alignItems: 'center', justifyContent: 'center',
-                                }}>
-                                  <div style={{
-                                    width: 6, height: 6, borderRadius: '50%',
-                                    background: 'rgba(255,255,255,0.15)',
-                                  }} />
-                                </div>
-                              )}
-                            </motion.button>
-                          )
-                        })}
-                      </div>
-                    </div>
-                  </motion.div>
-
-                  {/* Hire Me Button */}
-                  <motion.a
-                    href="#contact"
-                    onClick={(e) => { e.preventDefault(); handleNavClick('#contact') }}
-                    className="drawer-hire-btn"
-                    style={{
-                      display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8,
-                      height: 48, borderRadius: 14,
-                      background: 'var(--gradient-primary)',
-                      color: '#fff', fontSize: 14, fontWeight: 600,
-                      boxShadow: '0 0 20px var(--glow-color)',
-                      cursor: 'pointer', border: 'none', textDecoration: 'none',
-                    }}
-                    initial={{ opacity: 0, y: 8 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: 0.3 }}
-                    whileHover={{ scale: 1.02, boxShadow: '0 0 28px var(--glow-color)' }}
-                    whileTap={{ scale: 0.98 }}
-                  >
-                    <Send style={{ width: 14, height: 14 }} />
-                    Hire Me
-                  </motion.a>
-                </div>
               </div>
             </motion.div>
           </motion.div>
         )}
       </AnimatePresence>
-      <style>{`
-        @media (max-width: 640px) {
-          .nav-header { max-width: calc(100% - 16px) !important; top: 12px !important; }
-          .nav-inner { height: 60px !important; padding-left: 16px !important; padding-right: 16px !important; }
-          .nav-logo { width: auto !important; }
-          .nav-logo-text { font-size: 16px !important; }
-          .nav-drawer { width: 100vw !important; max-width: 100vw !important; }
-          .nav-drawer-inner { padding: 20px 16px !important; }
-          .nav-menu-label { font-size: 14px !important; }
-          .drawer-nav-item { padding: 10px 14px !important; gap: 12px !important; font-size: 14px !important; border-radius: 12px !important; }
-          .drawer-nav-icon { width: 28px !important; height: 28px !important; border-radius: 8px !important; }
-          .drawer-nav-scroll { margin-left: -4px !important; margin-right: -4px !important; padding-left: 4px !important; padding-right: 4px !important; }
-          .drawer-appearance { padding: 14px !important; border-radius: 14px !important; }
-
-          .drawer-hire-btn { height: 44px !important; font-size: 13px !important; border-radius: 12px !important; }
-          .drawer-bottom { padding-top: 16px !important; }
-        }
-        @media (max-width: 374px) {
-          .nav-drawer-inner { padding: 16px 12px !important; }
-          .drawer-nav-item { padding: 8px 12px !important; gap: 10px !important; font-size: 13px !important; }
-          .drawer-nav-icon { width: 24px !important; height: 24px !important; }
-        }
-      `}</style>
     </>
   )
 }

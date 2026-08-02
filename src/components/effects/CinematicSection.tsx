@@ -85,14 +85,14 @@ export function SectionHeader({
       transition={{ duration: 0.6, ease: cinematicEase, delay }}
     >
       <motion.span
-        className="inline-block px-4 py-1 rounded-full glass text-accent text-sm font-medium mb-4"
+        className="inline-block px-4 py-1 rounded-full glass text-primary text-sm font-medium mb-4"
         initial={{ opacity: 0, scale: 0.9 }}
         animate={isInView ? { opacity: 1, scale: 1 } : {}}
         transition={{ delay: delay + 0.1, duration: 0.4, ease: cinematicEase }}
       >
         {label}
       </motion.span>
-      <h2 className="text-3xl sm:text-4xl md:text-5xl font-orbitron font-bold mb-2 sm:mb-4 px-2">
+      <h2 className="text-3xl sm:text-4xl md:text-5xl font-sans font-bold mb-2 sm:mb-4 px-2">
         <span className="gradient-text">{title}</span>
       </h2>
       <p className="text-sm sm:text-base text-gray-400 max-w-2xl mx-auto px-4">
