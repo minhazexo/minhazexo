@@ -111,7 +111,7 @@ function HeroPortrait() {
             fill
             priority
             sizes="(min-width: 1024px) 340px, 72vw"
-            style={{ objectFit: 'cover', objectPosition: 'center 30%', opacity: photoReady ? 1 : 0, transition: 'opacity 300ms ease' }}
+            style={{ objectFit: 'cover', objectPosition: 'center 15%', opacity: photoReady ? 1 : 0, transition: 'opacity 300ms ease' }}
             onLoadingComplete={() => setPhotoReady(true)}
           />
           {/* Subtle inner gradient for depth */}
@@ -224,8 +224,8 @@ export function HeroSection() {
           alignItems: 'center',
           position: 'relative',
           zIndex: 10,
-          paddingTop: 120,
-          paddingBottom: 120,
+          paddingTop: 'clamp(80px, 12vh, 120px)',
+          paddingBottom: 'clamp(60px, 8vh, 120px)',
         }}
       >
         <div style={{ width: '100%', maxWidth: 1280, margin: '0 auto', padding: '0 32px' }}>
