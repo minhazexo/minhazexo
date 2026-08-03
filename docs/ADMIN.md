@@ -7,7 +7,7 @@ The portfolio includes a full admin dashboard at `/admin` for managing all conte
 ## Accessing the Admin Panel
 
 1. Navigate to `/admin/login`
-2. Sign in with your admin credentials (default: `admin` / `admin123`)
+2. Sign in with your admin credentials (`)
 3. You'll see tabs for **Projects**, **Skills**, **Experience**, and **Testimonials**
 
 ## Managing Content

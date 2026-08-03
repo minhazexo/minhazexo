@@ -8,7 +8,7 @@
   </p>
 
   <p>
-    <a href="https://mehrabhossain.dev">Live Site</a> ·
+    <a href="https://minhazexo.vercel.app/">Live Site</a> ·
     <a href="#features">Features</a> ·
     <a href="#getting-started">Getting Started</a> ·
     <a href="#project-structure">Structure</a>

@@ -200,41 +200,56 @@ export function BackgroundMusic() {
             }
           }}
           style={{
-            width: isMobile ? 44 : 56, height: isMobile ? 44 : 56, borderRadius: '50%',
+            width: isMobile ? 46 : 54, height: isMobile ? 46 : 54, borderRadius: '50%',
             display: 'flex', alignItems: 'center', justifyContent: 'center',
-            color: 'var(--text)',
-            background: 'var(--glass-hover-bg)',
-            backdropFilter: 'blur(20px)',
-            border: '1px solid var(--border-strong)',
+            color: '#fff',
+            background: 'var(--gradient-primary)',
+            border: '1px solid rgba(255, 255, 255, 0.18)',
+            boxShadow: isPlaying
+              ? '0 8px 28px rgba(0, 0, 0, 0.4), 0 0 24px var(--glow-color)'
+              : '0 8px 24px rgba(0, 0, 0, 0.4)',
             cursor: 'pointer',
             position: 'relative',
           }}
-          whileHover={{ scale: 1.1 }}
-          whileTap={{ scale: 0.9 }}
-          animate={{
-            boxShadow: isPlaying
-              ? '0 0 30px var(--glow-color)'
-              : '0 0 20px rgba(255, 255, 255, 0.1)',
-          }}
+          whileHover={{ scale: 1.08 }}
+          whileTap={{ scale: 0.92 }}
           title={!hasInteracted ? 'Enable background music' : isPlaying ? 'Pause background music' : 'Play background music'}
           aria-label={!hasInteracted ? 'Enable background music' : isPlaying ? 'Pause background music' : 'Play background music'}
         >
           {!hasInteracted ? (
-            <Music style={{ width: isMobile ? 18 : 24, height: isMobile ? 18 : 24, color: 'var(--primary)' }} aria-hidden="true" />
+            <Music style={{ width: isMobile ? 19 : 23, height: isMobile ? 19 : 23, color: '#fff' }} aria-hidden="true" />
           ) : isPlaying ? (
-            <Pause style={{ width: isMobile ? 18 : 24, height: isMobile ? 18 : 24, color: 'var(--primary)' }} aria-hidden="true" />
+            <Pause style={{ width: isMobile ? 19 : 23, height: isMobile ? 19 : 23, color: '#fff' }} aria-hidden="true" />
           ) : (
-            <Play style={{ width: isMobile ? 18 : 24, height: isMobile ? 18 : 24, color: 'var(--primary)' }} aria-hidden="true" />
+            <Play style={{ width: isMobile ? 19 : 23, height: isMobile ? 19 : 23, color: '#fff' }} aria-hidden="true" />
           )}
 
-          {/* Pulse animation when playing */}
+          {/* Pulse ring when playing */}
           {isPlaying && (
             <motion.div
               className="absolute inset-0 rounded-full"
               style={{ border: '2px solid var(--primary)' }}
-              animate={{ scale: [1, 1.5, 1], opacity: [1, 0, 1] }}
-              transition={{ duration: 2, repeat: Infinity }}
+              animate={{ scale: [1, 1.45], opacity: [0.8, 0] }}
+              transition={{ duration: 1.6, repeat: Infinity, ease: 'easeOut' }}
             />
+          )}
+
+          {/* Equalizer dots when playing */}
+          {isPlaying && (
+            <motion.span
+              className="absolute -bottom-1.5 left-1/2"
+              style={{ transform: 'translateX(-50%)', display: 'flex', gap: 3 }}
+              aria-hidden="true"
+            >
+              {[0, 1, 2].map((i) => (
+                <motion.span
+                  key={i}
+                  style={{ width: 3, height: 3, borderRadius: '50%', background: 'var(--primary)' }}
+                  animate={{ opacity: [0.3, 1, 0.3] }}
+                  transition={{ duration: 1, repeat: Infinity, delay: i * 0.22 }}
+                />
+              ))}
+            </motion.span>
           )}
         </motion.button>
 
@@ -242,38 +257,67 @@ export function BackgroundMusic() {
         <AnimatePresence>
           {showControls && hasInteracted && (
             <motion.div
-          initial={{ opacity: 0, y: 20, scale: 0.9 }}
-          animate={{ opacity: 1, y: 0, scale: 1 }}
-          exit={{ opacity: 0, y: 20, scale: 0.9 }}
-          style={{
-            position: 'absolute', bottom: 80, right: 0,
-            width: isMobile ? 'min(200px, calc(100vw - 48px))' : 'min(256px, calc(100vw - 48px))',
-            padding: isMobile ? 12 : 16,
-            borderRadius: isMobile ? 16 : 20,
-            background: 'var(--glass-hover-bg)',
-            backdropFilter: 'blur(20px)',
-            border: '1px solid var(--border-strong)',
-            display: 'flex', flexDirection: 'column', gap: isMobile ? 12 : 16,
-          }}
+              initial={{ opacity: 0, y: 20, scale: 0.9 }}
+              animate={{ opacity: 1, y: 0, scale: 1 }}
+              exit={{ opacity: 0, y: 20, scale: 0.9 }}
+              style={{
+                position: 'absolute', bottom: isMobile ? 64 : 72, right: 0,
+                width: isMobile ? 'min(196px, calc(100vw - 48px))' : 'min(240px, calc(100vw - 48px))',
+                padding: isMobile ? 14 : 18,
+                borderRadius: isMobile ? 16 : 20,
+                background: 'rgba(9, 12, 18, 0.88)',
+                backdropFilter: 'blur(24px)',
+                WebkitBackdropFilter: 'blur(24px)',
+                border: '1px solid var(--border-strong)',
+                boxShadow: 'var(--shadow-floating)',
+                display: 'flex', flexDirection: 'column', gap: isMobile ? 12 : 16,
+              }}
             >
-              {/* Close button */}
-              <button
-                onClick={() => setShowControls(false)}
-                className="absolute top-2 right-2 w-6 h-6 flex items-center justify-center rounded-full bg-white/10 hover:bg-white/20 text-gray-400 hover:text-white transition-colors"
-                aria-label="Close music controls"
-              >
-                <svg className="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
-                </svg>
-              </button>
+              {/* Header */}
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-2.5">
+                  <div
+                    style={{
+                      width: isMobile ? 30 : 36, height: isMobile ? 30 : 36, borderRadius: '50%',
+                      background: 'var(--gradient-primary)',
+                      display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0,
+                    }}
+                  >
+                    <Music style={{ width: isMobile ? 14 : 17, height: isMobile ? 14 : 17, color: '#fff' }} />
+                  </div>
+                  <div>
+                    <p style={{ fontSize: isMobile ? 12 : 13, fontWeight: 600, color: 'var(--text)', lineHeight: 1.2 }}>
+                      {isPlaying ? 'Now Playing' : 'Music Player'}
+                    </p>
+                    <p style={{ fontSize: isMobile ? 10 : 11, color: 'var(--text-muted)', lineHeight: 1.3 }}>
+                      Ambient · Lo-fi
+                    </p>
+                  </div>
+                </div>
+                <button
+                  onClick={() => setShowControls(false)}
+                  style={{
+                    width: 26, height: 26, borderRadius: '50%',
+                    display: 'flex', alignItems: 'center', justifyContent: 'center',
+                    background: 'rgba(255, 255, 255, 0.08)',
+                    border: 'none', color: 'var(--text-muted)', cursor: 'pointer',
+                  }}
+                  aria-label="Close music controls"
+                >
+                  <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2.5}>
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+                  </svg>
+                </button>
+              </div>
+
               {/* Play/Pause */}
               <button
                 onClick={togglePlay}
                 style={{
                   width: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center',
-                  gap: 8, padding: isMobile ? '6px 0' : '8px 0', borderRadius: isMobile ? 10 : 12,
-                  background: 'var(--gradient-primary)', color: '#fff', fontWeight: 500,
-                  border: 'none', cursor: 'pointer', fontSize: isMobile ? 13 : 14,
+                  gap: 8, height: isMobile ? 40 : 44, borderRadius: isMobile ? 11 : 12,
+                  background: 'var(--gradient-primary)', color: '#fff', fontWeight: 600,
+                  fontSize: isMobile ? 13 : 14, border: 'none', cursor: 'pointer',
                 }}
               >
                 {isPlaying ? (
@@ -292,12 +336,13 @@ export function BackgroundMusic() {
                 <div className="flex items-center justify-between">
                   <button
                     onClick={toggleMute}
-                    className="text-gray-300 hover:text-white transition-colors"
+                    style={{ background: 'none', border: 'none', color: 'var(--text-secondary)', cursor: 'pointer', display: 'flex', alignItems: 'center' }}
                     title={isMuted ? 'Unmute' : 'Mute'}
+                    aria-label={isMuted ? 'Unmute' : 'Mute'}
                   >
                     {isMuted ? <VolumeX className="w-4 h-4" /> : <Volume2 className="w-4 h-4" />}
                   </button>
-                  <span className="text-xs text-gray-400">{Math.round(volume * 100)}%</span>
+                  <span style={{ fontSize: isMobile ? 10 : 11, color: 'var(--text-muted)' }}>{Math.round(volume * 100)}%</span>
                 </div>
                 <input
                   type="range"
@@ -306,15 +351,9 @@ export function BackgroundMusic() {
                   step="0.01"
                   value={volume}
                   onChange={handleVolumeChange}
-                  style={{ width: '100%', cursor: 'pointer', accentColor: 'var(--primary)' }}
+                  style={{ width: '100%', cursor: 'pointer', accentColor: 'var(--primary)', height: 18 }}
                   aria-label="Volume control"
                 />
-              </div>
-
-              {/* Music Info */}
-              <div className={`text-center text-gray-500 border-t border-white/10 ${isMobile ? 'pt-2 text-[11px]' : 'pt-3 text-xs'}`}>
-                <Music className={`inline-block mr-1 ${isMobile ? 'w-2.5 h-2.5' : 'w-3 h-3'}`} />
-                Copyright-free ambient music
               </div>
             </motion.div>
           )}
@@ -329,30 +368,42 @@ export function BackgroundMusic() {
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: 50 }}
             style={{
-              position: 'fixed', bottom: isMobile ? 80 : 96, right: isMobile ? 16 : 24, zIndex: 50,
-              padding: isMobile ? 12 : 16, borderRadius: isMobile ? 16 : 20,
-              width: isMobile ? 'min(260px, calc(100vw - 32px))' : 'min(320px, calc(100vw - 48px))',
-              background: 'var(--glass-hover-bg)',
-              backdropFilter: 'blur(20px)',
+              position: 'fixed', bottom: isMobile ? 68 : 88, right: isMobile ? 16 : 24, zIndex: 50,
+              width: isMobile ? 'min(240px, calc(100vw - 32px))' : 'min(300px, calc(100vw - 48px))',
+              padding: isMobile ? 14 : 16,
+              borderRadius: isMobile ? 18 : 20,
+              background: 'rgba(9, 12, 18, 0.88)',
+              backdropFilter: 'blur(24px)',
+              WebkitBackdropFilter: 'blur(24px)',
               border: '1px solid var(--border-strong)',
+              boxShadow: 'var(--shadow-floating)',
             }}
           >
-              <div className="flex items-start gap-3">
-              <div style={{ width: isMobile ? 32 : 40, height: isMobile ? 32 : 40, borderRadius: '50%', background: 'var(--gradient-primary)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
-                <Music style={{ width: isMobile ? 16 : 20, height: isMobile ? 16 : 20, color: '#fff' }} />
+            <div className="flex items-center gap-3">
+              <div
+                style={{
+                  width: isMobile ? 40 : 46, height: isMobile ? 40 : 46, borderRadius: '50%',
+                  background: 'var(--gradient-primary)',
+                  display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0,
+                  boxShadow: '0 0 18px var(--glow-color)',
+                }}
+              >
+                <Music style={{ width: isMobile ? 19 : 22, height: isMobile ? 19 : 22, color: '#fff' }} />
               </div>
-              <div style={{ flex: 1 }}>
-                <h4 style={{ color: 'var(--text)', fontWeight: 500, fontSize: isMobile ? 13 : 14, marginBottom: 4 }}>Background Music</h4>
-                <p style={{ color: 'var(--text-secondary)', fontSize: isMobile ? 11 : 12, marginBottom: isMobile ? 10 : 12 }}>
-                  Enjoy copyright-free ambient music while browsing my portfolio.
+              <div style={{ flex: 1, minWidth: 0 }}>
+                <h4 style={{ color: 'var(--text)', fontWeight: 600, fontSize: isMobile ? 13 : 14, marginBottom: 2 }}>
+                  Background Music
+                </h4>
+                <p style={{ color: 'var(--text-secondary)', fontSize: isMobile ? 11 : 12, lineHeight: 1.45, marginBottom: isMobile ? 12 : 14 }}>
+                  Lo-fi ambient tracks, free to enjoy while you browse.
                 </p>
                 <div className="flex gap-2">
                   <button
                     onClick={togglePlay}
                     style={{
-                      flex: 1, padding: isMobile ? '6px 0' : '8px 0', borderRadius: isMobile ? 10 : 12,
+                      flex: 1, height: isMobile ? 36 : 40, borderRadius: isMobile ? 10 : 11,
                       background: 'var(--gradient-primary)', color: '#fff',
-                      fontSize: isMobile ? 11 : 12, fontWeight: 500, border: 'none', cursor: 'pointer',
+                      fontSize: isMobile ? 12 : 13, fontWeight: 600, border: 'none', cursor: 'pointer',
                     }}
                   >
                     Enable
@@ -360,9 +411,9 @@ export function BackgroundMusic() {
                   <button
                     onClick={dismissPrompt}
                     style={{
-                      flex: 1, padding: isMobile ? '6px 0' : '8px 0', borderRadius: isMobile ? 10 : 12,
-                      background: 'var(--glass-bg)', color: 'var(--text-secondary)',
-                      fontSize: isMobile ? 11 : 12, fontWeight: 500, border: '1px solid var(--border)', cursor: 'pointer',
+                      flex: 1, height: isMobile ? 36 : 40, borderRadius: isMobile ? 10 : 11,
+                      background: 'rgba(255, 255, 255, 0.05)', color: 'var(--text-secondary)',
+                      fontSize: isMobile ? 12 : 13, fontWeight: 500, border: '1px solid var(--border)', cursor: 'pointer',
                     }}
                   >
                     No Thanks
