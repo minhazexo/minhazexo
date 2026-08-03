@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from 'next'
 import { Inter, IBM_Plex_Mono } from 'next/font/google'
 import Script from 'next/script'
 import { Analytics } from '@vercel/analytics/next'
+import { SpeedInsights } from '@vercel/speed-insights/next'
 import { ThemeProvider } from '@/components/providers/ThemeProvider'
 import { ThemeAutoCycle } from '@/components/providers/ThemeAutoCycle'
 import { ThemeTransition } from '@/components/providers/ThemeTransition'
@@ -128,6 +129,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           <BackgroundMusic />
         </ThemeProvider>
         <Analytics />
+        <SpeedInsights />
       </body>
     </html>
   )
