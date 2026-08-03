@@ -18,8 +18,9 @@ export function Background() {
   const prefersReduced = useReducedMotion()
 
   return (
-    <div aria-hidden="true">
+    <div aria-hidden="true" id="site-background">
       <div
+        className="bg-base"
         style={{
           ...layerStyles,
           zIndex: 0,

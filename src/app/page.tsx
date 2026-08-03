@@ -16,6 +16,20 @@ const TestimonialsSection = lazy(() => import('@/components/sections/Testimonial
 const ContactSection = lazy(() => import('@/components/sections/ContactSection').then(mod => ({ default: mod.ContactSection })))
 const Footer = lazy(() => import('@/components/layout/Footer').then(mod => ({ default: mod.Footer })))
 
+/* Every heavy chunk below is warmed up DURING the loading screen so that
+   when the screen exits, all sections are already fetched + parsed and
+   mount instantly — no pop-in, no skeleton flash, no jank. */
+const HEAVY_MODULES = [
+  () => import('@/components/sections/FeaturesSection'),
+  () => import('@/components/sections/AboutSection'),
+  () => import('@/components/sections/ProjectsSection'),
+  () => import('@/components/sections/SkillsSection'),
+  () => import('@/components/sections/ExperienceSection'),
+  () => import('@/components/sections/TestimonialsSection'),
+  () => import('@/components/sections/ContactSection'),
+  () => import('@/components/layout/Footer'),
+]
+
 /* Section spacing per spec (Part 06):
    Hero → Features:    120px
    Features → About:   144px
@@ -34,31 +48,45 @@ export default function Home() {
   const [loadProgress, setLoadProgress] = useState(0)
 
   useEffect(() => {
-    let loaded = false
-    const timer = setTimeout(() => {
-      if (!loaded) { setIsReady(true); setLoadProgress(100) }
-    }, 2500)
+    let cancelled = false
 
-    const interval = setInterval(() => {
-      setLoadProgress((prev) => {
-        if (prev >= 90) { clearInterval(interval); return 90 }
-        return prev + 10
-      })
-    }, 200)
+    // Freeze the heavy animated background while we load (see globals.css).
+    document.body.classList.add('site-is-loading')
 
-    const img = new Image()
-    img.onload = () => {
-      loaded = true
-      clearTimeout(timer); clearInterval(interval)
-      setLoadProgress(100)
-      setTimeout(() => setIsReady(true), 300)
+    const heavyCount = HEAVY_MODULES.length
+    const total = heavyCount + 1 // heavy chunks + hero image
+    let completed = 0
+
+    const onStepDone = () => {
+      if (cancelled) return
+      completed += 1
+      const base = Math.round((completed / total) * 90)
+      setLoadProgress((prev) => Math.max(prev, Math.min(base, 90)))
+      if (completed >= total) {
+        setLoadProgress(100)
+        setTimeout(() => setIsReady(true), 300)
+      }
     }
+
+    // Preload every heavy section while the loading screen is visible.
+    HEAVY_MODULES.forEach((load) => load().then(onStepDone, onStepDone))
+
+    // Preload the hero image (the one visible asset above the fold).
+    const img = new Image()
+    img.onload = onStepDone
+    img.onerror = onStepDone
     img.src = '/hero-astronaut.jpg'
 
-    return () => { clearTimeout(timer); clearInterval(interval) }
+    return () => {
+      cancelled = true
+      document.body.classList.remove('site-is-loading')
+    }
   }, [])
 
-  const handleLoadingComplete = () => setIsLoading(false)
+  const handleLoadingComplete = () => {
+    document.body.classList.remove('site-is-loading')
+    setIsLoading(false)
+  }
 
   return (
     <div style={{ position: 'relative', minHeight: '100vh', overflowX: 'hidden' }}>

@@ -12,3 +12,15 @@
   0%, 100% { transform: translateY(0); }
   50% { transform: translateY(-5px); }
 }
+
+/* ============================================================
+   PERFORMANCE — LOADING
+   While the loading screen is up, hide the heavy animated
+   background layers (glow/hexgrid/stars/particles/noise) and keep
+   only the flat base gradient. This removes GPU contention on
+   mobile so the loading spinner doesn't flicker or stutter.
+   Restored the moment loading completes (class removed in page.tsx).
+   ============================================================ */
+body.site-is-loading #site-background > div:not(.bg-base) {
+  display: none;
+}
