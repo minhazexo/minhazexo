@@ -224,7 +224,7 @@ export function HeroSection() {
           alignItems: 'center',
           position: 'relative',
           zIndex: 10,
-          paddingTop: 'clamp(80px, 12vh, 120px)',
+          paddingTop: 'clamp(110px, 14vh, 140px)',
           paddingBottom: 'clamp(60px, 8vh, 120px)',
         }}
       >
