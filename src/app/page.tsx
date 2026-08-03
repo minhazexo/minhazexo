@@ -71,11 +71,24 @@ export default function Home() {
     // Preload every heavy section while the loading screen is visible.
     HEAVY_MODULES.forEach((load) => load().then(onStepDone, onStepDone))
 
-    // Preload the hero image (the one visible asset above the fold).
+    // Preload AND decode the actual hero portrait before the loading screen
+    // exits. The hero mounts the moment the loader fades out, so the photo
+    // must already be in memory — otherwise it pops/flickers in on mobile
+    // while its entrance animation is running.
     const img = new Image()
-    img.onload = onStepDone
-    img.onerror = onStepDone
-    img.src = '/hero-astronaut.jpg'
+    let heroStepDone = false
+    const markHeroStepDone = () => {
+      if (heroStepDone) return
+      heroStepDone = true
+      onStepDone()
+    }
+    img.onload = markHeroStepDone
+    img.onerror = markHeroStepDone
+    img.src = '/webp/Minhaz1.webp'
+    // Await full decode so the photo is guaranteed decoded before the hero mounts.
+    if (typeof img.decode === 'function') {
+      img.decode().then(markHeroStepDone, markHeroStepDone)
+    }
 
     return () => {
       cancelled = true

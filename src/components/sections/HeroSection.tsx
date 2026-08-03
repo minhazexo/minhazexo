@@ -5,69 +5,85 @@ import { motion, useScroll, useTransform, useMotionValue, useSpring } from 'fram
 import Image from 'next/image'
 import { ArrowRight, Github } from 'lucide-react'
 import { techTags } from '@/data/hero'
+import { useReducedMotion, useLowPerfDevice } from '@/hooks/useReducedMotion'
 
 /* Portrait card shown in the hero — rotating orbit ring, gradient frame,
    soft glow, and floating glass badges. */
 function HeroPortrait() {
+  /* Flicker fix (mobile): hold the reveal until the photo is decoded and
+     gate the heavy decorative animations behind the image. Re-compositing
+     blur(80px) glow + rotating rings each frame on weak mobile GPUs makes
+     the photo jitter/flicker while the loader fades out. */
+  const [photoReady, setPhotoReady] = useState(false)
+  const prefersReduced = useReducedMotion()
+  const lowPerf = useLowPerfDevice()
+  const showDeco = !lowPerf && !prefersReduced
+
   return (
     <motion.div
       className="hero-portrait relative lg:order-2 lg:mt-0"
       style={{ width: 340, maxWidth: '100%' }}
       initial={{ opacity: 0, scale: 0.9, y: 24 }}
-      animate={{ opacity: 1, scale: 1, y: 0 }}
+      animate={photoReady ? { opacity: 1, scale: 1, y: 0 } : undefined}
       transition={{ duration: 0.8, delay: 0.55, ease: [0.16, 1, 0.3, 1] }}
     >
       {/* Soft glow behind the card */}
-      <motion.div
-        style={{
-          position: 'absolute',
-          inset: '-48px',
-          borderRadius: '50%',
-          background: 'var(--glow-color)',
-          filter: 'blur(80px)',
-          zIndex: 0,
-        }}
-        animate={{ opacity: [0.4, 0.75, 0.4], scale: [1, 1.06, 1] }}
-        transition={{ duration: 4.5, repeat: Infinity, ease: 'easeInOut' }}
-        aria-hidden="true"
-      />
-
-      {/* Rotating dashed orbit circle */}
-      <motion.div
-        className="absolute"
-        style={{
-          inset: -72,
-          borderRadius: '50%',
-          border: '1px dashed rgba(255,255,255,0.10)',
-          zIndex: 0,
-        }}
-        animate={{ rotate: 360 }}
-        transition={{ duration: 48, repeat: Infinity, ease: 'linear' }}
-        aria-hidden="true"
-      />
-
-      {/* Orbiting accent dot */}
-      <motion.div
-        className="absolute"
-        style={{ inset: -30, zIndex: 0 }}
-        animate={{ rotate: 360 }}
-        transition={{ duration: 14, repeat: Infinity, ease: 'linear' }}
-        aria-hidden="true"
-      >
-        <div
+      {showDeco && (
+        <motion.div
           style={{
             position: 'absolute',
-            top: 0,
-            left: '50%',
-            transform: 'translateX(-50%)',
-            width: 10,
-            height: 10,
+            inset: '-48px',
             borderRadius: '50%',
-            background: 'var(--primary)',
-            boxShadow: '0 0 16px var(--primary)',
+            background: 'var(--glow-color)',
+            filter: 'blur(80px)',
+            zIndex: 0,
           }}
+          animate={{ opacity: [0.4, 0.75, 0.4], scale: [1, 1.06, 1] }}
+          transition={{ duration: 4.5, repeat: Infinity, ease: 'easeInOut' }}
+          aria-hidden="true"
         />
-      </motion.div>
+      )}
+
+      {/* Rotating dashed orbit circle */}
+      {showDeco && (
+        <motion.div
+          className="absolute"
+          style={{
+            inset: -72,
+            borderRadius: '50%',
+            border: '1px dashed rgba(255,255,255,0.10)',
+            zIndex: 0,
+          }}
+          animate={{ rotate: 360 }}
+          transition={{ duration: 48, repeat: Infinity, ease: 'linear' }}
+          aria-hidden="true"
+        />
+      )}
+
+      {/* Orbiting accent dot */}
+      {showDeco && (
+        <motion.div
+          className="absolute"
+          style={{ inset: -30, zIndex: 0 }}
+          animate={{ rotate: 360 }}
+          transition={{ duration: 14, repeat: Infinity, ease: 'linear' }}
+          aria-hidden="true"
+        >
+          <div
+            style={{
+              position: 'absolute',
+              top: 0,
+              left: '50%',
+              transform: 'translateX(-50%)',
+              width: 10,
+              height: 10,
+              borderRadius: '50%',
+              background: 'var(--primary)',
+              boxShadow: '0 0 16px var(--primary)',
+            }}
+          />
+        </motion.div>
+      )}
 
       {/* Gradient frame + photo */}
       <div
@@ -80,14 +96,23 @@ function HeroPortrait() {
           boxShadow: 'var(--shadow-floating)',
         }}
       >
-        <div style={{ position: 'relative', borderRadius: 30.5, overflow: 'hidden', aspectRatio: '4 / 5' }}>
+        <div
+          style={{
+            position: 'relative',
+            borderRadius: 30.5,
+            overflow: 'hidden',
+            aspectRatio: '4 / 5',
+            backgroundColor: 'var(--surface)',
+          }}
+        >
           <Image
             src="/webp/Minhaz1.webp"
             alt="MD Mehrab Hossain"
             fill
             priority
             sizes="(min-width: 1024px) 340px, 72vw"
-            style={{ objectFit: 'cover' }}
+            style={{ objectFit: 'cover', opacity: photoReady ? 1 : 0, transition: 'opacity 300ms ease' }}
+            onLoadingComplete={() => setPhotoReady(true)}
           />
           {/* Subtle inner gradient for depth */}
           <div
