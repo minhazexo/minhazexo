@@ -15,6 +15,9 @@ const ProjectCard = memo(function ProjectCard({ project, index, isInView, onClic
   isInView: boolean;
   onClick: () => void;
 }) {
+  /* Flicker fix: lazy-loaded images pop in abruptly. Fade the image in once
+     it has decoded, over a themed placeholder so the frame never flashes. */
+  const [imgReady, setImgReady] = useState(false)
   return (
     <motion.div
       layout
@@ -40,7 +43,7 @@ const ProjectCard = memo(function ProjectCard({ project, index, isInView, onClic
         onMouseLeave={(e) => { e.currentTarget.style.borderColor = 'var(--border)'; e.currentTarget.style.transform = 'translateY(0)'; e.currentTarget.style.boxShadow = 'none' }}
       >
         {/* Image */}
-        <div style={{ position: 'relative', height: 200, overflow: 'hidden' }}>
+        <div style={{ position: 'relative', height: 200, overflow: 'hidden', backgroundColor: 'var(--surface)' }}>
           <Image
             src={project.image}
             alt={`${project.title} project screenshot`}
@@ -48,7 +51,11 @@ const ProjectCard = memo(function ProjectCard({ project, index, isInView, onClic
             loading="lazy"
             sizes="(max-width: 768px) 100vw, (max-width: 1280px) 50vw, 600px"
             className="object-cover"
-            style={{ transition: 'transform 0.5s ease' }}
+            onLoadingComplete={() => setImgReady(true)}
+            style={{
+              transition: 'transform 0.5s ease, opacity 0.4s ease',
+              opacity: imgReady ? 1 : 0,
+            }}
           />
           <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(to top, var(--background) 0%, transparent 60%)' }} />
 

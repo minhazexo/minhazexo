@@ -14,11 +14,17 @@ interface ProjectDetailModalProps {
 
 export default function ProjectDetailModal({ project, isOpen, onClose }: ProjectDetailModalProps) {
   const [mounted, setMounted] = useState(false)
+  const [imgReady, setImgReady] = useState(false)
   const modalRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
     setMounted(true)
   }, [])
+
+  /* Reset the image fade whenever a different project is opened. */
+  useEffect(() => {
+    setImgReady(false)
+  }, [project])
 
   const handleKeyDown = useCallback((e: KeyboardEvent) => {
     if (e.key === 'Escape') {
@@ -122,12 +128,18 @@ export default function ProjectDetailModal({ project, isOpen, onClose }: Project
                 position: 'relative', height: 256, borderRadius: 16,
                 overflow: 'hidden', marginBottom: 24,
                 border: '1px solid var(--border)',
+                backgroundColor: 'var(--surface)',
               }}>
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img
                   src={project.image}
                   alt={project.title}
-                  style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+                  onLoad={() => setImgReady(true)}
+                  style={{
+                    width: '100%', height: '100%', objectFit: 'cover',
+                    opacity: imgReady ? 1 : 0,
+                    transition: 'opacity 0.4s ease',
+                  }}
                 />
                 <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(to top, var(--background) 0%, transparent 60%)' }} />
                 
