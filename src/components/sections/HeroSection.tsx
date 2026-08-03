@@ -111,7 +111,7 @@ function HeroPortrait() {
             fill
             priority
             sizes="(min-width: 1024px) 340px, 72vw"
-            style={{ objectFit: 'cover', opacity: photoReady ? 1 : 0, transition: 'opacity 300ms ease' }}
+            style={{ objectFit: 'cover', objectPosition: 'center 30%', opacity: photoReady ? 1 : 0, transition: 'opacity 300ms ease' }}
             onLoadingComplete={() => setPhotoReady(true)}
           />
           {/* Subtle inner gradient for depth */}
@@ -137,10 +137,10 @@ export function HeroSection() {
     offset: ['start start', 'end start'],
   })
 
-  const headingY = useTransform(scrollYProgress, [0, 1], ['0%', '10px'])
-  const descY = useTransform(scrollYProgress, [0, 1], ['0%', '8px'])
-  const ctaY = useTransform(scrollYProgress, [0, 1], ['0%', '6px'])
-  const auroraY = useTransform(scrollYProgress, [0, 1], ['0%', '40px'])
+  const headingY = useTransform(scrollYProgress, [0, 1], ['0%', '6px'])
+  const descY = useTransform(scrollYProgress, [0, 1], ['0%', '4px'])
+  const ctaY = useTransform(scrollYProgress, [0, 1], ['0%', '3px'])
+  const auroraY = useTransform(scrollYProgress, [0, 1], ['0%', '30px'])
 
   const [isDesktop, setIsDesktop] = useState(false)
   const mouseX = useMotionValue(0)

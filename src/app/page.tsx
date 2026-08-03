@@ -84,7 +84,7 @@ export default function Home() {
     }
     img.onload = markHeroStepDone
     img.onerror = markHeroStepDone
-    img.src = '/webp/Minhaz1.webp'
+    img.src = '/ph.jpeg'
     // Await full decode so the photo is guaranteed decoded before the hero mounts.
     if (typeof img.decode === 'function') {
       img.decode().then(markHeroStepDone, markHeroStepDone)
