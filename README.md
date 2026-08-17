@@ -162,7 +162,7 @@ src/
 
 | Route | Description |
 |---|---|
-| `GET /api/projects` | List all projects |
+| `GET /api/projects` | List all **visible** projects (`is_visible = true`) |
 | `GET /api/skills` | List all skills |
 | `GET /api/experience` | List all experience |
 | `GET /api/testimonials` | List all testimonials |
@@ -176,6 +176,7 @@ src/
 | `GET /api/admin/me` | Verify current session |
 | `POST /api/admin/logout` | Clear session cookie |
 | `GET/POST/PUT/DELETE /api/admin/projects` | CRUD projects |
+| `PATCH /api/admin/projects/[id]/visibility` | Show/hide a project on the public website |
 | `GET/POST/PUT/DELETE /api/admin/skills` | CRUD skills |
 | `GET/POST/PUT/DELETE /api/admin/experience` | CRUD experience |
 | `GET/POST/PUT/DELETE /api/admin/testimonials` | CRUD testimonials |
@@ -239,7 +240,7 @@ vercel --prod
 
 Access at `/admin`. Login with credentials created during seeding.
 
-- **Projects** — Manage portfolio projects with title, description, image, tech stack, category, and links
+- **Projects** — Manage portfolio projects with title, description, image, tech stack, category, and links. Each project has a **Show/Hide toggle** that instantly controls whether it appears on the public website (`is_visible`), with `All | Visible | Hidden` filters and a status indicator per project.
 - **Skills** — Manage skills with name, category, proficiency level, and color
 - **Experience** — Manage work history with role, company, period, description, highlights, and tech
 - **Testimonials** — Manage client testimonials with name, role, company, content, and rating
@@ -251,7 +252,7 @@ Access at `/admin`. Login with credentials created during seeding.
 Six tables managed via Drizzle ORM:
 
 - `admin_users` — Authentication (username, email, password_hash)
-- `projects` — Portfolio projects (title, description, image, tech[], category, github, demo)
+- `projects` — Portfolio projects (title, description, image, tech[], category, github, demo, is_visible)
 - `skills` — Technical skills (name, category, level, color)
 - `experience` — Work experience (role, company, period, description, highlights[], tech[], color, sort_order)
 - `testimonials` — Client testimonials (name, role, company, avatar, content, rating, color)

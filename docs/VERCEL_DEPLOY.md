@@ -98,6 +98,14 @@ bun run db:push
 bun run db:seed
 ```
 
+> **Upgrading an existing database (project visibility feature):** if the `projects` table already exists, add the new `is_visible` column with an idempotent migration that keeps every existing project visible by default:
+>
+> ```bash
+> bun run db:migrate:visibility
+> ```
+>
+> (`db:push` also adds the column, but the migration script is safe to run against any environment and never touches project data.)
+
 Default admin credentials:
 
 | Username | Password   |

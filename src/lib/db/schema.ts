@@ -1,4 +1,4 @@
-import { pgTable, serial, varchar, text, integer, timestamp } from 'drizzle-orm/pg-core'
+import { pgTable, serial, varchar, text, integer, boolean, timestamp } from 'drizzle-orm/pg-core'
 
 export const adminUsers = pgTable('admin_users', {
   id: serial('id').primaryKey(),
@@ -18,6 +18,7 @@ export const projects = pgTable('projects', {
   category: varchar('category', { length: 100 }).notNull(),
   github: varchar('github', { length: 500 }).notNull(),
   demo: varchar('demo', { length: 500 }).notNull(),
+  isVisible: boolean('is_visible').notNull().default(true),
   createdAt: timestamp('created_at').defaultNow(),
   updatedAt: timestamp('updated_at').defaultNow(),
 })

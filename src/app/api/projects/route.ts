@@ -1,13 +1,14 @@
 import { NextResponse } from 'next/server'
 import { db } from '@/lib/db'
 import { projects } from '@/lib/db/schema'
-import { desc } from 'drizzle-orm'
+import { eq, desc } from 'drizzle-orm'
 
 export const dynamic = 'force-dynamic'
 
 export async function GET() {
   try {
-    const all = await db.select().from(projects).orderBy(desc(projects.createdAt))
+    // Only publicly expose projects the admin has marked as visible
+    const all = await db.select().from(projects).where(eq(projects.isVisible, true)).orderBy(desc(projects.createdAt))
     return NextResponse.json(all)
   } catch (error) {
     console.error('Fetch projects error:', error)

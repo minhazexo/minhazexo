@@ -1,9 +1,12 @@
 'use client'
 
-import { useEffect, useState, useCallback } from 'react'
+import { useEffect, useState, useCallback, useMemo, useRef } from 'react'
 import { useRouter } from 'next/navigation'
+import { AnimatePresence, motion } from 'framer-motion'
+import VisibilityToggle from '@/components/admin/VisibilityToggle'
 
 type Tab = 'projects' | 'skills' | 'experience' | 'testimonials'
+type VisibilityFilter = 'all' | 'visible' | 'hidden'
 
 export default function AdminDashboard() {
   const router = useRouter()
@@ -13,6 +16,9 @@ export default function AdminDashboard() {
   const [data, setData] = useState<any[]>([])
   const [editing, setEditing] = useState<any | null>(null)
   const [showForm, setShowForm] = useState(false)
+  const [visibilityFilter, setVisibilityFilter] = useState<VisibilityFilter>('all')
+  const [toast, setToast] = useState<{ type: 'success' | 'error'; message: string } | null>(null)
+  const toastTimer = useRef<ReturnType<typeof setTimeout> | null>(null)
 
   useEffect(() => {
     fetch('/api/admin/me')
@@ -28,6 +34,22 @@ export default function AdminDashboard() {
   }, [tab])
 
   useEffect(() => { if (user) fetchData() }, [user, fetchData])
+
+  const showToast = useCallback((type: 'success' | 'error', message: string) => {
+    setToast({ type, message })
+    if (toastTimer.current) clearTimeout(toastTimer.current)
+    toastTimer.current = setTimeout(() => setToast(null), 3200)
+  }, [])
+
+  const handleVisibilityToggle = useCallback((id: number, isVisible: boolean) => {
+    setData((prev) => prev.map((item: any) => (item.id === id ? { ...item, isVisible } : item)))
+    showToast('success', `Project is now ${isVisible ? 'visible' : 'hidden'} on the public website`)
+  }, [showToast])
+
+  const displayedData = useMemo(() => {
+    if (tab !== 'projects' || visibilityFilter === 'all') return data
+    return data.filter((item: any) => (visibilityFilter === 'visible' ? item.isVisible !== false : item.isVisible === false))
+  }, [data, tab, visibilityFilter])
 
   if (loading) return <div style={{ minHeight: '100vh', background: '#05070A', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#6b7280' }}>Loading...</div>
   if (!user) return null
@@ -72,7 +94,7 @@ export default function AdminDashboard() {
           {(['projects', 'skills', 'experience', 'testimonials'] as Tab[]).map((t) => (
             <button
               key={t}
-              onClick={() => { setTab(t); setShowForm(false); setEditing(null) }}
+              onClick={() => { setTab(t); setShowForm(false); setEditing(null); setVisibilityFilter('all') }}
               style={{
                 display: 'block', width: '100%', textAlign: 'left', padding: '10px 20px',
                 fontSize: 14, color: tab === t ? '#818cf8' : '#9ca3af',
@@ -105,19 +127,57 @@ export default function AdminDashboard() {
             <ItemForm tab={tab} item={editing} onSave={handleSave} onCancel={() => { setShowForm(false); setEditing(null) }} />
           )}
 
+          {tab === 'projects' && (
+            <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap', marginBottom: 16 }}>
+              {(['all', 'visible', 'hidden'] as VisibilityFilter[]).map((f) => (
+                <button
+                  key={f}
+                  onClick={() => setVisibilityFilter(f)}
+                  style={{
+                    padding: '6px 14px', borderRadius: 999, fontSize: 12, fontWeight: 600,
+                    cursor: 'pointer', textTransform: 'capitalize',
+                    border: visibilityFilter === f ? '1px solid rgba(99,102,241,0.6)' : '1px solid rgba(255,255,255,0.1)',
+                    background: visibilityFilter === f ? 'rgba(99,102,241,0.15)' : 'rgba(255,255,255,0.03)',
+                    color: visibilityFilter === f ? '#a5b4fc' : '#9ca3af',
+                    transition: 'all 0.2s ease',
+                  }}
+                >
+                  {f}
+                  {f !== 'all' && (
+                    <span style={{ opacity: 0.7, marginLeft: 6 }}>
+                      {f === 'visible'
+                        ? data.filter((i: any) => i.isVisible !== false).length
+                        : data.filter((i: any) => i.isVisible === false).length}
+                    </span>
+                  )}
+                </button>
+              ))}
+            </div>
+          )}
+
           <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
-            {data.map((item: any) => (
+            {displayedData.map((item: any) => (
               <div key={item.id} style={{
-                display: 'flex', alignItems: 'center', justifyContent: 'space-between',
-                padding: '12px 16px', borderRadius: 10,
+                display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: 12,
+                padding: '14px 16px', borderRadius: 10,
                 border: '1px solid rgba(255,255,255,0.06)',
-                background: 'rgba(255,255,255,0.02)',
+                background: tab === 'projects' && item.isVisible === false ? 'rgba(239,68,68,0.04)' : 'rgba(255,255,255,0.02)',
               }}>
                 <div style={{ flex: 1, minWidth: 0 }}>
                   <span style={{ fontSize: 14, fontWeight: 500 }}>{item.title || item.name || item.role}</span>
                   <span style={{ fontSize: 12, color: '#6b7280', marginLeft: 12 }}>
                     {item.category || item.company || item.company || ''}
                   </span>
+                  {tab === 'projects' && (
+                    <div style={{ marginTop: 10 }}>
+                      <VisibilityToggle
+                        projectId={item.id}
+                        isVisible={item.isVisible !== false}
+                        onToggle={handleVisibilityToggle}
+                        onError={(msg) => showToast('error', msg)}
+                      />
+                    </div>
+                  )}
                 </div>
                 <div style={{ display: 'flex', gap: 8, flexShrink: 0 }}>
                   <button
@@ -135,12 +195,38 @@ export default function AdminDashboard() {
                 </div>
               </div>
             ))}
-            {data.length === 0 && (
-              <p style={{ color: '#6b7280', fontSize: 14, textAlign: 'center', padding: 40 }}>No {tab} found. Add your first one!</p>
+            {displayedData.length === 0 && (
+              <p style={{ color: '#6b7280', fontSize: 14, textAlign: 'center', padding: 40 }}>
+                {data.length === 0 ? `No ${tab} found. Add your first one!` : 'No projects match this filter.'}
+              </p>
             )}
           </div>
         </main>
       </div>
+
+      <AnimatePresence>
+        {toast && (
+          <motion.div
+            key="toast"
+            initial={{ opacity: 0, y: 16, scale: 0.97 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            exit={{ opacity: 0, y: 8, scale: 0.97 }}
+            transition={{ duration: 0.22, ease: 'easeOut' }}
+            role="status"
+            style={{
+              position: 'fixed', bottom: 24, right: 24, zIndex: 100,
+              display: 'flex', alignItems: 'center', gap: 10,
+              padding: '10px 16px', borderRadius: 10, fontSize: 13, fontWeight: 500,
+              color: '#fff', maxWidth: 'min(90vw, 380px)',
+              background: toast.type === 'success' ? 'rgba(16,185,129,0.95)' : 'rgba(239,68,68,0.95)',
+              boxShadow: '0 8px 24px rgba(0,0,0,0.4)',
+            }}
+          >
+            <span style={{ width: 8, height: 8, borderRadius: '50%', background: '#fff', flexShrink: 0 }} />
+            {toast.message}
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   )
 }

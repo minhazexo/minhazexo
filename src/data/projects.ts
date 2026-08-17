@@ -12,6 +12,7 @@ export const projects: Project[] = [
     category: 'React',
     github: 'https://github.com/minhazexo/weather-app',
     demo: 'https://minhazexo.github.io/weather-app/',
+    isVisible: true,
   },
   {
     id: 2,
@@ -22,6 +23,7 @@ export const projects: Project[] = [
     category: 'React',
     github: 'https://github.com/minhazexo',
     demo: 'https://gbcphy.netlify.app/',
+    isVisible: true,
   },
   {
     id: 3,
@@ -32,6 +34,7 @@ export const projects: Project[] = [
     category: 'React',
     github: 'https://github.com/minhazexo',
     demo: 'https://chocoverse.nahidaferjana27022002.workers.dev/',
+    isVisible: true,
   },
   {
     id: 4,
@@ -42,6 +45,7 @@ export const projects: Project[] = [
     category: 'React',
     github: 'https://github.com/minhazexo',
     demo: 'https://bd-cloths.onrender.com/',
+    isVisible: true,
   },
   {
     id: 5,
@@ -52,6 +56,7 @@ export const projects: Project[] = [
     category: 'React',
     github: 'https://github.com/minhazexo',
     demo: 'https://science-box-rose.vercel.app/',
+    isVisible: true,
   },
   {
     id: 6,
@@ -62,6 +67,7 @@ export const projects: Project[] = [
     category: 'Fullstack',
     github: 'https://github.com/minhazexo',
     demo: 'https://nityadi-shop.free.nf/?i=1',
+    isVisible: true,
   },
   {
     id: 7,
@@ -72,6 +78,7 @@ export const projects: Project[] = [
     category: 'React',
     github: 'https://github.com/minhazexo',
     demo: 'https://minhazexo.github.io/seecto-bangladesh/',
+    isVisible: true,
   },
   {
     id: 8,
@@ -82,5 +89,6 @@ export const projects: Project[] = [
     category: 'React',
     github: 'https://github.com/minhazexo',
     demo: 'https://blackholesimulation.vercel.app/',
+    isVisible: true,
   },
 ]

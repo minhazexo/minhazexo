@@ -16,6 +16,7 @@ export interface Project {
   category: string
   github: string
   demo: string
+  isVisible: boolean
 }
 
 // Skills

@@ -18,7 +18,8 @@
     "db:push": "drizzle-kit push",
     "db:seed:admin": "bun scripts/seed-admin.mjs",
     "db:seed:data": "bun scripts/seed-data.mjs",
-    "db:seed": "bun scripts/seed-admin.mjs && bun scripts/seed-data.mjs"
+    "db:seed": "bun scripts/seed-admin.mjs && bun scripts/seed-data.mjs",
+    "db:migrate:visibility": "bun scripts/migrate-is-visible.mjs"
   },
   "dependencies": {
     "@neondatabase/serverless": "^1.1.0",

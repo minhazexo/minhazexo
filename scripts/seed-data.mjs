@@ -33,8 +33,8 @@ async function seed() {
     ]
     for (const p of projects) {
       await sql`
-        INSERT INTO projects (title, description, image, tech, category, github, demo, created_at)
-        VALUES (${p.title}, ${p.description}, ${p.image}, ${p.tech}, ${p.category}, ${p.github}, ${p.demo}, NOW())
+        INSERT INTO projects (title, description, image, tech, category, github, demo, is_visible, created_at)
+        VALUES (${p.title}, ${p.description}, ${p.image}, ${p.tech}, ${p.category}, ${p.github}, ${p.demo}, true, NOW())
       `
     }
     console.log(`  ✓ ${projects.length} projects seeded`)
