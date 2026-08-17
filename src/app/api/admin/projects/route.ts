@@ -47,8 +47,16 @@ export async function PUT(request: NextRequest) {
 
     if (!id) return NextResponse.json({ error: 'Project ID required' }, { status: 400 })
 
+    // Whitelist updatable fields — never let the client overwrite
+    // createdAt/updatedAt (their ISO strings break drizzle's timestamp columns).
+    const allowed = ['title', 'description', 'image', 'tech', 'category', 'github', 'demo', 'isVisible']
+    const clean: Record<string, unknown> = {}
+    for (const key of allowed) {
+      if (data[key] !== undefined) clean[key] = data[key]
+    }
+
     const [project] = await db.update(projects)
-      .set({ ...data, updatedAt: new Date() })
+      .set({ ...clean, updatedAt: new Date() })
       .where(eq(projects.id, id))
       .returning()
 

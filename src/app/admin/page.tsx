@@ -8,6 +8,8 @@ import VisibilityToggle from '@/components/admin/VisibilityToggle'
 type Tab = 'projects' | 'skills' | 'experience' | 'testimonials'
 type VisibilityFilter = 'all' | 'visible' | 'hidden'
 
+const singular = (t: Tab) => (t === 'experience' ? 'experience' : t.slice(0, -1))
+
 export default function AdminDashboard() {
   const router = useRouter()
   const [user, setUser] = useState<string | null>(null)
@@ -71,12 +73,22 @@ export default function AdminDashboard() {
 
   const handleSave = async (formData: any) => {
     const method = formData.id ? 'PUT' : 'POST'
-    const res = await fetch(`/api/admin/${tab}`, {
-      method,
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(formData),
-    })
-    if (res.ok) { setShowForm(false); setEditing(null); fetchData() }
+    try {
+      const res = await fetch(`/api/admin/${tab}`, {
+        method,
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(formData),
+      })
+      if (!res.ok) {
+        const data = await res.json().catch(() => ({}))
+        showToast('error', data.error || `Failed to ${method === 'POST' ? 'create' : 'update'} ${tab.slice(0, -1)}`)
+        return
+      }
+      setShowForm(false); setEditing(null); fetchData()
+      showToast('success', `${tab.slice(0, -1)} ${method === 'POST' ? 'created' : 'updated'} successfully`)
+    } catch {
+      showToast('error', 'Network error. Please try again.')
+    }
   }
 
   return (
@@ -119,7 +131,7 @@ export default function AdminDashboard() {
                 color: '#fff', fontSize: 13, fontWeight: 600, cursor: 'pointer',
               }}
             >
-              + Add {tab.slice(0, -1)}
+              + Add {singular(tab)}
             </button>
           </div>
 
@@ -254,17 +266,17 @@ function ItemForm({ tab, item, onSave, onCancel }: { tab: Tab; item: any; onSave
       border: '1px solid rgba(99,102,241,0.2)', background: 'rgba(99,102,241,0.04)',
     }}>
       <h3 style={{ fontSize: 15, fontWeight: 600, marginBottom: 16 }}>
-        {item?.id ? 'Edit' : 'Add'} {tab.slice(0, -1)}
+        {item?.id ? 'Edit' : 'Add'} {singular(tab)}
       </h3>
 
       {tab === 'projects' && (
         <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12 }}>
-          {['title', 'description', 'image', 'category', 'github', 'demo'].map((f) => (
-            <div key={f} style={{ gridColumn: ['description'].includes(f) ? '1 / -1' : undefined }}>
+          {['title', 'description', 'image', 'tech', 'category', 'github', 'demo'].map((f) => (
+            <div key={f} style={{ gridColumn: ['description', 'tech'].includes(f) ? '1 / -1' : undefined }}>
               <label style={labelStyle}>
                 {f.toUpperCase()}
                 {f === 'tech' ? ' (comma separated)' : ''}
-                <input style={inputStyle} value={form[f] || ''}
+                <input style={inputStyle} value={f === 'tech' ? (form[f] || []).join(', ') : (form[f] || '')}
                   onChange={(e) => f === 'tech' ? handleArray(f, e.target.value) : handleChange(f, e.target.value)}
                   placeholder={f} />
               </label>
