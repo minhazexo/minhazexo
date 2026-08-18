@@ -1,270 +1,34 @@
-<div align="center">
-  <img src="/hero-astronaut.jpg" alt="MD Mehrab Hossain" width="120" style="border-radius: 50%" />
+# 👋 Hey, I'm MD Mehrab Hossain
 
-  # MD Mehrab Hossain — Portfolio
+### Full-Stack Developer · Web Engineer · Builder
 
-  <p>
-    <strong>Full-stack developer crafting premium digital experiences.</strong>
-  </p>
+I build modern, scalable web applications and enjoy working across the **frontend, backend, databases, and deployment**.
 
-  <p>
-    <a href="https://minhazexo.vercel.app/">Live Site</a> ·
-    <a href="#features">Features</a> ·
-    <a href="#getting-started">Getting Started</a> ·
-    <a href="#project-structure">Structure</a>
-  </p>
-
-  <p>
-    <img src="https://img.shields.io/badge/Next.js-14.2-black?style=flat&logo=next.js" alt="Next.js" />
-    <img src="https://img.shields.io/badge/React-18.3-61DAFB?style=flat&logo=react" alt="React" />
-    <img src="https://img.shields.io/badge/TypeScript-5.5-3178C6?style=flat&logo=typescript" alt="TypeScript" />
-    <img src="https://img.shields.io/badge/PostgreSQL-Neon-4169E1?style=flat&logo=postgresql" alt="PostgreSQL" />
-    <img src="https://img.shields.io/badge/Drizzle_ORM-0.45-C5F74F?style=flat&logo=drizzle" alt="Drizzle ORM" />
-    <img src="https://img.shields.io/badge/Framer_Motion-11.3-0055FF?style=flat&logo=framer" alt="Framer Motion" />
-  </p>
-</div>
-
----
-
-## Overview
-
-A modern, performant portfolio website built with Next.js 14. Features a dynamic admin dashboard with database-backed content management, immersive visual effects, theme system, and PWA support.
-
-**Stack:** Next.js 14 (App Router) · React 18 · TypeScript · PostgreSQL (Neon) · Drizzle ORM · Framer Motion · Tailwind CSS
-
----
-
-## Features
-
-- **Dynamic Content Management** — Projects, skills, experience, and testimonials stored in PostgreSQL, editable via admin dashboard
-- **Admin Dashboard** — Full CRUD at `/admin` with JWT-based authentication
-- **Immersive Visuals** — Animated background with hex grid, floating particles, stars, glow effects, and vignette
-- **Theme System** — 8 color themes (Blue, Green, Orange, Pink, Purple, Cyan, Amber, Silver) with smooth transitions
-- **Performance Optimized** — Lazy-loaded sections, optimized images (WebP), scroll-triggered animations
-- **PWA Ready** — Installable with manifest and service worker support
-- **Responsive Design** — Fluid layouts, glassmorphism UI, mobile-first
-- **Contact Form** — Server-side validated form with Resend email integration and rate limiting
-
----
-
-## Getting Started
-
-### Prerequisites
-
-- **Bun** 1.x (package manager + runtime — see `bun.lock`)
-- **Node.js** 20+ (see `.nvmrc`)
-- **PostgreSQL** database — [Neon](https://neon.tech) (serverless) recommended
-
-### Installation
-
-```bash
-# Clone the repository
-git clone https://github.com/minhazexo/mehrab-portfolio.git
-cd mehrab-portfolio
-
-# Install dependencies (bun is the package manager — bun.lock is committed)
-bun install
-
-# Set up environment variables
-cp .env.example .env.local
+```text
+Frontend   → React · JavaScript · TypeScript
+Backend    → Node.js · Express · PHP · Laravel
+Database   → PostgreSQL · Prisma · Redis
+Tools      → Git · GitHub · Vercel · Supabase
 ```
 
-Fill in `.env.local`:
+### 🚀 What I Build
 
-```env
-DATABASE_URL=postgresql://user:password@ep-xxx.aws.neon.tech/neondb?sslmode=require
-ADMIN_JWT_SECRET=your-secret-at-least-32-chars-long
-RESEND_API_KEY=re_xxx              # Optional — for contact form emails
-CONTACT_EMAIL=you@example.com       # Optional — where contact emails go
-NEXT_PUBLIC_SITE_URL=https://yourdomain.com
-NEXT_PUBLIC_GA_ID=G-XXXXXXXXXX     # Optional — Google Analytics
-```
+* 🛒 E-commerce platforms
+* 💬 Real-time applications
+* 📰 Modern web platforms
+* 📊 Admin dashboards
+* 🔐 Authentication & API systems
 
-### Database Setup
+### 🌐 Portfolio
 
-```bash
-# Generate Drizzle schema
-bun run db:generate
+🔗 **Portfolio:** https://minhazexo.vercel.app
 
-# Push schema to database
-bun run db:push
+### 📫 Let's Connect
 
-# Seed admin user + content data
-bun run db:seed
-```
-
-Default admin credentials: `admin` / `admin123` (change immediately after first login).
-
-### Development
-
-```bash
-bun run dev
-```
-
-Open [http://localhost:4000](http://localhost:4000). Admin panel at [http://localhost:4000/admin](http://localhost:4000/admin).
-
-### Build
-
-```bash
-bun run build
-bun run start
-```
+I'm always interested in building useful products, solving interesting problems, and learning new technologies.
 
 ---
 
-## Project Structure
-
-```
-src/
-├── app/
-│   ├── admin/
-│   │   ├── login/          # Admin login page
-│   │   ├── page.tsx        # Admin dashboard (CRUD)
-│   │   └── layout.tsx
-│   ├── api/
-│   │   ├── admin/          # Authenticated admin CRUD routes
-│   │   │   ├── projects/
-│   │   │   ├── skills/
-│   │   │   ├── experience/
-│   │   │   ├── testimonials/
-│   │   │   ├── login/
-│   │   │   ├── logout/
-│   │   │   └── me/
-│   │   ├── projects/       # Public read-only API routes
-│   │   ├── skills/
-│   │   ├── experience/
-│   │   ├── testimonials/
-│   │   └── contact/        # Contact form email endpoint
-│   ├── layout.tsx          # Root layout (theme, background, effects)
-│   └── page.tsx            # Homepage (all sections)
-├── components/
-│   ├── background/         # HexGrid, GlowLayer, Stars, Particles, etc.
-│   ├── effects/            # CursorGlow, ScrollProgress, ProjectDetailModal
-│   ├── providers/          # ThemeProvider, ThemeAutoCycle, ThemeTransition
-│   ├── sections/           # Hero, About, Skills, Projects, Experience, etc.
-│   └── ui/                 # SectionWrapper, FeatureCard, StatsCard
-├── data/                   # Static fallback data (used when API unavailable)
-├── hooks/
-│   └── useApiData.ts       # Generic data-fetching hook with fallback
-├── lib/
-│   ├── db/                 # Drizzle ORM client + schema
-│   ├── auth.ts             # JWT authentication helpers
-│   └── utils.ts            # Utility functions
-├── styles/                 # CSS (variables, base, components, animations)
-└── types/                  # TypeScript interfaces
-```
-
----
-
-## API Routes
-
-### Public (no auth required)
-
-| Route | Description |
-|---|---|
-| `GET /api/projects` | List all **visible** projects (`is_visible = true`) |
-| `GET /api/skills` | List all skills |
-| `GET /api/experience` | List all experience |
-| `GET /api/testimonials` | List all testimonials |
-| `POST /api/contact` | Submit contact form |
-
-### Admin (JWT auth required)
-
-| Route | Description |
-|---|---|
-| `POST /api/admin/login` | Authenticate and receive JWT cookie |
-| `GET /api/admin/me` | Verify current session |
-| `POST /api/admin/logout` | Clear session cookie |
-| `GET/POST/PUT/DELETE /api/admin/projects` | CRUD projects |
-| `PATCH /api/admin/projects/[id]/visibility` | Show/hide a project on the public website |
-| `GET/POST/PUT/DELETE /api/admin/skills` | CRUD skills |
-| `GET/POST/PUT/DELETE /api/admin/experience` | CRUD experience |
-| `GET/POST/PUT/DELETE /api/admin/testimonials` | CRUD testimonials |
-
----
-
-## Available Scripts
-
-| Script | Description |
-|---|---|
-| `bun run dev` | Start development server (port 4000) |
-| `bun run build` | Production build |
-| `bun run start` | Start production server (port 4000) |
-| `bun run lint` | Run ESLint |
-| `bun run test` | Run Playwright E2E tests |
-| `bun run test:unit` | Run Vitest unit tests |
-| `bun run analyze` | Build with bundle analyzer |
-| `bun run db:generate` | Generate Drizzle schema files |
-| `bun run db:push` | Push schema to database |
-| `bun run db:seed` | Seed admin user + content data |
-| `bun run optimize:images` | Convert images to WebP |
-
----
-
-## Deployment
-
-### Vercel (recommended)
-
-The project ships with Vercel-ready config (`vercel.json` — build/install commands + security & cache headers) and a full step-by-step guide:
-
-📖 **[docs/VERCEL_DEPLOY.md](./docs/VERCEL_DEPLOY.md)**
-
-Quick start:
-
-1. Push the repo to GitHub.
-2. Import it at [vercel.com/new](https://vercel.com/new) — framework auto-detected as **Next.js**.
-3. Add the environment variables below.
-4. Deploy. Then seed the database once: `bun run db:push && bun run db:seed`.
-
-Environment variables to set in the Vercel dashboard:
-- `DATABASE_URL` (Neon PostgreSQL — required)
-- `ADMIN_JWT_SECRET` (required)
-- `RESEND_API_KEY` (optional — contact form)
-- `CONTACT_EMAIL` (optional)
-- `NEXT_PUBLIC_SITE_URL` (optional)
-- `NEXT_PUBLIC_GA_ID` (optional)
-
-CLI alternative:
-
-```bash
-bun add -g vercel
-vercel login
-vercel link
-vercel env add DATABASE_URL   # repeat for each variable
-vercel --prod
-```
-
----
-
-## Admin Panel
-
-Access at `/admin`. Login with credentials created during seeding.
-
-- **Projects** — Manage portfolio projects with title, description, image, tech stack, category, and links. Each project has a **Show/Hide toggle** that instantly controls whether it appears on the public website (`is_visible`), with `All | Visible | Hidden` filters and a status indicator per project.
-- **Skills** — Manage skills with name, category, proficiency level, and color
-- **Experience** — Manage work history with role, company, period, description, highlights, and tech
-- **Testimonials** — Manage client testimonials with name, role, company, content, and rating
-
----
-
-## Database Schema
-
-Six tables managed via Drizzle ORM:
-
-- `admin_users` — Authentication (username, email, password_hash)
-- `projects` — Portfolio projects (title, description, image, tech[], category, github, demo, is_visible)
-- `skills` — Technical skills (name, category, level, color)
-- `experience` — Work experience (role, company, period, description, highlights[], tech[], color, sort_order)
-- `testimonials` — Client testimonials (name, role, company, avatar, content, rating, color)
-
----
-
-## License
-
-This project is **private** — all rights reserved. The code is shared for portfolio demonstration purposes.
-
----
-
-<div align="center">
-  <sub>Built by <a href="https://github.com/minhazexo">MD Mehrab Hossain</a></sub>
-</div>
+<p align="center">
+  <i>Build something meaningful.</i> ⚡
+</p>
