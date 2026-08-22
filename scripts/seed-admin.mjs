@@ -34,6 +34,14 @@ async function seed() {
       updated_at TIMESTAMP DEFAULT NOW()
     )
   `
+  // Ensure profile columns exist (idempotent for existing DBs)
+  await sqlClient`ALTER TABLE admin_users ADD COLUMN IF NOT EXISTS display_name VARCHAR(150)`
+  await sqlClient`ALTER TABLE admin_users ADD COLUMN IF NOT EXISTS avatar_url VARCHAR(500)`
+  await sqlClient`ALTER TABLE admin_users ADD COLUMN IF NOT EXISTS bio TEXT`
+  await sqlClient`ALTER TABLE admin_users ADD COLUMN IF NOT EXISTS phone VARCHAR(50)`
+  await sqlClient`ALTER TABLE admin_users ADD COLUMN IF NOT EXISTS location VARCHAR(255)`
+  await sqlClient`ALTER TABLE admin_users ADD COLUMN IF NOT EXISTS title VARCHAR(255)`
+  await sqlClient`ALTER TABLE admin_users ADD COLUMN IF NOT EXISTS token_version INTEGER NOT NULL DEFAULT 0`
 
   // Create projects table
   await sqlClient`
@@ -93,6 +101,23 @@ async function seed() {
       updated_at TIMESTAMP DEFAULT NOW()
     )
   `
+
+  await sqlClient`
+    CREATE TABLE IF NOT EXISTS admin_documents (
+      id SERIAL PRIMARY KEY,
+      admin_id INTEGER NOT NULL REFERENCES admin_users(id) ON DELETE CASCADE,
+      original_name VARCHAR(255) NOT NULL,
+      stored_name VARCHAR(255) NOT NULL,
+      mime_type VARCHAR(100) NOT NULL,
+      size INTEGER NOT NULL,
+      category VARCHAR(50) NOT NULL DEFAULT 'document',
+      description TEXT,
+      storage_key VARCHAR(500) NOT NULL,
+      created_at TIMESTAMP DEFAULT NOW(),
+      updated_at TIMESTAMP DEFAULT NOW()
+    )
+  `
+  await sqlClient`CREATE INDEX IF NOT EXISTS idx_admin_documents_admin_id ON admin_documents(admin_id)`
 
   console.log('Tables created successfully!')
 

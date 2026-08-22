@@ -24,7 +24,7 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: 'Invalid credentials' }, { status: 401 })
     }
 
-    const token = await createToken({ id: user.id, username: user.username })
+    const token = await createToken({ id: user.id, username: user.username, tokenVersion: (user as any).tokenVersion ?? 0 })
     await setAuthCookie(token)
 
     return NextResponse.json({ success: true, username: user.username })

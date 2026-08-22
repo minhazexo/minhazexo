@@ -54,8 +54,12 @@ export default function Home() {
     document.body.classList.add('site-is-loading')
 
     const heavyCount = HEAVY_MODULES.length
-    const total = heavyCount + 1 // heavy chunks + hero image
+    // +1 hero image +1 projects JSON +1 critical project images batch = critical path for smooth first paint
+    const total = heavyCount + 3
     let completed = 0
+    let heroDone = false
+    let projectsJsonDone = false
+    let projectImagesDone = false
 
     const onStepDone = () => {
       if (cancelled) return
@@ -64,34 +68,119 @@ export default function Home() {
       setLoadProgress((prev) => Math.max(prev, Math.min(base, 90)))
       if (completed >= total) {
         setLoadProgress(100)
-        setTimeout(() => setIsReady(true), 300)
+        setTimeout(() => { if (!cancelled) setIsReady(true) }, 300)
       }
     }
+
+    // Hard fallback: never block loader more than 5s (slow network / failed assets)
+    const fallbackTimer = setTimeout(() => {
+      if (cancelled) return
+      if (!heroDone) { heroDone = true; onStepDone() }
+      if (!projectsJsonDone) { projectsJsonDone = true; onStepDone() }
+      if (!projectImagesDone) { projectImagesDone = true; onStepDone() }
+      if (completed < total) {
+        setLoadProgress(100)
+        setIsReady(true)
+      }
+    }, 5000)
 
     // Preload every heavy section while the loading screen is visible.
     HEAVY_MODULES.forEach((load) => load().then(onStepDone, onStepDone))
 
-    // Preload AND decode the actual hero portrait before the loading screen
-    // exits. The hero mounts the moment the loader fades out, so the photo
-    // must already be in memory — otherwise it pops/flickers in on mobile
-    // while its entrance animation is running.
-    const img = new Image()
-    let heroStepDone = false
-    const markHeroStepDone = () => {
-      if (heroStepDone) return
-      heroStepDone = true
+    // 1) Preload hero portrait
+    const markHeroDone = () => {
+      if (heroDone) return
+      heroDone = true
       onStepDone()
     }
-    img.onload = markHeroStepDone
-    img.onerror = markHeroStepDone
-    img.src = '/webp/Minhaz1.webp'
-    // Await full decode so the photo is guaranteed decoded before the hero mounts.
-    if (typeof img.decode === 'function') {
-      img.decode().then(markHeroStepDone, markHeroStepDone)
+    const heroImg = new Image()
+    heroImg.onload = markHeroDone
+    heroImg.onerror = markHeroDone
+    heroImg.src = '/webp/Minhaz1.webp'
+    if (typeof heroImg.decode === 'function') {
+      heroImg.decode().then(markHeroDone, markHeroDone)
     }
+    // safety: if hero already cached, decode may have fired synchronously
+    setTimeout(() => { if (!heroDone) markHeroDone() }, 2500)
+
+    // 2) Fetch projects JSON during loading screen (critical data)
+    //    Then preload only the first N visible project images (above-the-fold) — not all.
+    const preloadProjectImages = (urls: string[]) => {
+      if (projectImagesDone) return
+      if (urls.length === 0) {
+        projectImagesDone = true
+        onStepDone()
+        return
+      }
+      let remaining = urls.length
+      const markOne = () => {
+        remaining -= 1
+        if (remaining <= 0 && !projectImagesDone) {
+          projectImagesDone = true
+          onStepDone()
+        }
+      }
+      urls.forEach((src) => {
+        const im = new Image()
+        let done = false
+        const finish = () => { if (done) return; done = true; markOne() }
+        im.onload = finish
+        im.onerror = finish
+        im.src = src
+        if (typeof im.decode === 'function') im.decode().then(finish, finish)
+        // per-image timeout 3s
+        setTimeout(finish, 3000)
+      })
+    }
+
+    const markProjectsJsonDone = () => {
+      if (projectsJsonDone) return
+      projectsJsonDone = true
+      onStepDone()
+    }
+
+    fetch('/api/projects')
+      .then((r) => (r.ok ? r.json() : []))
+      .then((data: any[]) => {
+        if (cancelled) return
+        markProjectsJsonDone()
+        try {
+          const visible = Array.isArray(data) ? data.filter((p: any) => p.isVisible !== false) : []
+          const critical = visible.slice(0, 4).map((p: any) => p.image).filter(Boolean)
+          // Also hint browser via link preload for first image (helps LCP)
+          critical.slice(0, 1).forEach((href: string) => {
+            try {
+              const link = document.createElement('link')
+              link.rel = 'preload'
+              link.as = 'image'
+              link.href = href
+              document.head.appendChild(link)
+            } catch {}
+          })
+          preloadProjectImages(critical)
+        } catch {
+          if (!projectImagesDone) { projectImagesDone = true; onStepDone() }
+        }
+      })
+      .catch(() => {
+        if (cancelled) return
+        markProjectsJsonDone()
+        if (!projectImagesDone) { projectImagesDone = true; onStepDone() }
+      })
+
+    // If projects API is slow, ensure loader still progresses after 3.5s
+    setTimeout(() => {
+      if (!projectsJsonDone) markProjectsJsonDone()
+      if (!projectImagesDone) {
+        // if json never arrived, at least count the batch step
+        projectImagesDone = true
+        onStepDone()
+      }
+    }, 3500)
 
     return () => {
       cancelled = true
+      clearTimeout(fallbackTimer)
       document.body.classList.remove('site-is-loading')
     }
   }, [])

@@ -59,3 +59,7 @@ next-env.d.ts
 
 # Drizzle
 /drizzle/
+
+# private uploads (admin documents / avatars) - never commit
+/private_uploads/
+/tmp/

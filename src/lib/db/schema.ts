@@ -5,6 +5,28 @@ export const adminUsers = pgTable('admin_users', {
   username: varchar('username', { length: 100 }).unique().notNull(),
   email: varchar('email', { length: 255 }).unique().notNull(),
   passwordHash: varchar('password_hash', { length: 255 }).notNull(),
+  // Profile fields
+  displayName: varchar('display_name', { length: 150 }),
+  avatarUrl: varchar('avatar_url', { length: 500 }),
+  bio: text('bio'),
+  phone: varchar('phone', { length: 50 }),
+  location: varchar('location', { length: 255 }),
+  title: varchar('title', { length: 255 }),
+  tokenVersion: integer('token_version').notNull().default(0),
+  createdAt: timestamp('created_at').defaultNow(),
+  updatedAt: timestamp('updated_at').defaultNow(),
+})
+
+export const adminDocuments = pgTable('admin_documents', {
+  id: serial('id').primaryKey(),
+  adminId: integer('admin_id').notNull().references(() => adminUsers.id, { onDelete: 'cascade' }),
+  originalName: varchar('original_name', { length: 255 }).notNull(),
+  storedName: varchar('stored_name', { length: 255 }).notNull(),
+  mimeType: varchar('mime_type', { length: 100 }).notNull(),
+  size: integer('size').notNull(),
+  category: varchar('category', { length: 50 }).notNull().default('document'),
+  description: text('description'),
+  storageKey: varchar('storage_key', { length: 500 }).notNull(),
   createdAt: timestamp('created_at').defaultNow(),
   updatedAt: timestamp('updated_at').defaultNow(),
 })
