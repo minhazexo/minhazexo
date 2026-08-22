@@ -251,8 +251,10 @@ export default function AdminDashboard() {
                         <span style={{ fontSize: 12, color: '#6b7280', marginLeft: 12 }}>
                           {item.category || item.company || ''}
                         </span>
-                        {tab === 'projects' && (
-                          <div style={{ fontSize: 11, color: '#6b7280', marginTop: 2, wordBreak: 'break-all' }}>{item.image}</div>
+                        {tab === 'projects' && item.image && (
+                          <div style={{ fontSize: 11, color: '#6b7280', marginTop: 2, wordBreak: 'break-all', maxWidth: 360, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                            {item.image.startsWith('data:image/') ? `Data image • ${Math.round(item.image.length / 1024)} KB` : item.image.length > 60 ? `${item.image.slice(0, 60)}…` : item.image}
+                          </div>
                         )}
                         {tab === 'projects' && (
                           <div style={{ marginTop: 10 }}>
@@ -928,7 +930,9 @@ function ItemForm({ tab, item, onSave, onCancel }: { tab: ContentTab; item: any;
               <div style={{ display: 'flex', gap: 16, alignItems: 'center', flexWrap: 'wrap' }}>
                 <img src={form.image} alt="Preview" style={{ width: 140, height: 90, objectFit: 'cover', borderRadius: 8, border: '1px solid rgba(255,255,255,0.08)', background: 'rgba(255,255,255,0.04)' }} onError={(e) => { (e.currentTarget as HTMLImageElement).style.display = 'none' }} />
                 <div style={{ flex: 1, minWidth: 200 }}>
-                  <div style={{ fontSize: 12, color: '#9ca3af', wordBreak: 'break-all', marginBottom: 8 }}>{form.image}</div>
+                  <div style={{ fontSize: 12, color: '#9ca3af', wordBreak: 'break-all', marginBottom: 8, maxWidth: 360, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                    {form.image?.startsWith('data:image/') ? `Data image • ${Math.round(form.image.length / 1024)} KB • stored in DB` : form.image}
+                  </div>
                   <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
                     <input ref={fileRef} type="file" accept="image/jpeg,image/png,image/webp,image/avif,image/gif" onChange={handleFileSelect} style={{ display: 'none' }} />
                     <button type="button" onClick={() => fileRef.current?.click()} disabled={imageUploading} style={{ padding: '6px 12px', borderRadius: 8, border: 'none', background: 'linear-gradient(135deg,#6366f1,#8b5cf6)', color: '#fff', fontSize: 12, fontWeight: 600, cursor: 'pointer', opacity: imageUploading ? 0.6 : 1 }}>
@@ -948,11 +952,17 @@ function ItemForm({ tab, item, onSave, onCancel }: { tab: ContentTab; item: any;
               </div>
             )}
             {imageError && <div style={{ marginTop: 8, color: '#f87171', fontSize: 12 }}>{imageError}</div>}
-            {/* Fallback URL input for external paste */}
-            <div style={{ marginTop: 12 }}>
-              <label style={{ display: 'block', fontSize: 10, color: '#6b7280', letterSpacing: '0.05em' }}>OR PASTE IMAGE URL</label>
-              <input style={{ ...inputStyle, marginTop: 6 }} value={form.image || ''} onChange={(e) => handleChange('image', e.target.value)} placeholder="/api/projects/images/... or https://..." />
-            </div>
+            {/* Fallback URL input for external paste — hide when data URL is present to avoid 100KB input */}
+            {form.image?.startsWith('data:image/') ? (
+              <div style={{ marginTop: 12, padding: '8px 12px', borderRadius: 8, background: 'rgba(16,185,129,0.08)', border: '1px solid rgba(16,185,129,0.15)', fontSize: 12, color: '#6ee7b7' }}>
+                ✓ Image stored in Neon DB ({Math.round(form.image.length / 1024)} KB) — will survive Vercel redeploys.
+              </div>
+            ) : (
+              <div style={{ marginTop: 12 }}>
+                <label style={{ display: 'block', fontSize: 10, color: '#6b7280', letterSpacing: '0.05em' }}>OR PASTE IMAGE URL</label>
+                <input style={{ ...inputStyle, marginTop: 6 }} value={form.image || ''} onChange={(e) => handleChange('image', e.target.value)} placeholder="https://... or leave empty and upload" />
+              </div>
+            )}
           </div>
 
           <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12 }}>
