@@ -35,8 +35,9 @@ export default function AdminLogin() {
   }
 
   return (
-    <div style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', background: '#05070A' }}>
-      <form onSubmit={handleSubmit} style={{
+    <div style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', background: '#05070A', padding: 16 }}>
+      <style>{`@media (max-width: 480px) { .admin-login-form { padding: 24px !important; } }`}</style>
+      <form onSubmit={handleSubmit} className="admin-login-form" style={{
         width: '100%', maxWidth: 400, padding: 40,
         borderRadius: 20, border: '1px solid rgba(255,255,255,0.08)',
         background: 'rgba(12,16,23,0.95)',

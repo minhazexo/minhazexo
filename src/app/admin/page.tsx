@@ -128,28 +128,61 @@ export default function AdminDashboard() {
           .admin-layout { flex-direction: column !important; }
           .admin-nav { width: 100% !important; border-right: none !important; border-bottom: 1px solid rgba(255,255,255,0.06); display: ${mobileNavOpen ? 'block' : 'none'} !important; }
           .admin-nav-desktop { display: none !important; }
+          .admin-header { padding: 12px 16px !important; }
           .admin-header h1 { font-size: 16px !important; }
+          .admin-main { padding: 16px !important; overflow-x: hidden !important; }
+          .admin-card { padding: 16px !important; }
+          .admin-form { padding: 16px !important; }
+          .admin-project-card { flex-direction: column !important; align-items: stretch !important; padding: 12px !important; overflow: hidden !important; }
+          .admin-project-card-actions { width: 100% !important; justify-content: flex-start !important; margin-top: 4px !important; }
+          .admin-project-card-actions button { flex: 1 1 auto !important; min-height: 36px !important; }
+          .admin-visibility-wrap { width: 100% !important; justify-content: flex-start !important; align-items: center !important; flex-wrap: wrap !important; gap: 8px !important; }
+          .admin-form-grid-2 { grid-template-columns: 1fr !important; }
+          .admin-form-grid-3 { grid-template-columns: 1fr !important; }
+          .admin-form-grid-docs { grid-template-columns: 1fr !important; }
+          .admin-form-grid-docs-span { grid-column: 1 / -1 !important; }
+          .admin-doc-card { flex-direction: column !important; align-items: stretch !important; }
+          .admin-doc-card-actions { width: 100% !important; }
+          .admin-doc-card-actions button { flex: 1 1 0 !important; min-height: 36px !important; }
+          .admin-profile-avatar-row { flex-direction: column !important; align-items: flex-start !important; }
+          .admin-toast { left: 12px !important; right: 12px !important; bottom: 12px !important; max-width: none !important; }
+          .admin-form input, .admin-form textarea, .admin-form select,
+          .admin-card input, .admin-card textarea, .admin-card select { font-size: 16px !important; }
+        }
+        @media (max-width: 480px) {
+          .admin-main { padding: 12px !important; }
+          .admin-card { padding: 12px !important; }
+          .admin-form { padding: 12px !important; }
+          .admin-header { padding: 10px 12px !important; }
+          .admin-header h1 { font-size: 15px !important; }
+          .admin-mobile-toggle { min-width: 44px !important; min-height: 44px !important; padding: 8px 12px !important; }
+          .admin-project-card img { width: 48px !important; height: 48px !important; }
         }
         @media (min-width: 769px) {
           .admin-mobile-toggle { display: none !important; }
+          .admin-nav-mobile { display: none !important; }
+        }
+        @media (max-width: 768px) {
+          .admin-nav-mobile { display: block !important; }
         }
       `}</style>
 
-      <header className="admin-header" style={{ borderBottom: '1px solid rgba(255,255,255,0.06)', padding: '16px 24px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', position: 'sticky', top: 0, background: '#05070A', zIndex: 20 }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+      <header className="admin-header" style={{ borderBottom: '1px solid rgba(255,255,255,0.06)', padding: '16px 24px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', position: 'sticky', top: 0, background: '#05070A', zIndex: 20, gap: 12, flexWrap: 'wrap' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 12, minWidth: 0 }}>
           <button
             className="admin-mobile-toggle"
             onClick={() => setMobileNavOpen(!mobileNavOpen)}
-            style={{ background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(255,255,255,0.08)', borderRadius: 8, padding: '6px 10px', color: '#fff', cursor: 'pointer', fontSize: 18, lineHeight: 1 }}
+            style={{ background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(255,255,255,0.08)', borderRadius: 8, padding: '8px 12px', color: '#fff', cursor: 'pointer', fontSize: 18, lineHeight: 1, minWidth: 44, minHeight: 44, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}
             aria-label="Toggle navigation"
+            aria-expanded={mobileNavOpen}
           >
-            ☰
+            {mobileNavOpen ? '✕' : '☰'}
           </button>
-          <h1 style={{ fontSize: 18, fontWeight: 700 }}>Portfolio Admin</h1>
+          <h1 style={{ fontSize: 18, fontWeight: 700, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>Portfolio Admin</h1>
         </div>
-        <div style={{ display: 'flex', alignItems: 'center', gap: 16 }}>
-          <span style={{ fontSize: 13, color: '#6b7280' }}>{user}</span>
-          <button onClick={handleLogout} style={{ fontSize: 13, color: '#ef4444', background: 'none', border: 'none', cursor: 'pointer' }}>Logout</button>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 12, flexWrap: 'wrap', justifyContent: 'flex-end', minWidth: 0 }}>
+          <span style={{ fontSize: 13, color: '#6b7280', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', maxWidth: 120 }}>{user}</span>
+          <button onClick={handleLogout} style={{ fontSize: 13, color: '#ef4444', background: 'rgba(239,68,68,0.08)', border: '1px solid rgba(239,68,68,0.2)', borderRadius: 8, padding: '6px 12px', cursor: 'pointer', whiteSpace: 'nowrap' }}>Logout</button>
         </div>
       </header>
 
@@ -161,14 +194,14 @@ export default function AdminDashboard() {
         </nav>
 
         {/* mobile nav */}
-        <nav className="admin-nav" style={{ width: 220, borderRight: '1px solid rgba(255,255,255,0.06)', padding: '12px 0', background: '#0A0E14' }}>
-          <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6, padding: '0 12px' }}>
+        <nav className="admin-nav admin-nav-mobile" style={{ width: 220, borderRight: '1px solid rgba(255,255,255,0.06)', padding: '12px 0', background: '#0A0E14' }}>
+          <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8, padding: '0 12px' }}>
             {[...contentTabs, ...adminTabs].map(t => (
               <button
                 key={t}
                 onClick={()=>{ setTab(t as Tab); setMobileNavOpen(false); setShowForm(false); setEditing(null)}}
                 style={{
-                  padding: '6px 12px', borderRadius: 999, fontSize: 12, fontWeight: 600, cursor: 'pointer', textTransform: 'capitalize',
+                  padding: '8px 14px', borderRadius: 999, fontSize: 13, fontWeight: 600, cursor: 'pointer', textTransform: 'capitalize', minHeight: 36,
                   border: tab===t ? '1px solid rgba(99,102,241,0.6)' : '1px solid rgba(255,255,255,0.08)',
                   background: tab===t ? 'rgba(99,102,241,0.15)' : 'rgba(255,255,255,0.03)',
                   color: tab===t ? '#a5b4fc' : '#9ca3af',
@@ -180,7 +213,7 @@ export default function AdminDashboard() {
           </div>
         </nav>
 
-        <main style={{ flex: 1, padding: 24, minWidth: 0, maxWidth: '100%' }}>
+        <main className="admin-main" style={{ flex: 1, padding: 24, minWidth: 0, maxWidth: '100%' }}>
           {isContentTab(tab) ? (
             <>
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 24, flexWrap: 'wrap', gap: 12 }}>
@@ -231,7 +264,7 @@ export default function AdminDashboard() {
 
               <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
                 {displayedData.map((item: any) => (
-                  <div key={item.id} style={{
+                  <div key={item.id} className="admin-project-card" style={{
                     display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: 12,
                     padding: '14px 16px', borderRadius: 10,
                     border: '1px solid rgba(255,255,255,0.06)',
@@ -257,7 +290,7 @@ export default function AdminDashboard() {
                           </div>
                         )}
                         {tab === 'projects' && (
-                          <div style={{ marginTop: 10 }}>
+                          <div className="admin-visibility-wrap" style={{ marginTop: 10, display: 'flex', flexWrap: 'wrap', gap: 10, alignItems: 'center' }}>
                             <VisibilityToggle
                               projectId={item.id}
                               isVisible={item.isVisible !== false}
@@ -268,16 +301,16 @@ export default function AdminDashboard() {
                         )}
                       </div>
                     </div>
-                    <div style={{ display: 'flex', gap: 8, flexShrink: 0 }}>
+                    <div className="admin-project-card-actions" style={{ display: 'flex', gap: 8, flexShrink: 0 }}>
                       <button
                         onClick={() => { setEditing(item); setShowForm(true) }}
-                        style={{ fontSize: 12, color: '#818cf8', background: 'none', border: '1px solid rgba(99,102,241,0.3)', borderRadius: 6, padding: '4px 10px', cursor: 'pointer' }}
+                        style={{ fontSize: 12, color: '#818cf8', background: 'none', border: '1px solid rgba(99,102,241,0.3)', borderRadius: 6, padding: '6px 14px', cursor: 'pointer', minHeight: 32 }}
                       >
                         Edit
                       </button>
                       <button
                         onClick={() => handleDelete(item.id)}
-                        style={{ fontSize: 12, color: '#ef4444', background: 'none', border: '1px solid rgba(239,68,68,0.3)', borderRadius: 6, padding: '4px 10px', cursor: 'pointer' }}
+                        style={{ fontSize: 12, color: '#ef4444', background: 'none', border: '1px solid rgba(239,68,68,0.3)', borderRadius: 6, padding: '6px 14px', cursor: 'pointer', minHeight: 32 }}
                       >
                         Delete
                       </button>
@@ -305,6 +338,7 @@ export default function AdminDashboard() {
         {toast && (
           <motion.div
             key="toast"
+            className="admin-toast"
             initial={{ opacity: 0, y: 16, scale: 0.97 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: 8, scale: 0.97 }}
@@ -445,9 +479,9 @@ function ProfileTab({ onToast }: { onToast: (t:'success'|'error', m:string)=>voi
       <h2 style={{ fontSize:22, fontWeight:700, marginBottom:6 }}>Profile</h2>
       <p style={{ fontSize:13, color:'#6b7280', marginBottom:24 }}>Manage your public admin identity. This information is tied to your login account.</p>
 
-      <div style={cardStyle}>
+      <div className="admin-card" style={cardStyle}>
         {/* Avatar */}
-        <div style={{ display:'flex', alignItems:'center', gap:20, marginBottom:28, flexWrap:'wrap' }}>
+        <div className="admin-profile-avatar-row" style={{ display:'flex', alignItems:'center', gap:20, marginBottom:28, flexWrap:'wrap' }}>
           <div style={{ position:'relative', width:96, height:96, borderRadius:'50%', overflow:'hidden', background:'rgba(255,255,255,0.06)', border:'2px solid rgba(99,102,241,0.3)', flexShrink:0, display:'flex', alignItems:'center', justifyContent:'center' }}>
             {avatarPreview ? (
               <img key={avatarCacheBust} src={avatarPreview} alt="Avatar" style={{ width:'100%', height:'100%', objectFit:'cover' }} />
@@ -580,7 +614,7 @@ function SecurityTab({ onToast }: { onToast: (t:'success'|'error', m:string)=>vo
       <h2 style={{ fontSize:22, fontWeight:700, marginBottom:6 }}>Security</h2>
       <p style={{ fontSize:13, color:'#6b7280', marginBottom:24 }}>Change your password securely. You must confirm your current password. All other sessions will be invalidated after a successful change.</p>
 
-      <form onSubmit={handleSubmit} style={{ background:'rgba(255,255,255,0.02)', border:'1px solid rgba(255,255,255,0.06)', borderRadius:16, padding:24, display:'flex', flexDirection:'column', gap:18 }}>
+      <form className="admin-card" onSubmit={handleSubmit} style={{ background:'rgba(255,255,255,0.02)', border:'1px solid rgba(255,255,255,0.06)', borderRadius:16, padding:24, display:'flex', flexDirection:'column', gap:18 }}>
         {[
           { label:'CURRENT PASSWORD', value:current, setter:setCurrent, key:'cur' as const },
           { label:'NEW PASSWORD', value:next, setter:setNext, key:'nxt' as const },
@@ -742,7 +776,7 @@ function DocumentsTab({ onToast }: { onToast: (t:'success'|'error', m:string)=>v
       <p style={{ fontSize:13, color:'#6b7280', marginBottom:20 }}>Private storage for your CV, certificates and other important files. Files are stored securely and require authentication to download.</p>
 
       {/* upload card */}
-      <div style={{ background:'rgba(255,255,255,0.02)', border:`1px solid ${dragOver ? 'rgba(99,102,241,0.5)' : 'rgba(255,255,255,0.06)'}`, borderRadius:16, padding:20, marginBottom:20, transition:'border-color 0.2s' }}
+      <div className="admin-card" style={{ background:'rgba(255,255,255,0.02)', border:`1px solid ${dragOver ? 'rgba(99,102,241,0.5)' : 'rgba(255,255,255,0.06)'}`, borderRadius:16, padding:20, marginBottom:20, transition:'border-color 0.2s' }}
         onDragOver={e=>{e.preventDefault(); setDragOver(true)}}
         onDragLeave={()=>setDragOver(false)}
         onDrop={handleDrop}
@@ -760,7 +794,7 @@ function DocumentsTab({ onToast }: { onToast: (t:'success'|'error', m:string)=>v
           <input ref={fileRef} type="file" onChange={handleFileChange} style={{ display:'none' }} />
         </div>
 
-        <div style={{ display:'grid', gridTemplateColumns:'repeat(auto-fit, minmax(180px,1fr))', gap:12, marginTop:16 }}>
+        <div className="admin-form-grid-docs" style={{ display:'grid', gridTemplateColumns:'repeat(auto-fit, minmax(180px,1fr))', gap:12, marginTop:16 }}>
           <div>
             <label style={{ display:'block', fontSize:11, fontWeight:600, color:'#9ca3af', letterSpacing:'0.06em', marginBottom:6 }}>CATEGORY</label>
             <select value={category} onChange={e=>setCategory(e.target.value)} style={{ width:'100%', height:38, borderRadius:8, border:'1px solid rgba(255,255,255,0.08)', background:'rgba(255,255,255,0.04)', color:'#fff', fontSize:13, padding:'0 10px' }}>
@@ -771,7 +805,7 @@ function DocumentsTab({ onToast }: { onToast: (t:'success'|'error', m:string)=>v
               <option value="other" style={{color:'#000'}}>Other</option>
             </select>
           </div>
-          <div style={{ gridColumn:'span 2' }}>
+          <div className="admin-form-grid-docs-span" style={{ gridColumn:'span 2' }}>
             <label style={{ display:'block', fontSize:11, fontWeight:600, color:'#9ca3af', letterSpacing:'0.06em', marginBottom:6 }}>DESCRIPTION (OPTIONAL)</label>
             <input value={description} onChange={e=>setDescription(e.target.value)} placeholder="e.g., Updated CV - Jan 2026" maxLength={2000} style={{ width:'100%', height:38, borderRadius:8, border:'1px solid rgba(255,255,255,0.08)', background:'rgba(255,255,255,0.04)', color:'#fff', fontSize:13, padding:'0 12px' }} />
           </div>
@@ -806,7 +840,7 @@ function DocumentsTab({ onToast }: { onToast: (t:'success'|'error', m:string)=>v
       ) : (
         <div style={{ display:'flex', flexDirection:'column', gap:10 }}>
           {docs.map((d:any)=>(
-            <div key={d.id} style={{ display:'flex', gap:14, padding:16, borderRadius:12, border:'1px solid rgba(255,255,255,0.06)', background:'rgba(255,255,255,0.02)', flexWrap:'wrap', alignItems:'center' }}>
+            <div key={d.id} className="admin-doc-card" style={{ display:'flex', gap:14, padding:16, borderRadius:12, border:'1px solid rgba(255,255,255,0.06)', background:'rgba(255,255,255,0.02)', flexWrap:'wrap', alignItems:'center' }}>
               <div style={{ width:44, height:44, borderRadius:10, background:'rgba(99,102,241,0.12)', border:'1px solid rgba(99,102,241,0.2)', display:'flex', alignItems:'center', justifyContent:'center', fontSize:18, flexShrink:0 }}>
                 {d.category==='cv' || d.category==='resume' ? '📄' : d.category==='certificate' ? '🏅' : d.mimeType?.includes('image') ? '🖼️' : d.mimeType?.includes('pdf') ? '📕' : '📦'}
               </div>
@@ -828,9 +862,9 @@ function DocumentsTab({ onToast }: { onToast: (t:'success'|'error', m:string)=>v
                   <button onClick={()=>handleUpdateMeta(d)} style={{ height:32, padding:'0 12px', borderRadius:8, border:'1px solid rgba(99,102,241,0.3)', background:'rgba(99,102,241,0.12)', color:'#a5b4fc', fontSize:12, fontWeight:600, cursor:'pointer' }}>Save</button>
                 </div>
               </div>
-              <div style={{ display:'flex', gap:8, flexShrink:0 }}>
-                <button onClick={()=>handleDownload(d)} style={{ padding:'7px 14px', borderRadius:8, border:'none', background:'linear-gradient(135deg,#6366f1,#8b5cf6)', color:'#fff', fontSize:12, fontWeight:600, cursor:'pointer' }}>Download</button>
-                <button onClick={()=>handleDelete(d.id)} style={{ padding:'7px 12px', borderRadius:8, border:'1px solid rgba(239,68,68,0.3)', background:'transparent', color:'#f87171', fontSize:12, fontWeight:600, cursor:'pointer' }}>Delete</button>
+              <div className="admin-doc-card-actions" style={{ display:'flex', gap:8, flexShrink:0 }}>
+                <button onClick={()=>handleDownload(d)} style={{ padding:'7px 14px', borderRadius:8, border:'none', background:'linear-gradient(135deg,#6366f1,#8b5cf6)', color:'#fff', fontSize:12, fontWeight:600, cursor:'pointer', minHeight: 36 }}>Download</button>
+                <button onClick={()=>handleDelete(d.id)} style={{ padding:'7px 12px', borderRadius:8, border:'1px solid rgba(239,68,68,0.3)', background:'transparent', color:'#f87171', fontSize:12, fontWeight:600, cursor:'pointer', minHeight: 36 }}>Delete</button>
               </div>
             </div>
           ))}
@@ -903,7 +937,7 @@ function ItemForm({ tab, item, onSave, onCancel }: { tab: ContentTab; item: any;
   const labelStyle = { display: 'block', fontSize: 11, color: '#9ca3af', letterSpacing: '0.05em', marginBottom: 16 } as const
 
   return (
-    <form onSubmit={handleSubmit} style={{
+    <form className="admin-form" onSubmit={handleSubmit} style={{
       padding: 20, borderRadius: 12, marginBottom: 24,
       border: '1px solid rgba(99,102,241,0.2)', background: 'rgba(99,102,241,0.04)',
     }}>
@@ -965,7 +999,7 @@ function ItemForm({ tab, item, onSave, onCancel }: { tab: ContentTab; item: any;
             )}
           </div>
 
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12 }}>
+          <div className="admin-form-grid-2" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12 }}>
             {['title', 'category', 'github', 'demo'].map((f) => (
               <div key={f}>
                 <label style={labelStyle}>
@@ -991,7 +1025,7 @@ function ItemForm({ tab, item, onSave, onCancel }: { tab: ContentTab; item: any;
       )}
 
       {tab === 'skills' && (
-        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: 12 }}>
+        <div className="admin-form-grid-3" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: 12 }}>
           {['name', 'category', 'level', 'color'].map((f) => (
             <div key={f}>
               <label style={labelStyle}>
@@ -1040,7 +1074,7 @@ function ItemForm({ tab, item, onSave, onCancel }: { tab: ContentTab; item: any;
       )}
 
       {tab === 'testimonials' && (
-        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12 }}>
+        <div className="admin-form-grid-2" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12 }}>
           {['name', 'role', 'company', 'avatar', 'rating', 'color'].map((f) => (
             <div key={f}>
               <label style={labelStyle}>
