@@ -28,6 +28,14 @@ export const MAX_DOCUMENT_SIZE = 10 * 1024 * 1024 // 10MB
 export const MAX_PROJECT_SIZE = 10 * 1024 * 1024 // 10MB
 export const ALLOWED_PROJECT_TYPES = ['image/jpeg', 'image/png', 'image/webp', 'image/avif', 'image/gif']
 
+function isBlobEnabled(): boolean {
+  return !!process.env.BLOB_READ_WRITE_TOKEN
+}
+
+function isBlobUrl(url: string): boolean {
+  return url.startsWith('https://') && url.includes('blob.vercel-storage.com')
+}
+
 async function ensureDir(dir: string) {
   if (!existsSync(dir)) await mkdir(dir, { recursive: true })
 }
@@ -56,27 +64,49 @@ export async function saveDocument(buffer: Buffer, originalName: string): Promis
 }
 
 export async function saveProjectImage(buffer: Buffer, originalName: string): Promise<{ storedName: string; storageKey: string; publicUrl: string }> {
-  await ensureDir(PROJECT_DIR)
-  // Best for management: normalize to webp via sharp (best compression for photos/illustrations)
-  // Keep original extension if sharp fails.
+  // Normalize to webp via sharp — best for management (uniform, smallest)
   let outBuffer = buffer
   let ext = '.webp'
   try {
     const sharp = (await import('sharp')).default
-    // Do not enlarge, cap width to 1280 for card display (original may be larger)
     outBuffer = await sharp(buffer)
-      .rotate() // auto-orient
+      .rotate()
       .resize({ width: 1280, withoutEnlargement: true })
       .webp({ quality: 82, effort: 4 })
       .toBuffer()
   } catch {
-    // sharp not available or decode failed — keep original buffer
     outBuffer = buffer
     ext = path.extname(originalName) || '.webp'
     if (!['.webp', '.jpg', '.jpeg', '.png', '.gif', '.avif'].includes(ext.toLowerCase())) ext = '.webp'
   }
-  const base = sanitizeFilename(path.basename(originalName, path.extname(originalName)))
+
+  const base = sanitizeFilename(path.basename(originalName, path.extname(originalName)) || 'project')
   const storedName = `${Date.now()}-${Math.random().toString(36).slice(2, 8)}-${base}${ext}`
+
+  // Production: Vercel Blob (durable, CDN, survives deployments)
+  if (isBlobEnabled()) {
+    try {
+      const { put } = await import('@vercel/blob')
+      const pathname = `projects/${storedName}`
+      const blob = await put(pathname, outBuffer, {
+        access: 'public',
+        contentType: 'image/webp',
+        addRandomSuffix: false,
+      })
+      // blob.url is https://<store>.public.blob.vercel-storage.com/projects/<file>
+      return { storedName, storageKey: blob.url, publicUrl: blob.url }
+    } catch (e) {
+      console.error('Blob put failed, falling back to filesystem', e)
+      // fall through to filesystem
+    }
+  }
+
+  // On Vercel without Blob, filesystem is ephemeral — fail fast with clear message
+  if (process.env.VERCEL) {
+    throw new Error('BLOB_READ_WRITE_TOKEN not configured — project images cannot be persisted on Vercel. Create a Blob store at vercel.com/dashboard → Storage → Create Blob Store and set BLOB_READ_WRITE_TOKEN env var.')
+  }
+
+  await ensureDir(PROJECT_DIR)
   const fullPath = path.join(PROJECT_DIR, storedName)
   await writeFile(fullPath, outBuffer)
   const publicUrl = `/api/projects/images/${storedName}`
@@ -88,10 +118,36 @@ export function getProjectImagePath(storedName: string): string {
 }
 
 export async function deleteFile(storageKey: string): Promise<void> {
+  // storageKey may be blob URL or local path
+  if (isBlobUrl(storageKey)) {
+    if (!isBlobEnabled()) {
+      console.warn('Cannot delete blob without BLOB_READ_WRITE_TOKEN', storageKey)
+      return
+    }
+    try {
+      const { del } = await import('@vercel/blob')
+      await del(storageKey)
+    } catch (e) {
+      console.warn('Blob delete failed', e)
+    }
+    return
+  }
   try {
     if (existsSync(storageKey)) await unlink(storageKey)
   } catch {
     // ignore
+  }
+}
+
+export async function deleteProjectImageByUrl(url: string): Promise<void> {
+  if (!url) return
+  if (isBlobUrl(url)) {
+    await deleteFile(url)
+    return
+  }
+  if (isStoredProjectImageUrl(url)) {
+    const name = storedNameFromProjectUrl(url)
+    if (name) await deleteFile(getProjectImagePath(name))
   }
 }
 
@@ -130,10 +186,7 @@ export function validateAvatarFile(mimeType: string, size: number): string | nul
 }
 
 export function validateDocumentFile(mimeType: string, size: number): string | null {
-  // allow generic fallback but check size primarily; if mime not in allowlist but extension is pdf/doc etc we still allow
   if (size > MAX_DOCUMENT_SIZE) return `File too large. Max ${MAX_DOCUMENT_SIZE / 1024 / 1024}MB`
-  // For stricter security, uncomment next:
-  // if (!ALLOWED_DOCUMENT_TYPES.includes(mimeType)) return `File type not allowed: ${mimeType}`
   return null
 }
 
@@ -145,12 +198,13 @@ export function validateProjectFile(mimeType: string, size: number): string | nu
 
 export function isStoredProjectImageUrl(url: string | null | undefined): boolean {
   if (!url) return false
-  return url.startsWith('/api/projects/images/')
+  return url.startsWith('/api/projects/images/') || isBlobUrl(url)
 }
 
 export function storedNameFromProjectUrl(url: string): string | null {
-  if (!isStoredProjectImageUrl(url)) return null
+  if (!url) return null
   try {
+    // Handle both /api/projects/images/file.webp and https://blob.../projects/file.webp
     const u = new URL(url, 'http://localhost')
     return path.basename(u.pathname)
   } catch {
@@ -159,6 +213,7 @@ export function storedNameFromProjectUrl(url: string): string | null {
 }
 
 export function getAvatarPublicPath(storageKey: string): string {
-  // avatars are served via authenticated API, but we also provide a public-like URL via api
   return storageKey
 }
+
+export { isBlobEnabled, isBlobUrl }

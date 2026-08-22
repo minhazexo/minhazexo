@@ -3,7 +3,7 @@ import { db } from '@/lib/db'
 import { projects } from '@/lib/db/schema'
 import { eq, desc } from 'drizzle-orm'
 import { getAuth } from '@/lib/auth'
-import { saveProjectImage, validateProjectFile, isStoredProjectImageUrl, storedNameFromProjectUrl, deleteFile, getProjectImagePath } from '@/lib/storage'
+import { saveProjectImage, validateProjectFile, isStoredProjectImageUrl, deleteProjectImageByUrl } from '@/lib/storage'
 
 export async function GET() {
   const auth = await getAuth()
@@ -105,10 +105,9 @@ export async function PUT(request: NextRequest) {
       const oldUrl = existing?.image as string | undefined
       const { publicUrl } = await saveProjectImage(imageFile.buffer, imageFile.name)
       data.image = publicUrl
-      // Clean up old stored file (only if it was a stored project image)
+      // Clean up old stored file (supports both blob URL and local /api/ path)
       if (oldUrl && isStoredProjectImageUrl(oldUrl)) {
-        const oldName = storedNameFromProjectUrl(oldUrl)
-        if (oldName) await deleteFile(getProjectImagePath(oldName))
+        await deleteProjectImageByUrl(oldUrl)
       }
     }
 
@@ -147,10 +146,9 @@ export async function DELETE(request: NextRequest) {
 
     const [existing] = await db.select().from(projects).where(eq(projects.id, Number(id)))
     await db.delete(projects).where(eq(projects.id, Number(id)))
-    // Best-effort delete stored image (only if it was a managed upload)
+    // Best-effort delete stored image (blob or local)
     if (existing?.image && isStoredProjectImageUrl(existing.image)) {
-      const name = storedNameFromProjectUrl(existing.image)
-      if (name) await deleteFile(getProjectImagePath(name))
+      await deleteProjectImageByUrl(existing.image)
     }
     return NextResponse.json({ success: true })
   } catch (error) {
