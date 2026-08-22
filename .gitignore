@@ -20,12 +20,14 @@ package-lock.json
 yarn.lock
 pnpm-lock.yaml
 
-# IDE
+# IDE / tools
 .idea/
 .vscode/
 *.swp
 *.swo
 *~
+.claude/
+.playwright-mcp/
 
 # OS
 .DS_Store
@@ -59,3 +61,12 @@ next-env.d.ts
 # misc
 *.pem
 docs/project info.md
+
+# removed from tracking — source images now in DB as data URLs
+public/Project Photo/
+public/background-music.mp3
+public/css-pattern-by-magicpattern.png
+public/resume/
+tests/1.png
+tests/2.png
+tests/3.png
