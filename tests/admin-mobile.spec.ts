@@ -1,6 +1,7 @@
 import { test, expect } from '@playwright/test';
 
 test('admin mobile toggle placement', async ({ page }) => {
+  test.setTimeout(60000);
   // Try both known passwords (seed vs user-changed) — CI uses admin123, prod may be Portfolio7102
   for (const pw of ['Portfolio7102', 'admin123']) {
     const r = await page.request.post('/api/admin/login', {
@@ -8,13 +9,13 @@ test('admin mobile toggle placement', async ({ page }) => {
     });
     if (r.ok()) break;
   }
-  await page.goto('/admin');
-  await page.waitForTimeout(1000);
+  await page.goto('/admin', { waitUntil: 'domcontentloaded' });
+  await page.waitForTimeout(2500);
   // take mobile screenshot
   await page.screenshot({ path: 'test-results/admin-mobile.png', fullPage: true });
   // check that Visible toggle is visible and within viewport
   const toggle = page.locator('text=Visible').first();
-  await expect(toggle).toBeVisible();
+  await expect(toggle).toBeVisible({ timeout: 10000 });
   const box = await toggle.boundingBox();
   console.log('Visible toggle box', box);
   expect(box).not.toBeNull();

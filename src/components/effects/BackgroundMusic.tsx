@@ -262,7 +262,7 @@ export function BackgroundMusic() {
               exit={{ opacity: 0, y: 20, scale: 0.9 }}
               style={{
                 position: 'absolute', bottom: isMobile ? 64 : 72, right: 0,
-                width: isMobile ? 'min(196px, calc(100vw - 48px))' : 'min(240px, calc(100vw - 48px))',
+                width: isMobile ? 'min(196px, calc(100% - 48px))' : 'min(240px, calc(100% - 48px))',
                 padding: isMobile ? 14 : 18,
                 borderRadius: isMobile ? 16 : 20,
                 background: 'rgba(9, 12, 18, 0.88)',
@@ -369,7 +369,7 @@ export function BackgroundMusic() {
             exit={{ opacity: 0, y: 50 }}
             style={{
               position: 'fixed', bottom: isMobile ? 68 : 88, right: isMobile ? 16 : 24, zIndex: 50,
-              width: isMobile ? 'min(240px, calc(100vw - 32px))' : 'min(300px, calc(100vw - 48px))',
+              width: isMobile ? 'min(240px, calc(100% - 32px))' : 'min(300px, calc(100% - 48px))',
               padding: isMobile ? 14 : 16,
               borderRadius: isMobile ? 18 : 20,
               background: 'rgba(9, 12, 18, 0.88)',

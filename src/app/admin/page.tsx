@@ -145,6 +145,8 @@ export default function AdminDashboard() {
           .admin-doc-card-actions { width: 100% !important; }
           .admin-doc-card-actions button { flex: 1 1 0 !important; min-height: 36px !important; }
           .admin-profile-avatar-row { flex-direction: column !important; align-items: flex-start !important; }
+          .admin-profile-avatar-row > div { min-width: 0 !important; }
+          .admin-image-preview-text { min-width: 0 !important; width: 100% !important; }
           .admin-toast { left: 12px !important; right: 12px !important; bottom: 12px !important; max-width: none !important; }
           .admin-form input, .admin-form textarea, .admin-form select,
           .admin-card input, .admin-card textarea, .admin-card select { font-size: 16px !important; }
@@ -285,7 +287,7 @@ export default function AdminDashboard() {
                           {item.category || item.company || ''}
                         </span>
                         {tab === 'projects' && item.image && (
-                          <div style={{ fontSize: 11, color: '#6b7280', marginTop: 2, wordBreak: 'break-all', maxWidth: 360, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                          <div style={{ fontSize: 11, color: '#6b7280', marginTop: 2, wordBreak: 'break-all', maxWidth: 'min(360px, 100%)', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
                             {item.image.startsWith('data:image/') ? `Data image • ${Math.round(item.image.length / 1024)} KB` : item.image.length > 60 ? `${item.image.slice(0, 60)}…` : item.image}
                           </div>
                         )}
@@ -963,8 +965,8 @@ function ItemForm({ tab, item, onSave, onCancel }: { tab: ContentTab; item: any;
             {form.image ? (
               <div style={{ display: 'flex', gap: 16, alignItems: 'center', flexWrap: 'wrap' }}>
                 <img src={form.image} alt="Preview" style={{ width: 140, height: 90, objectFit: 'cover', borderRadius: 8, border: '1px solid rgba(255,255,255,0.08)', background: 'rgba(255,255,255,0.04)' }} onError={(e) => { (e.currentTarget as HTMLImageElement).style.display = 'none' }} />
-                <div style={{ flex: 1, minWidth: 200 }}>
-                  <div style={{ fontSize: 12, color: '#9ca3af', wordBreak: 'break-all', marginBottom: 8, maxWidth: 360, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                <div className="admin-image-preview-text" style={{ flex: 1, minWidth: 200, maxWidth: '100%', overflow: 'hidden' }}>
+                  <div style={{ fontSize: 12, color: '#9ca3af', wordBreak: 'break-all', marginBottom: 8, maxWidth: 'min(360px, 100%)', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
                     {form.image?.startsWith('data:image/') ? `Data image • ${Math.round(form.image.length / 1024)} KB • stored in DB` : form.image}
                   </div>
                   <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>

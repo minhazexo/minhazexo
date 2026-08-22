@@ -23,10 +23,10 @@ export function GlowLayer() {
     <div
       className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2"
       style={{
-        width: '1000px',
-        height: '1000px',
-        maxWidth: '110vw',
-        maxHeight: '110vw',
+        width: 'min(1000px, 100vw)',
+        height: 'min(1000px, 100vw)',
+        maxWidth: '100vw',
+        maxHeight: '100vw',
         borderRadius: '50%',
         background: 'radial-gradient(circle at center, rgba(var(--theme-rgb), 0.30) 0%, rgba(var(--theme-rgb), 0.18) 20%, rgba(var(--theme-rgb), 0.08) 45%, transparent 70%)',
         filter: `blur(${blur}px)`,

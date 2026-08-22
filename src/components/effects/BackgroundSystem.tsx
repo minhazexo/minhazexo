@@ -12,9 +12,9 @@ export function BackgroundSystem() {
 
       <HexagonGrid />
 
-      <div className="fixed inset-0 pointer-events-none z-background" aria-hidden="true">
+      <div className="fixed inset-0 pointer-events-none z-background overflow-hidden" aria-hidden="true">
         <div
-          className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[1200px] h-[1200px]"
+          className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[min(1200px,150vw)] h-[min(1200px,150vw)] max-w-[100vw] max-h-[100vh]"
           style={{
             background: 'radial-gradient(circle at center, rgba(255,255,255,0.04) 0%, transparent 70%)',
             filter: 'blur(300px)',
