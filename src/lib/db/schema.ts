@@ -35,7 +35,7 @@ export const projects = pgTable('projects', {
   id: serial('id').primaryKey(),
   title: varchar('title', { length: 255 }).notNull(),
   description: text('description').notNull(),
-  image: varchar('image', { length: 500 }).notNull(),
+  image: text('image').notNull(),
   tech: text('tech').array().notNull(),
   category: varchar('category', { length: 100 }).notNull(),
   github: varchar('github', { length: 500 }).notNull(),

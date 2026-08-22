@@ -51,6 +51,7 @@ const ProjectCard = memo(function ProjectCard({ project, index, isInView, onClic
             loading="lazy"
             sizes="(max-width: 768px) 100vw, (max-width: 1280px) 50vw, 600px"
             className="object-cover"
+            unoptimized={project.image?.startsWith('data:')}
             onLoadingComplete={() => setImgReady(true)}
             style={{
               transition: 'transform 0.5s ease, opacity 0.4s ease',

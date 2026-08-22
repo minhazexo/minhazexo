@@ -43,13 +43,13 @@ async function seed() {
   await sqlClient`ALTER TABLE admin_users ADD COLUMN IF NOT EXISTS title VARCHAR(255)`
   await sqlClient`ALTER TABLE admin_users ADD COLUMN IF NOT EXISTS token_version INTEGER NOT NULL DEFAULT 0`
 
-  // Create projects table
+  // Create projects table — image is TEXT to hold durable data URLs (base64 webp, no filesystem)
   await sqlClient`
     CREATE TABLE IF NOT EXISTS projects (
       id SERIAL PRIMARY KEY,
       title VARCHAR(255) NOT NULL,
       description TEXT NOT NULL,
-      image VARCHAR(500) NOT NULL,
+      image TEXT NOT NULL,
       tech TEXT[] NOT NULL,
       category VARCHAR(100) NOT NULL,
       github VARCHAR(500) NOT NULL DEFAULT '#',
@@ -58,6 +58,8 @@ async function seed() {
       updated_at TIMESTAMP DEFAULT NOW()
     )
   `
+  await sqlClient`ALTER TABLE projects ADD COLUMN IF NOT EXISTS is_visible BOOLEAN NOT NULL DEFAULT true`
+  await sqlClient`ALTER TABLE projects ALTER COLUMN image TYPE TEXT`
 
   await sqlClient`
     CREATE TABLE IF NOT EXISTS skills (

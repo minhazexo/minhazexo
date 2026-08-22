@@ -28,14 +28,6 @@ export const MAX_DOCUMENT_SIZE = 10 * 1024 * 1024 // 10MB
 export const MAX_PROJECT_SIZE = 10 * 1024 * 1024 // 10MB
 export const ALLOWED_PROJECT_TYPES = ['image/jpeg', 'image/png', 'image/webp', 'image/avif', 'image/gif']
 
-function isBlobEnabled(): boolean {
-  return !!process.env.BLOB_READ_WRITE_TOKEN
-}
-
-function isBlobUrl(url: string): boolean {
-  return url.startsWith('https://') && url.includes('blob.vercel-storage.com')
-}
-
 async function ensureDir(dir: string) {
   if (!existsSync(dir)) await mkdir(dir, { recursive: true })
 }
@@ -44,6 +36,8 @@ export function sanitizeFilename(name: string): string {
   return name.replace(/[^a-zA-Z0-9._-]/g, '_').slice(0, 200)
 }
 
+// Avatars & documents still use filesystem (private, small, not critical for homepage)
+// Project images are now stored durably in Neon as data URLs — no filesystem, no Vercel Blob needed
 export async function saveAvatar(buffer: Buffer, originalName: string, mimeType: string): Promise<{ storedName: string; storageKey: string }> {
   await ensureDir(AVATAR_DIR)
   const ext = path.extname(originalName) || mimeExtension(mimeType) || '.bin'
@@ -64,53 +58,28 @@ export async function saveDocument(buffer: Buffer, originalName: string): Promis
 }
 
 export async function saveProjectImage(buffer: Buffer, originalName: string): Promise<{ storedName: string; storageKey: string; publicUrl: string }> {
-  // Normalize to webp via sharp — best for management (uniform, smallest)
+  // Durable Neon storage: optimize to webp and return data URL
+  // This URL lives entirely in DB (projects.image TEXT), survives any Vercel deploy, zero external service
   let outBuffer = buffer
-  let ext = '.webp'
   try {
     const sharp = (await import('sharp')).default
-    outBuffer = await sharp(buffer)
-      .rotate()
-      .resize({ width: 1280, withoutEnlargement: true })
-      .webp({ quality: 82, effort: 4 })
-      .toBuffer()
+    outBuffer = await sharp(buffer).rotate().resize({ width: 1280, withoutEnlargement: true }).webp({ quality: 82, effort: 4 }).toBuffer()
   } catch {
     outBuffer = buffer
-    ext = path.extname(originalName) || '.webp'
-    if (!['.webp', '.jpg', '.jpeg', '.png', '.gif', '.avif'].includes(ext.toLowerCase())) ext = '.webp'
   }
-
-  const base = sanitizeFilename(path.basename(originalName, path.extname(originalName)) || 'project')
-  const storedName = `${Date.now()}-${Math.random().toString(36).slice(2, 8)}-${base}${ext}`
-
-  // Production: Vercel Blob (durable, CDN, survives deployments)
-  if (isBlobEnabled()) {
-    try {
-      const { put } = await import('@vercel/blob')
-      const pathname = `projects/${storedName}`
-      const blob = await put(pathname, outBuffer, {
-        access: 'public',
-        contentType: 'image/webp',
-        addRandomSuffix: false,
-      })
-      // blob.url is https://<store>.public.blob.vercel-storage.com/projects/<file>
-      return { storedName, storageKey: blob.url, publicUrl: blob.url }
-    } catch (e) {
-      console.error('Blob put failed, falling back to filesystem', e)
-      // fall through to filesystem
-    }
+  const base64 = outBuffer.toString('base64')
+  const publicUrl = `data:image/webp;base64,${base64}`
+  // For local dev convenience, also write a cached file (not used in prod)
+  try {
+    await ensureDir(PROJECT_DIR)
+    const base = sanitizeFilename(path.basename(originalName, path.extname(originalName)) || 'project')
+    const storedName = `${Date.now()}-${Math.random().toString(36).slice(2, 8)}-${base}.webp`
+    const fullPath = path.join(PROJECT_DIR, storedName)
+    await writeFile(fullPath, outBuffer)
+    return { storedName, storageKey: fullPath, publicUrl }
+  } catch {
+    return { storedName: 'neon-data-url', storageKey: 'neon', publicUrl }
   }
-
-  // On Vercel without Blob, filesystem is ephemeral — fail fast with clear message
-  if (process.env.VERCEL) {
-    throw new Error('BLOB_READ_WRITE_TOKEN not configured — project images cannot be persisted on Vercel. Create a Blob store at vercel.com/dashboard → Storage → Create Blob Store and set BLOB_READ_WRITE_TOKEN env var.')
-  }
-
-  await ensureDir(PROJECT_DIR)
-  const fullPath = path.join(PROJECT_DIR, storedName)
-  await writeFile(fullPath, outBuffer)
-  const publicUrl = `/api/projects/images/${storedName}`
-  return { storedName, storageKey: fullPath, publicUrl }
 }
 
 export function getProjectImagePath(storedName: string): string {
@@ -118,37 +87,9 @@ export function getProjectImagePath(storedName: string): string {
 }
 
 export async function deleteFile(storageKey: string): Promise<void> {
-  // storageKey may be blob URL or local path
-  if (isBlobUrl(storageKey)) {
-    if (!isBlobEnabled()) {
-      console.warn('Cannot delete blob without BLOB_READ_WRITE_TOKEN', storageKey)
-      return
-    }
-    try {
-      const { del } = await import('@vercel/blob')
-      await del(storageKey)
-    } catch (e) {
-      console.warn('Blob delete failed', e)
-    }
-    return
-  }
   try {
     if (existsSync(storageKey)) await unlink(storageKey)
-  } catch {
-    // ignore
-  }
-}
-
-export async function deleteProjectImageByUrl(url: string): Promise<void> {
-  if (!url) return
-  if (isBlobUrl(url)) {
-    await deleteFile(url)
-    return
-  }
-  if (isStoredProjectImageUrl(url)) {
-    const name = storedNameFromProjectUrl(url)
-    if (name) await deleteFile(getProjectImagePath(name))
-  }
+  } catch {}
 }
 
 export async function readStoredFile(storageKey: string): Promise<Buffer | null> {
@@ -198,13 +139,21 @@ export function validateProjectFile(mimeType: string, size: number): string | nu
 
 export function isStoredProjectImageUrl(url: string | null | undefined): boolean {
   if (!url) return false
-  return url.startsWith('/api/projects/images/') || isBlobUrl(url)
+  return url.startsWith('/api/projects/images/') || url.startsWith('data:image/')
+}
+
+export function isBlobUrl(url: string): boolean {
+  return url.startsWith('https://') && url.includes('blob.vercel-storage.com')
+}
+
+export function isDataUrl(url: string | null | undefined): boolean {
+  return !!url && url.startsWith('data:image/')
 }
 
 export function storedNameFromProjectUrl(url: string): string | null {
   if (!url) return null
+  if (url.startsWith('data:image/')) return null
   try {
-    // Handle both /api/projects/images/file.webp and https://blob.../projects/file.webp
     const u = new URL(url, 'http://localhost')
     return path.basename(u.pathname)
   } catch {
@@ -215,5 +164,3 @@ export function storedNameFromProjectUrl(url: string): string | null {
 export function getAvatarPublicPath(storageKey: string): string {
   return storageKey
 }
-
-export { isBlobEnabled, isBlobUrl }
