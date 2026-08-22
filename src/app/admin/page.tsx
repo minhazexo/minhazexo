@@ -125,47 +125,7 @@ export default function AdminDashboard() {
     <div style={{ minHeight: '100vh', background: '#05070A', color: '#fff' }}>
       <style>{`
         @media (max-width: 768px) {
-          .admin-layout { flex-direction: column !important; }
           .admin-nav { width: 100% !important; border-right: none !important; border-bottom: 1px solid rgba(255,255,255,0.06); display: ${mobileNavOpen ? 'block' : 'none'} !important; }
-          .admin-nav-desktop { display: none !important; }
-          .admin-header { padding: 12px 16px !important; }
-          .admin-header h1 { font-size: 16px !important; }
-          .admin-main { padding: 16px !important; overflow-x: hidden !important; }
-          .admin-card { padding: 16px !important; }
-          .admin-form { padding: 16px !important; }
-          .admin-project-card { flex-direction: column !important; align-items: stretch !important; padding: 12px !important; overflow: hidden !important; }
-          .admin-project-card-actions { width: 100% !important; justify-content: flex-start !important; margin-top: 4px !important; }
-          .admin-project-card-actions button { flex: 1 1 auto !important; min-height: 36px !important; }
-          .admin-visibility-wrap { width: 100% !important; justify-content: flex-start !important; align-items: center !important; flex-wrap: wrap !important; gap: 8px !important; }
-          .admin-form-grid-2 { grid-template-columns: 1fr !important; }
-          .admin-form-grid-3 { grid-template-columns: 1fr !important; }
-          .admin-form-grid-docs { grid-template-columns: 1fr !important; }
-          .admin-form-grid-docs-span { grid-column: 1 / -1 !important; }
-          .admin-doc-card { flex-direction: column !important; align-items: stretch !important; }
-          .admin-doc-card-actions { width: 100% !important; }
-          .admin-doc-card-actions button { flex: 1 1 0 !important; min-height: 36px !important; }
-          .admin-profile-avatar-row { flex-direction: column !important; align-items: flex-start !important; }
-          .admin-profile-avatar-row > div { min-width: 0 !important; }
-          .admin-image-preview-text { min-width: 0 !important; width: 100% !important; }
-          .admin-toast { left: 12px !important; right: 12px !important; bottom: 12px !important; max-width: none !important; }
-          .admin-form input, .admin-form textarea, .admin-form select,
-          .admin-card input, .admin-card textarea, .admin-card select { font-size: 16px !important; }
-        }
-        @media (max-width: 480px) {
-          .admin-main { padding: 12px !important; }
-          .admin-card { padding: 12px !important; }
-          .admin-form { padding: 12px !important; }
-          .admin-header { padding: 10px 12px !important; }
-          .admin-header h1 { font-size: 15px !important; }
-          .admin-mobile-toggle { min-width: 44px !important; min-height: 44px !important; padding: 8px 12px !important; }
-          .admin-project-card img { width: 48px !important; height: 48px !important; }
-        }
-        @media (min-width: 769px) {
-          .admin-mobile-toggle { display: none !important; }
-          .admin-nav-mobile { display: none !important; }
-        }
-        @media (max-width: 768px) {
-          .admin-nav-mobile { display: block !important; }
         }
       `}</style>
 
@@ -237,7 +197,7 @@ export default function AdminDashboard() {
               )}
 
               {tab === 'projects' && (
-                <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap', marginBottom: 16 }}>
+                <div className="admin-filter-row" style={{ display: 'flex', gap: 8, flexWrap: 'wrap', marginBottom: 16 }}>
                   {(['all', 'visible', 'hidden'] as VisibilityFilter[]).map((f) => (
                     <button
                       key={f}
@@ -272,7 +232,7 @@ export default function AdminDashboard() {
                     border: '1px solid rgba(255,255,255,0.06)',
                     background: tab === 'projects' && item.isVisible === false ? 'rgba(239,68,68,0.04)' : 'rgba(255,255,255,0.02)',
                   }}>
-                    <div style={{ display: 'flex', gap: 12, alignItems: 'center', flex: 1, minWidth: 0 }}>
+                    <div className="admin-project-info" style={{ display: 'flex', gap: 12, alignItems: 'center', flex: 1, minWidth: 0 }}>
                       {tab === 'projects' && item.image && (
                         <img
                           src={item.image}
@@ -282,17 +242,21 @@ export default function AdminDashboard() {
                         />
                       )}
                       <div style={{ flex: 1, minWidth: 0 }}>
-                        <span style={{ fontSize: 14, fontWeight: 500 }}>{item.title || item.name || item.role}</span>
-                        <span style={{ fontSize: 12, color: '#6b7280', marginLeft: 12 }}>
-                          {item.category || item.company || ''}
-                        </span>
+                        <div className="admin-project-title-row" style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'baseline', gap: 8 }}>
+                          <span style={{ fontSize: 14, fontWeight: 500 }}>{item.title || item.name || item.role}</span>
+                          {(item.category || item.company) && (
+                            <span style={{ fontSize: 12, color: '#6b7280' }}>
+                              {item.category || item.company || ''}
+                            </span>
+                          )}
+                        </div>
                         {tab === 'projects' && item.image && (
                           <div style={{ fontSize: 11, color: '#6b7280', marginTop: 2, wordBreak: 'break-all', maxWidth: 'min(360px, 100%)', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
                             {item.image.startsWith('data:image/') ? `Data image • ${Math.round(item.image.length / 1024)} KB` : item.image.length > 60 ? `${item.image.slice(0, 60)}…` : item.image}
                           </div>
                         )}
                         {tab === 'projects' && (
-                          <div className="admin-visibility-wrap" style={{ marginTop: 10, display: 'flex', flexWrap: 'wrap', gap: 10, alignItems: 'center' }}>
+                          <div className="admin-visibility-wrap" style={{ marginTop: 8, display: 'flex', flexWrap: 'wrap', gap: 10, alignItems: 'center' }}>
                             <VisibilityToggle
                               projectId={item.id}
                               isVisible={item.isVisible !== false}

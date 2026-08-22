@@ -3,6 +3,7 @@
 import { useState, useRef, useEffect, useCallback } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { Music, Pause, Play, Volume2, VolumeX } from 'lucide-react'
+import { usePathname } from 'next/navigation'
 import { getLocalStorageItem, setLocalStorageItem } from '@/lib/utils'
 import { audioAssets } from '@/data/assets'
 
@@ -17,6 +18,7 @@ export function BackgroundMusic() {
   const playAttemptedRef = useRef(false)
   const playInProgressRef = useRef(false)
   const mountedRef = useRef(true)
+  const pathname = usePathname()
   const [isMobile, setIsMobile] = useState(false)
 
   useEffect(() => {
@@ -172,6 +174,9 @@ export function BackgroundMusic() {
     setHasInteracted(true)
     setLocalStorageItem('music-enabled', 'false')
   }, [])
+
+  // Hide on admin routes to avoid overlapping Edit/Delete on mobile (orange prompt)
+  if (pathname?.startsWith('/admin')) return null
 
   return (
     <>
