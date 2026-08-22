@@ -3,7 +3,7 @@ import bcrypt from 'bcryptjs'
 import { db } from '@/lib/db'
 import { adminUsers } from '@/lib/db/schema'
 import { eq, sql } from 'drizzle-orm'
-import { getAuthStrict, getAuth, createToken, setAuthCookie } from '@/lib/auth'
+import { getAuth, createToken, setAuthCookie } from '@/lib/auth'
 
 function validatePasswordStrength(pw: string): string | null {
   if (pw.length < 8) return 'Password must be at least 8 characters'
@@ -16,7 +16,7 @@ function validatePasswordStrength(pw: string): string | null {
 }
 
 export async function POST(request: NextRequest) {
-  const auth = await getAuthStrict() || await getAuth()
+  const auth = await getAuth()
   if (!auth) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
 
   try {

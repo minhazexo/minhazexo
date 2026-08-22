@@ -1,9 +1,8 @@
-import { mkdir, writeFile, unlink, readFile, stat } from 'fs/promises'
+import { mkdir, writeFile, unlink, readFile } from 'fs/promises'
 import { existsSync } from 'fs'
 import path from 'path'
 
 const UPLOAD_ROOT = process.env.VERCEL ? '/tmp/uploads' : path.join(process.cwd(), 'private_uploads')
-const AVATAR_DIR = path.join(UPLOAD_ROOT, 'avatars')
 const DOCUMENT_DIR = path.join(UPLOAD_ROOT, 'documents')
 const PROJECT_DIR = path.join(UPLOAD_ROOT, 'projects')
 
@@ -34,17 +33,6 @@ async function ensureDir(dir: string) {
 
 export function sanitizeFilename(name: string): string {
   return name.replace(/[^a-zA-Z0-9._-]/g, '_').slice(0, 200)
-}
-
-// Avatars & documents still use filesystem (private, small, not critical for homepage)
-// Project images are now stored durably in Neon as data URLs — no filesystem, no Vercel Blob needed
-export async function saveAvatar(buffer: Buffer, originalName: string, mimeType: string): Promise<{ storedName: string; storageKey: string }> {
-  await ensureDir(AVATAR_DIR)
-  const ext = path.extname(originalName) || mimeExtension(mimeType) || '.bin'
-  const storedName = `${Date.now()}-${Math.random().toString(36).slice(2, 8)}${ext}`
-  const fullPath = path.join(AVATAR_DIR, storedName)
-  await writeFile(fullPath, buffer)
-  return { storedName, storageKey: fullPath }
 }
 
 export async function saveDocument(buffer: Buffer, originalName: string): Promise<{ storedName: string; storageKey: string }> {
@@ -101,25 +89,6 @@ export async function readStoredFile(storageKey: string): Promise<Buffer | null>
   }
 }
 
-export async function fileExists(storageKey: string): Promise<boolean> {
-  try {
-    await stat(storageKey)
-    return true
-  } catch {
-    return false
-  }
-}
-
-function mimeExtension(mime: string): string | null {
-  const map: Record<string, string> = {
-    'image/jpeg': '.jpg',
-    'image/png': '.png',
-    'image/webp': '.webp',
-    'image/gif': '.gif',
-  }
-  return map[mime] || null
-}
-
 export function validateAvatarFile(mimeType: string, size: number): string | null {
   if (!ALLOWED_AVATAR_TYPES.includes(mimeType)) return `Avatar type not allowed. Allowed: ${ALLOWED_AVATAR_TYPES.join(', ')}`
   if (size > MAX_AVATAR_SIZE) return `Avatar too large. Max ${MAX_AVATAR_SIZE / 1024 / 1024}MB`
@@ -142,10 +111,6 @@ export function isStoredProjectImageUrl(url: string | null | undefined): boolean
   return url.startsWith('/api/projects/images/') || url.startsWith('data:image/')
 }
 
-export function isBlobUrl(url: string): boolean {
-  return url.startsWith('https://') && url.includes('blob.vercel-storage.com')
-}
-
 export function isDataUrl(url: string | null | undefined): boolean {
   return !!url && url.startsWith('data:image/')
 }
@@ -161,6 +126,4 @@ export function storedNameFromProjectUrl(url: string): string | null {
   }
 }
 
-export function getAvatarPublicPath(storageKey: string): string {
-  return storageKey
-}
+

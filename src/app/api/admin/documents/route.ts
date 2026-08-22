@@ -2,11 +2,11 @@ import { NextRequest, NextResponse } from 'next/server'
 import { db } from '@/lib/db'
 import { adminDocuments } from '@/lib/db/schema'
 import { eq, desc } from 'drizzle-orm'
-import { getAuthStrict, getAuth } from '@/lib/auth'
+import { getAuth } from '@/lib/auth'
 import { saveDocument, validateDocumentFile } from '@/lib/storage'
 
 export async function GET(request: NextRequest) {
-  const auth = await getAuthStrict() || await getAuth()
+  const auth = await getAuth()
   if (!auth) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
 
   const { searchParams } = new URL(request.url)
@@ -42,7 +42,7 @@ export async function GET(request: NextRequest) {
 }
 
 export async function POST(request: NextRequest) {
-  const auth = await getAuthStrict() || await getAuth()
+  const auth = await getAuth()
   if (!auth) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
 
   try {

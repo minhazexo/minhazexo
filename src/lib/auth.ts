@@ -61,13 +61,5 @@ export async function getAuth() {
   const cookieStore = await cookies()
   const token = cookieStore.get(COOKIE_NAME)?.value
   if (!token) return null
-  // Strict version check — invalidates old sessions after password change
-  return verifyTokenWithVersion(token)
-}
-
-export async function getAuthStrict() {
-  const cookieStore = await cookies()
-  const token = cookieStore.get(COOKIE_NAME)?.value
-  if (!token) return null
   return verifyTokenWithVersion(token)
 }

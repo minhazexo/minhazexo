@@ -2,11 +2,11 @@ import { NextRequest, NextResponse } from 'next/server'
 import { db } from '@/lib/db'
 import { adminUsers } from '@/lib/db/schema'
 import { eq } from 'drizzle-orm'
-import { getAuthStrict, getAuth } from '@/lib/auth'
+import { getAuth } from '@/lib/auth'
 import { validateAvatarFile } from '@/lib/storage'
 
 export async function POST(request: NextRequest) {
-  const auth = await getAuthStrict() || await getAuth()
+  const auth = await getAuth()
   if (!auth) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
 
   try {
@@ -51,7 +51,7 @@ export async function POST(request: NextRequest) {
 
 export async function GET(request: NextRequest) {
   // Serve avatar image - requires auth (private)
-  const auth = await getAuthStrict() || await getAuth()
+  const auth = await getAuth()
   if (!auth) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
 
   try {
@@ -105,7 +105,7 @@ export async function GET(request: NextRequest) {
 }
 
 export async function DELETE() {
-  const auth = await getAuthStrict() || await getAuth()
+  const auth = await getAuth()
   if (!auth) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
 
   try {

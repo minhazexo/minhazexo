@@ -2,11 +2,11 @@ import { NextRequest, NextResponse } from 'next/server'
 import { db } from '@/lib/db'
 import { adminDocuments } from '@/lib/db/schema'
 import { eq, and } from 'drizzle-orm'
-import { getAuthStrict, getAuth } from '@/lib/auth'
+import { getAuth } from '@/lib/auth'
 import { readStoredFile, deleteFile } from '@/lib/storage'
 
 export async function GET(request: NextRequest, { params }: { params: { id: string } }) {
-  const auth = await getAuthStrict() || await getAuth()
+  const auth = await getAuth()
   if (!auth) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
 
   const id = Number(params.id)
@@ -48,7 +48,7 @@ export async function GET(request: NextRequest, { params }: { params: { id: stri
 }
 
 export async function DELETE(request: NextRequest, { params }: { params: { id: string } }) {
-  const auth = await getAuthStrict() || await getAuth()
+  const auth = await getAuth()
   if (!auth) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
 
   const id = Number(params.id)
@@ -63,7 +63,7 @@ export async function DELETE(request: NextRequest, { params }: { params: { id: s
 }
 
 export async function PATCH(request: NextRequest, { params }: { params: { id: string } }) {
-  const auth = await getAuthStrict() || await getAuth()
+  const auth = await getAuth()
   if (!auth) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
 
   const id = Number(params.id)

@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import { db } from '@/lib/db'
 import { adminUsers } from '@/lib/db/schema'
 import { eq } from 'drizzle-orm'
-import { getAuthStrict, getAuth } from '@/lib/auth'
+import { getAuth } from '@/lib/auth'
 
 function sanitizeUser(u: any) {
   if (!u) return null
@@ -11,7 +11,7 @@ function sanitizeUser(u: any) {
 }
 
 export async function GET() {
-  const auth = await getAuthStrict() || await getAuth()
+  const auth = await getAuth()
   if (!auth) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
 
   const [user] = await db.select().from(adminUsers).where(eq(adminUsers.id, auth.id))
@@ -21,7 +21,7 @@ export async function GET() {
 }
 
 export async function PUT(request: NextRequest) {
-  const auth = await getAuthStrict() || await getAuth()
+  const auth = await getAuth()
   if (!auth) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
 
   try {
