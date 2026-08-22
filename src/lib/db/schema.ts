@@ -7,7 +7,7 @@ export const adminUsers = pgTable('admin_users', {
   passwordHash: varchar('password_hash', { length: 255 }).notNull(),
   // Profile fields
   displayName: varchar('display_name', { length: 150 }),
-  avatarUrl: varchar('avatar_url', { length: 500 }),
+  avatarUrl: text('avatar_url'),
   bio: text('bio'),
   phone: varchar('phone', { length: 50 }),
   location: varchar('location', { length: 255 }),
