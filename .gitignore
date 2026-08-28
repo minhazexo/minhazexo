@@ -60,7 +60,7 @@ next-env.d.ts
 
 # misc
 *.pem
-docs/project info.md
+docs/
 
 # removed from tracking — source images now in DB as data URLs
 public/Project Photo/
