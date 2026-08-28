@@ -7,6 +7,7 @@ export default function AdminLogin() {
   const router = useRouter()
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
+  const [showPassword, setShowPassword] = useState(false)
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(false)
 
@@ -69,17 +70,31 @@ export default function AdminLogin() {
 
         <div style={{ marginBottom: 24 }}>
           <label style={{ display: 'block', fontSize: 12, color: '#9ca3af', marginBottom: 6, letterSpacing: '0.05em' }}>PASSWORD</label>
-          <input
-            type="password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            style={{
-              width: '100%', height: 44, padding: '0 14px', borderRadius: 10,
-              border: '1px solid rgba(255,255,255,0.08)', background: 'rgba(255,255,255,0.04)',
-              color: '#fff', fontSize: 14, outline: 'none',
-            }}
-            required
-          />
+          <div style={{ position: 'relative' }}>
+            <input
+              type={showPassword ? 'text' : 'password'}
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              style={{
+                width: '100%', height: 44, padding: '0 40px 0 14px', borderRadius: 10,
+                border: '1px solid rgba(255,255,255,0.08)', background: 'rgba(255,255,255,0.04)',
+                color: '#fff', fontSize: 14, outline: 'none',
+              }}
+              required
+            />
+            <button
+              type="button"
+              onClick={() => setShowPassword(!showPassword)}
+              style={{
+                position: 'absolute', right: 10, top: '50%', transform: 'translateY(-50%)',
+                background: 'none', border: 'none', cursor: 'pointer', padding: 4,
+                color: '#9ca3af', fontSize: 18, lineHeight: 1,
+              }}
+              tabIndex={-1}
+            >
+              {showPassword ? '🙈' : '👁'}
+            </button>
+          </div>
         </div>
 
         <button

@@ -131,7 +131,13 @@ async function seed() {
   }
 
   // Create admin user
-  const passwordHash = await bcrypt.hash('admin123', 12)
+  const defaultPassword = envVars.ADMIN_DEFAULT_PASSWORD || process.env.ADMIN_DEFAULT_PASSWORD
+  if (!defaultPassword) {
+    console.error('ADMIN_DEFAULT_PASSWORD not found in .env.local or environment')
+    console.error('Add ADMIN_DEFAULT_PASSWORD=yourSecurePassword to .env.local')
+    process.exit(1)
+  }
+  const passwordHash = await bcrypt.hash(defaultPassword, 12)
   await sqlClient`
     INSERT INTO admin_users (username, email, password_hash)
     VALUES ('admin', 'mehrabhossain7102@gmail.com', ${passwordHash})
@@ -139,7 +145,6 @@ async function seed() {
 
   console.log('Admin user created!')
   console.log('Username: admin')
-  console.log('Password: admin123')
   console.log('⚠ IMPORTANT: Change the password after first login!')
 }
 
