@@ -30,7 +30,9 @@ test.describe('Home Page', () => {
     await expect(page.locator('.glenn-gate')).toBeHidden({ timeout: 5000 })
     // …revealing the project index + meta.
     await expect(page.locator('.glenn-row-link').first()).toBeVisible()
-    await expect(page.locator('.glenn-meta')).toContainText(/Mehrab Hossain/)
+    // Name/role now come from the admin profile (same DB the tests run
+    // against), so only assert the stable label.
+    await expect(page.locator('.glenn-meta')).toContainText(/Portfolio of/)
   })
 
   test('navigation pills scroll to their sections', async ({ page }) => {

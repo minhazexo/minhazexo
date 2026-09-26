@@ -16,13 +16,54 @@ import { testimonials as fallbackTestimonials } from '@/data/testimonials'
 import { skillCategories } from '@/data/skills'
 import { experiences } from '@/data/experience'
 import { useApiData } from '@/hooks/useApiData'
-import type { Project, Testimonial } from '@/types'
+import type { Project, Testimonial, Experience } from '@/types'
 
 const ABOUT_PARAGRAPHS = [
   'I am MD Mehrab Hossain, a full-stack web developer based in Dhaka, Bangladesh.',
   'I build fast, reliable web applications with React, Next.js and Node.js — from boutique storefronts to academic portals and cinematic WebGL experiments.',
   'Currently available for freelance work. I care about performance, accessibility and interfaces that feel alive.',
 ]
+
+interface DbSkill {
+  id: number
+  name: string
+  category: string
+  level: number
+  color: string | null
+}
+
+interface PublicProfile {
+  displayName: string | null
+  title: string | null
+  bio: string | null
+  location: string | null
+}
+
+/* Admin skill rows (API order: level DESC) grouped into the gallery cards.
+   Falls back to the static groups until the owner adds skills in /admin. */
+function groupSkills(rows: DbSkill[]) {
+  const titles: string[] = []
+  const items = new Map<string, string[]>()
+  for (const s of rows) {
+    if (!s.name || !s.category) continue
+    if (!items.has(s.category)) {
+      items.set(s.category, [])
+      titles.push(s.category)
+    }
+    items.get(s.category)!.push(s.name)
+  }
+  return titles.map((title) => ({ title, items: (items.get(title) ?? []).slice(0, 8) }))
+}
+
+/* Admin bio (blank-line separated) split into About paragraphs. */
+function bioToParagraphs(bio: string | null | undefined): string[] | null {
+  if (!bio) return null
+  const parts = bio
+    .split(/\n\s*\n/)
+    .map((s) => s.trim())
+    .filter(Boolean)
+  return parts.length > 0 ? parts : null
+}
 
 export default function Home() {
   const [gateDone, setGateDone] = useState(false)
@@ -33,7 +74,28 @@ export default function Home() {
 
   const { data: projects } = useApiData<Project>('/api/projects', fallbackProjects)
   const { data: testimonials } = useApiData<Testimonial>('/api/testimonials', fallbackTestimonials)
+  const { data: dbSkills } = useApiData<DbSkill>('/api/skills', [])
+  const { data: dbExperience } = useApiData<Experience>('/api/experience', [])
+  const [profile, setProfile] = useState<PublicProfile | null>(null)
   const visible = projects.filter((p) => p.isVisible !== false)
+
+  /* Public identity (display name, role, bio). Plain fetch: the endpoint
+     returns a single object, not an array, so the array hook doesn't fit.
+     Missing fields fall back to the static copy. */
+  useEffect(() => {
+    let cancelled = false
+    fetch('/api/profile')
+      .then((r) => (r.ok ? r.json() : null))
+      .then((json) => {
+        if (!cancelled && json && typeof json === 'object' && !Array.isArray(json)) {
+          setProfile(json as PublicProfile)
+        }
+      })
+      .catch(() => {})
+    return () => {
+      cancelled = true
+    }
+  }, [])
 
   /* Preload critical data + images while the gate counts up. */
   useEffect(() => {
@@ -116,8 +178,16 @@ export default function Home() {
     description: p.description,
   }))
 
-  const skillGroups = skillCategories.map((c) => ({ title: c.name, items: c.skills.slice(0, 8) }))
-  const roles = experiences.map((e) => ({ role: e.role, company: e.company, period: e.period }))
+  const skillGroups =
+    dbSkills.length > 0
+      ? groupSkills(dbSkills)
+      : skillCategories.map((c) => ({ title: c.name, items: c.skills.slice(0, 8) }))
+  const roles = (dbExperience.length > 0 ? dbExperience : experiences).map((e) => ({
+    role: e.role,
+    company: e.company,
+    period: e.period,
+  }))
+  const aboutParagraphs = bioToParagraphs(profile?.bio) ?? ABOUT_PARAGRAPHS
 
   return (
     <div className="glenn-root">
@@ -134,7 +204,7 @@ export default function Home() {
         <>
           <GlennBackdrop />
           <Navigation />
-          <GlennMeta />
+          <GlennMeta name={profile?.displayName} title={profile?.title} />
 
           {/* Layout already renders <main id="main-content"> — keep this a plain
               wrapper so landmarks don't nest. */}
@@ -143,7 +213,7 @@ export default function Home() {
 
             <p className="glenn-hint">Scroll — Index / About / Skills / Experience / Words / Contact</p>
 
-            <GlennAbout paragraphs={ABOUT_PARAGRAPHS} />
+            <GlennAbout paragraphs={aboutParagraphs} />
             <GlennSkills groups={skillGroups} />
             <GlennExperience roles={roles} />
             <GlennTestimonials items={testimonials} />
