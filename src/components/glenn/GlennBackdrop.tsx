@@ -3,6 +3,8 @@
 import { useEffect, useRef } from 'react'
 import { useReducedMotion } from '@/hooks/useReducedMotion'
 import { HexGrid } from '@/components/background/HexGrid'
+import { HexGridFxPanel } from '@/components/background/HexGridFxPanel'
+import { useHexFx } from '@/components/background/hexFxStore'
 
 /* Original lightweight backdrop: dark gradient + two slow drifting
    glows + theme-colored hex grid + subtle film grain painted on canvas.
@@ -11,6 +13,7 @@ import { HexGrid } from '@/components/background/HexGrid'
 export function GlennBackdrop() {
   const canvasRef = useRef<HTMLCanvasElement>(null)
   const reduced = useReducedMotion()
+  const { effect, intensity } = useHexFx()
 
   useEffect(() => {
     const canvas = canvasRef.current
@@ -132,9 +135,13 @@ export function GlennBackdrop() {
   }, [reduced])
 
   return (
-    <div className="glenn-backdrop" aria-hidden="true">
-      <canvas ref={canvasRef} />
-      <HexGrid />
-    </div>
+    <>
+      <div className="glenn-backdrop" aria-hidden="true">
+        <canvas ref={canvasRef} />
+        <HexGrid effect={effect} intensity={intensity} />
+      </div>
+      {/* Grid glow picker — outside aria-hidden so it stays interactive. */}
+      {!reduced && <HexGridFxPanel />}
+    </>
   )
 }

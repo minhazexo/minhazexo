@@ -4,6 +4,8 @@ import { useEffect, useState } from 'react'
 import { useReducedMotion } from '@/hooks/useReducedMotion'
 import { useIsGlennMode } from '@/hooks/useGlennMode'
 import { HexGrid } from './HexGrid'
+import { HexGridFxPanel } from './HexGridFxPanel'
+import { useHexFx } from './hexFxStore'
 import { GlowLayer } from './GlowLayer'
 import { Stars } from './Stars'
 import { FloatingParticles } from './FloatingParticles'
@@ -21,6 +23,9 @@ export function Background() {
   const isGlenn = useIsGlennMode()
   const [mounted, setMounted] = useState(false)
 
+  /* Visitor-picked honeycomb glow pattern + intensity (shared store). */
+  const { effect, intensity } = useHexFx()
+
   useEffect(() => {
     setMounted(true)
   }, [])
@@ -37,43 +42,47 @@ export function Background() {
   const showRandomLayers = mounted && !prefersReduced
 
   return (
-    <div aria-hidden="true" id="site-background">
-      <div
-        className="bg-base"
-        style={{
-          ...layerStyles,
-          zIndex: 0,
-          background: 'linear-gradient(180deg, #071220 0%, #030816 55%, #01040A 100%)',
-        }}
-      />
+    <>
+      <div aria-hidden="true" id="site-background">
+        <div
+          className="bg-base"
+          style={{
+            ...layerStyles,
+            zIndex: 0,
+            background: 'linear-gradient(180deg, #071220 0%, #030816 55%, #01040A 100%)',
+          }}
+        />
 
-      <div style={{ ...layerStyles, zIndex: 1 }}>
-        <GlowLayer />
-      </div>
-
-      <div style={{ ...layerStyles, zIndex: 2 }}>
-        <HexGrid />
-      </div>
-
-      {!showRandomLayers ? null : (
-        <div style={{ ...layerStyles, zIndex: 4 }}>
-          <Stars />
+        <div style={{ ...layerStyles, zIndex: 1 }}>
+          <GlowLayer />
         </div>
-      )}
 
-      {!showRandomLayers ? null : (
-        <div style={{ ...layerStyles, zIndex: 5 }}>
-          <FloatingParticles />
+        <div style={{ ...layerStyles, zIndex: 2 }}>
+          <HexGrid effect={effect} intensity={intensity} />
         </div>
-      )}
 
-      <div style={{ ...layerStyles, zIndex: 6 }}>
-        <Noise />
-      </div>
+        {!showRandomLayers ? null : (
+          <div style={{ ...layerStyles, zIndex: 4 }}>
+            <Stars />
+          </div>
+        )}
 
-      <div style={{ ...layerStyles, zIndex: 7 }}>
-        <Vignette />
+        {!showRandomLayers ? null : (
+          <div style={{ ...layerStyles, zIndex: 5 }}>
+            <FloatingParticles />
+          </div>
+        )}
+
+        <div style={{ ...layerStyles, zIndex: 6 }}>
+          <Noise />
+        </div>
+
+        <div style={{ ...layerStyles, zIndex: 7 }}>
+          <Vignette />
+        </div>
       </div>
-    </div>
+      {/* Interactive — lives outside the aria-hidden backdrop. */}
+      {mounted && !prefersReduced && <HexGridFxPanel />}
+    </>
   )
 }

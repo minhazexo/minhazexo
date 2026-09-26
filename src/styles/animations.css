@@ -125,3 +125,7 @@
   50% { opacity: 0.25; }
   100% { transform: translateY(-50px); opacity: 0.05; }
 }
+
+/* ---------- HexGrid: living honeycomb (canvas) ----------
+   All motion is painted per-frame inside HexGrid.tsx — no CSS
+   keyframes needed. Static devices get a single painted frame. */
