@@ -115,9 +115,8 @@ export function AboutSection() {
               transition={{ duration: 0.4, delay: 0.3, ease: 'easeOut' }}
             >
               <motion.a
-                href="/resume.pdf"
-                target="_blank"
-                rel="noopener noreferrer"
+                href="/api/cv"
+                download="Minhaz-CV.pdf"
                 style={{
                   display: 'inline-flex',
                   alignItems: 'center',
@@ -140,7 +139,7 @@ export function AboutSection() {
                 transition={{ duration: 0.25 }}
               >
                 <Download style={{ width: 18, height: 18 }} />
-                Download Resume
+                Download CV
               </motion.a>
 
               <motion.a

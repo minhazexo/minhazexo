@@ -66,7 +66,8 @@ docs/
 public/Project Photo/
 public/background-music.mp3
 public/css-pattern-by-magicpattern.png
-public/resume/
+# CV copy served as deploy-proof download fallback (see src/app/api/cv/route.ts)
+!public/resume/Minhaz-CV.pdf
 tests/1.png
 tests/2.png
 tests/3.png
