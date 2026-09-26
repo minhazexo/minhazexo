@@ -20,7 +20,7 @@ import { useHexFx, setHexFx, setHexIntensity } from './hexFxStore'
    pattern they like. Rendered next to whichever grid is mounted
    (gallery backdrop or ambient background); state is shared. */
 
-const OPTIONS: { id: HexFx; label: string; hint: string; Icon: typeof Waves }[] = [
+export const HEX_FX_OPTIONS: { id: HexFx; label: string; hint: string; Icon: typeof Waves }[] = [
   { id: 'cursor', label: 'Cursor Bloom', hint: 'Light follows your pointer', Icon: MousePointer2 },
   { id: 'wave', label: 'Wave', hint: 'Light sweeps left to right', Icon: Waves },
   { id: 'vortex', label: 'Vortex', hint: 'Rotating spiral of light', Icon: Shell },
@@ -37,6 +37,7 @@ export function HexGridFxPanel() {
 
   return (
     <div
+      className="hex-fx-panel"
       style={{
         position: 'fixed',
         left: 16,
@@ -142,7 +143,7 @@ export function HexGridFxPanel() {
           </div>
 
           <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
-            {OPTIONS.map(({ id, label, hint, Icon }) => {
+            {HEX_FX_OPTIONS.map(({ id, label, hint, Icon }) => {
               const active = effect === id
               return (
                 <button

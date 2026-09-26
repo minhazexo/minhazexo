@@ -2,7 +2,7 @@
 
 import { glennBlip } from '@/lib/glenn-sound'
 
-function Roll({ text }: { text: string }) {
+export function Roll({ text }: { text: string }) {
   return (
     <span className="glenn-roll">
       <span>{text}</span>
@@ -11,7 +11,7 @@ function Roll({ text }: { text: string }) {
   )
 }
 
-const LINKS = [
+export const LINKS = [
   { label: 'About', href: '#about' },
   { label: 'Index', href: '#projects' },
   { label: 'Contact', href: '#contact' },

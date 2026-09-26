@@ -1,6 +1,7 @@
 'use client'
 
 import { GlennNav } from '@/components/glenn/GlennNav'
+import { GlennMobileNav } from '@/components/glenn/GlennMobileNav'
 
 /* Glenn-style top-right pill nav. Keeps the same export name so
    existing imports keep working. Full menu lives in the index. */
@@ -14,5 +15,10 @@ export function Navigation() {
     if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' })
   }
 
-  return <GlennNav onNavigate={handleNavigate} />
+  return (
+    <>
+      <GlennNav onNavigate={handleNavigate} />
+      <GlennMobileNav onNavigate={handleNavigate} />
+    </>
+  )
 }

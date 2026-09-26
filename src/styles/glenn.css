@@ -165,25 +165,9 @@ body.glenn-mode #site-background {
   padding: 0;
 }
 @media (max-width: 639px) {
+  /* Phones get the top pill bar instead (.glenn-mobile-nav below). */
   .glenn-nav {
-    top: auto;
-    bottom: 1rem;
-    left: 0;
-    right: 0;
-    display: flex;
-    justify-content: center;
-    padding: 0 1rem;
-  }
-  .glenn-nav ul {
-    width: 100%;
-    max-width: 26rem;
-    justify-content: center;
-    flex-wrap: wrap;
-  }
-  .glenn-nav ul li,
-  .glenn-nav .glenn-pill {
-    flex: 1 1 auto;
-    justify-content: center;
+    display: none;
   }
 }
 
@@ -905,11 +889,6 @@ body.glenn-mode #site-background {
   border-color: var(--glenn-accent);
   color: var(--glenn-accent);
 }
-@media (max-width: 639px) {
-  .glenn-top {
-    bottom: 4.2rem;
-  }
-}
 
 /* ---------- gallery contact form ---------- */
 .glenn-form {
@@ -1004,4 +983,265 @@ body.glenn-mode #site-background {
 .glenn-quote-stars {
   color: var(--glenn-accent);
   letter-spacing: 0.2em;
+}
+
+/* ---------- mobile top bar (phone only) ----------
+   Floating pill that mirrors the reference shot: logo tile, the
+   8 accent dots in an inset capsule, hamburger on the right.
+   Tapping the hamburger drops the full menu — links, CV and the
+   hexgrid animation picker. Swapped with .glenn-nav at 640px. */
+.glenn-mobile-nav {
+  display: none;
+}
+@media (max-width: 639px) {
+  .glenn-mobile-nav {
+    display: block;
+    position: fixed;
+    top: 10px;
+    left: 12px;
+    right: 12px;
+    z-index: 70;
+    font-family: var(--glenn-mono);
+  }
+
+  /* The bar sits over the top of the page — drop the flowing meta
+     column and the anchor snap points below it. */
+  .glenn-meta-inner {
+    padding-top: 5.5rem;
+  }
+  .glenn-section,
+  .glenn-index-wrap {
+    scroll-margin-top: 5.5rem;
+  }
+
+  /* The desktop glow picker moves into the bar's menu on phones. */
+  .hex-fx-panel {
+    display: none;
+  }
+}
+
+.mnav-bar {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+  height: 3.5rem;
+  padding: 0.4rem 0.45rem;
+  border-radius: 1.1rem;
+  background: rgba(12, 15, 20, 0.72);
+  border: 1px solid rgba(242, 242, 242, 0.1);
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+  box-shadow: 0 18px 50px rgba(0, 0, 0, 0.45);
+}
+
+.mnav-logo {
+  display: flex;
+  flex-shrink: 0;
+  border-radius: 0.75rem;
+  overflow: hidden;
+  border: 1px solid rgba(242, 242, 242, 0.12);
+  line-height: 0;
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+.mnav-logo img {
+  display: block;
+  width: 40px;
+  height: 40px;
+}
+@media (hover: hover) and (pointer: fine) {
+  .mnav-logo:hover {
+    border-color: var(--glenn-accent);
+    box-shadow: 0 0 12px var(--glenn-accent-faint);
+  }
+}
+
+.mnav-dots {
+  display: flex;
+  align-items: center;
+  gap: 0.42rem;
+  padding: 0.5rem 0.7rem;
+  border-radius: 999px;
+  background: rgba(0, 0, 0, 0.42);
+  border: 1px solid rgba(242, 242, 242, 0.08);
+}
+.mnav-dot {
+  width: 0.9rem;
+  height: 0.9rem;
+  padding: 0;
+  border-radius: 50%;
+  border: 1px solid rgba(242, 242, 242, 0.25);
+  background: var(--dot);
+  cursor: pointer;
+  transition: transform 0.5s var(--glenn-expo), box-shadow 0.3s ease;
+}
+.mnav-dot:hover {
+  transform: scale(1.25);
+}
+.mnav-dot.is-active {
+  box-shadow: 0 0 0 2px #0e0e0e, 0 0 0 3px var(--dot), 0 0 10px var(--dot);
+}
+
+.mnav-toggle {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.6rem;
+  height: 2.6rem;
+  flex-shrink: 0;
+  padding: 0;
+  border-radius: 0.85rem;
+  border: 1px solid rgba(242, 242, 242, 0.12);
+  background: rgba(242, 242, 242, 0.07);
+  color: var(--glenn-ink);
+  cursor: pointer;
+  transition: border-color 0.3s ease, color 0.3s ease, box-shadow 0.3s ease;
+}
+@media (hover: hover) and (pointer: fine) {
+  .mnav-toggle:hover {
+    border-color: var(--glenn-accent);
+    color: var(--glenn-accent);
+    box-shadow: 0 0 12px var(--glenn-accent-faint);
+  }
+}
+
+/* Dimmed page behind the open menu; the bar paints above it. */
+.mnav-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 1;
+  background: rgba(6, 8, 10, 0.55);
+  backdrop-filter: blur(2px);
+  -webkit-backdrop-filter: blur(2px);
+}
+
+.mnav-sheet {
+  position: absolute;
+  top: calc(100% + 8px);
+  left: 0;
+  right: 0;
+  z-index: 2;
+  max-height: calc(100dvh - 6.5rem);
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  padding: 0.9rem;
+  border-radius: 1.1rem;
+  background: rgba(14, 16, 20, 0.94);
+  border: 1px solid rgba(242, 242, 242, 0.1);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  box-shadow: 0 24px 70px rgba(0, 0, 0, 0.55);
+  outline: none;
+}
+
+.mnav-pills {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+}
+.mnav-pills .glenn-pill {
+  flex: 1 1 auto;
+  justify-content: center;
+  min-width: 4.5rem;
+}
+.mnav-cv {
+  display: flex;
+  justify-content: center;
+  width: 100%;
+  margin-top: 0.4rem;
+}
+@media (hover: hover) and (pointer: fine) {
+  .mnav-cv:hover {
+    box-shadow: 0 0 16px var(--glenn-accent-faint);
+  }
+}
+
+.mnav-section {
+  margin-top: 0.9rem;
+  padding-top: 0.9rem;
+  border-top: 1px solid rgba(242, 242, 242, 0.12);
+}
+.mnav-heading {
+  margin: 0 0 0.6rem;
+  font-family: var(--glenn-mono);
+  font-size: 0.62rem;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.16em;
+  color: var(--glenn-ink-faint);
+}
+.mnav-fx {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+}
+.mnav-fx-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.42rem 0.6rem;
+  border-radius: 999px;
+  border: 1px solid rgba(242, 242, 242, 0.14);
+  background: transparent;
+  color: rgba(242, 242, 242, 0.62);
+  font-family: var(--glenn-mono);
+  font-size: 0.6rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  line-height: 1;
+  cursor: pointer;
+  transition: border-color 0.3s ease, color 0.3s ease, background 0.3s ease,
+    box-shadow 0.3s ease;
+}
+@media (hover: hover) and (pointer: fine) {
+  .mnav-fx-chip:hover {
+    border-color: var(--glenn-accent);
+    color: var(--glenn-ink);
+  }
+}
+.mnav-fx-chip.is-active {
+  border-color: var(--glenn-accent);
+  color: var(--glenn-accent-soft);
+  background: var(--glenn-accent-faint);
+  box-shadow: 0 0 12px var(--glenn-accent-faint);
+}
+
+.mnav-intensity {
+  display: block;
+  margin-top: 0.85rem;
+}
+.mnav-intensity-label {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.6rem;
+  text-transform: uppercase;
+  letter-spacing: 0.14em;
+  color: var(--glenn-ink-faint);
+  margin-bottom: 0.4rem;
+}
+.mnav-intensity-label em {
+  font-style: normal;
+  color: var(--glenn-accent-soft);
+}
+.mnav-intensity input[type='range'] {
+  width: 100%;
+  accent-color: var(--glenn-accent);
+  cursor: pointer;
+}
+
+/* Keep the capsule honest on the narrowest phones. */
+@media (max-width: 359px) {
+  .mnav-bar {
+    gap: 0.35rem;
+  }
+  .mnav-dots {
+    gap: 0.3rem;
+    padding: 0.45rem 0.5rem;
+  }
+  .mnav-dot {
+    width: 0.75rem;
+    height: 0.75rem;
+  }
 }

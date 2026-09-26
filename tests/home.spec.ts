@@ -34,9 +34,19 @@ test.describe('Home Page', () => {
   })
 
   test('navigation pills scroll to their sections', async ({ page }) => {
+    // Phones walk the hamburger sheet three times — room over the default.
+    test.setTimeout(60000)
     await enterGallery(page)
+    const burger = page.locator('.mnav-toggle')
     for (const section of ['about', 'projects', 'contact']) {
-      await page.click(`.glenn-nav a[href="#${section}"]`)
+      // Phones hide the pill nav and serve the same links from the
+      // hamburger sheet instead.
+      if (await burger.isVisible()) {
+        await burger.click()
+        await page.locator(`#mnav-sheet a[href="#${section}"]`).click()
+      } else {
+        await page.click(`.glenn-nav a[href="#${section}"]`)
+      }
       await expect(page.locator(`#${section}`)).toBeInViewport({ timeout: 10000 })
     }
   })
@@ -99,7 +109,13 @@ test.describe('Home Page', () => {
     // Multi-step form flow with mocked transport — give it room under load.
     test.setTimeout(60000)
     await enterGallery(page)
-    await page.click('.glenn-nav a[href="#contact"]')
+    const burger = page.locator('.mnav-toggle')
+    if (await burger.isVisible()) {
+      await burger.click()
+      await page.locator('#mnav-sheet a[href="#contact"]').click()
+    } else {
+      await page.click('.glenn-nav a[href="#contact"]')
+    }
     await expect(page.locator('#contact')).toBeInViewport({ timeout: 10000 })
 
     await page.click('.glenn-form button[type="submit"]')
@@ -130,6 +146,7 @@ test.describe('Home Page', () => {
 
   test('sound toggle flips and back-to-top returns to index', async ({ page }) => {
     await enterGallery(page)
+    test.skip(!(await page.locator('.glenn-sound').isVisible()), 'Sound toggle is hidden on phones')
     const toggle = page.locator('.glenn-sound')
     const before = await toggle.textContent()
     await toggle.click()
