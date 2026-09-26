@@ -54,10 +54,13 @@
 }
 
 /* ---------- Touch-friendly ---------- */
+/* iOS auto-zooms text entry below 16px: guard inputs only. Buttons are
+   deliberately excluded — a global button floor previously crushed the
+   gallery index to 16px on every touch device (and would have blown the
+   14px theme dots up to 44px). Touch sizing is handled per-component. */
 @media (pointer: coarse) {
-  input, textarea, select, button {
-    font-size: 16px !important;
-    min-height: 44px;
+  input, textarea, select {
+    font-size: 16px;
   }
 }
 

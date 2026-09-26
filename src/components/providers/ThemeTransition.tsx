@@ -3,13 +3,21 @@
 import { useEffect, useState } from 'react'
 import { useTheme } from 'next-themes'
 import { motion, AnimatePresence } from 'framer-motion'
+import { useIsGlennMode } from '@/hooks/useGlennMode'
 
 export function ThemeTransition() {
   const { theme } = useTheme()
+  const isGlenn = useIsGlennMode()
   const [isTransitioning, setIsTransitioning] = useState(false)
   const [prevTheme, setPrevTheme] = useState<string>('')
 
   useEffect(() => {
+    /* In gallery mode the theme only retints a subtle accent — a full
+       cyan/magenta flash would shatter the monochrome feel. */
+    if (isGlenn) {
+      if (theme) setPrevTheme(theme)
+      return
+    }
     if (theme && theme !== prevTheme && prevTheme !== '') {
       setIsTransitioning(true)
 
@@ -23,7 +31,7 @@ export function ThemeTransition() {
     if (theme) {
       setPrevTheme(theme)
     }
-  }, [theme, prevTheme])
+  }, [theme, prevTheme, isGlenn])
 
   return (
     <AnimatePresence>

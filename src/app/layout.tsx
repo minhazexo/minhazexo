@@ -1,5 +1,5 @@
 import type { Metadata, Viewport } from 'next'
-import { Inter, IBM_Plex_Mono } from 'next/font/google'
+import { Inter, IBM_Plex_Mono, Anton } from 'next/font/google'
 import Script from 'next/script'
 import { Analytics } from '@vercel/analytics/next'
 import { SpeedInsights } from '@vercel/speed-insights/next'
@@ -9,8 +9,8 @@ import { ThemeTransition } from '@/components/providers/ThemeTransition'
 import { Background } from '@/components/background/Background'
 import { CursorGlow } from '@/components/effects/CursorGlow'
 import { ScrollProgress } from '@/components/effects/ScrollProgress'
-import { BackgroundMusic } from '@/components/effects/BackgroundMusic'
 import '@/styles/globals.css'
+import '@/styles/glenn.css'
 
 const inter = Inter({
   subsets: ['latin'],
@@ -22,6 +22,13 @@ const ibmPlexMono = IBM_Plex_Mono({
   subsets: ['latin'],
   weight: ['400', '500', '600', '700'],
   variable: '--font-ibm-plex-mono',
+  display: 'swap',
+})
+
+const anton = Anton({
+  subsets: ['latin'],
+  weight: '400',
+  variable: '--font-anton',
   display: 'swap',
 })
 
@@ -68,7 +75,7 @@ export const viewport: Viewport = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en" suppressHydrationWarning className={`${inter.variable} ${ibmPlexMono.variable}`}>
+    <html lang="en" suppressHydrationWarning className={`${inter.variable} ${ibmPlexMono.variable} ${anton.variable}`}>
       <head>
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
@@ -127,7 +134,6 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           <main id="main-content" role="main" tabIndex={-1} style={{ position: 'relative', zIndex: 10 }}>
             {children}
           </main>
-          <BackgroundMusic />
         </ThemeProvider>
         <Analytics />
         <SpeedInsights />

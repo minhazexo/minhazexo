@@ -24,7 +24,7 @@ function hexPoints(cx: number, cy: number, r: number): string {
 
 const PATTERN_ID = 'bg-hex-grid'
 
-export function HexGrid() {
+export function HexGrid({ opacity = 0.28 }: { opacity?: number }) {
   const [size, setSize] = useState(72)
 
   useEffect(() => {
@@ -52,7 +52,7 @@ export function HexGrid() {
       className="fixed inset-0 pointer-events-none"
       style={{
         zIndex: 2,
-        opacity: 0.28,
+        opacity,
         maskImage: 'radial-gradient(circle, rgba(0,0,0,1) 25%, rgba(0,0,0,0.9) 45%, rgba(0,0,0,0.55) 70%, transparent 100%)',
         WebkitMaskImage: 'radial-gradient(circle, rgba(0,0,0,1) 25%, rgba(0,0,0,0.9) 45%, rgba(0,0,0,0.55) 70%, transparent 100%)',
         filter: 'drop-shadow(0 0 6px rgba(var(--theme-rgb), 0.18))',

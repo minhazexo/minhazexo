@@ -1,8 +1,10 @@
 'use client'
 
-import { useEffect, useRef, useCallback } from 'react'
+import { useEffect, useRef, useState, useCallback } from 'react'
 import { useTheme } from 'next-themes'
 import { themes } from '@/data/themes'
+import { useIsGlennMode } from '@/hooks/useGlennMode'
+import { useReducedMotion } from '@/hooks/useReducedMotion'
 
 export function CursorGlow() {
   const glowRef = useRef<HTMLDivElement>(null)
@@ -10,6 +12,13 @@ export function CursorGlow() {
   const mouseRef = useRef({ x: 0, y: 0 })
   const currentRef = useRef({ x: 0, y: 0 })
   const { theme } = useTheme()
+  const isGlenn = useIsGlennMode()
+  const prefersReduced = useReducedMotion()
+  const [mounted, setMounted] = useState(false)
+
+  useEffect(() => {
+    setMounted(true)
+  }, [])
 
   const currentTheme = themes.find(t => t.value === theme)
   const glowColor = currentTheme?.color || '#00E5FF'
@@ -29,6 +38,10 @@ export function CursorGlow() {
   }, [])
 
   useEffect(() => {
+    /* Gallery has its own cursor follower (hover preview) — running a
+       second rAF loop behind it is pure waste. */
+    if (isGlenn || prefersReduced) return
+
     const handleMouseMove = (e: MouseEvent) => {
       mouseRef.current = { x: e.clientX, y: e.clientY }
     }
@@ -43,7 +56,13 @@ export function CursorGlow() {
       window.removeEventListener('mousemove', handleMouseMove)
       cancelAnimationFrame(rafRef.current)
     }
-  }, [animate])
+  }, [animate, isGlenn, prefersReduced])
+
+  /* Never paint behind the gallery, and never sit at z -1 (invisible
+     behind the page background). Not mounted on the server either: the
+     glow color derives from the client theme, so SSR would hydrate with
+     a mismatched gradient. */
+  if (isGlenn || !mounted) return null
 
   return (
     <div
@@ -58,7 +77,7 @@ export function CursorGlow() {
         filter: 'blur(40px)',
         transform: 'translate(-9999px, -9999px)',
         willChange: 'transform',
-        zIndex: -1,
+        zIndex: 3,
         transition: 'background 0.5s ease',
       }}
       aria-hidden="true"

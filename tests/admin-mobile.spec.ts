@@ -1,18 +1,39 @@
 import { test, expect } from '@playwright/test';
 
+// Like admin-projects-visibility.spec.ts, mock the admin APIs: this spec is
+// about toggle geometry on small screens, not about real credentials
+// (which live in the production database, not in test env).
+test.use({ viewport: { width: 375, height: 667 } })
+
+const MOCK_PROJECTS = [
+  {
+    id: 1, title: 'GeoWeather', description: 'Weather dashboard', image: '/a.webp',
+    tech: ['React'], category: 'React', github: 'https://github.com/x', demo: 'https://demo.com',
+    isVisible: true, createdAt: '2024-01-01T00:00:00.000Z', updatedAt: '2024-01-01T00:00:00.000Z',
+  },
+  {
+    id: 2, title: 'Secret Project', description: 'Hidden project', image: '/b.webp',
+    tech: ['Next.js'], category: 'Fullstack', github: 'https://github.com/x', demo: 'https://demo.com',
+    isVisible: false, createdAt: '2024-01-02T00:00:00.000Z', updatedAt: '2024-01-02T00:00:00.000Z',
+  },
+]
+
 test('admin mobile toggle placement', async ({ page }) => {
-  for (const pw of ['Portfolio7102', 'admin123']) {
-    const r = await page.request.post('/api/admin/login', {
-      data: { username: 'admin', password: pw },
-    });
-    if (r.ok()) break;
-  }
+  await page.route('**/api/admin/me', (route) =>
+    route.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify({ username: 'admin' }) })
+  )
+  await page.route('**/api/admin/projects', (route) => {
+    if (route.request().method() === 'GET') {
+      return route.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify(MOCK_PROJECTS) })
+    }
+    return route.continue()
+  })
+
   await page.goto('/admin');
-  await page.waitForTimeout(3000);
   // take mobile screenshot
   await page.screenshot({ path: 'test-results/admin-mobile.png', fullPage: true });
   // check that Visible toggle is visible and within viewport
-  const toggle = page.locator('text=Visible').first();
+  const toggle = page.getByText('Visible', { exact: true }).first();
   await expect(toggle).toBeVisible({ timeout: 10000 });
   const box = await toggle.boundingBox();
   console.log('Visible toggle box', box);

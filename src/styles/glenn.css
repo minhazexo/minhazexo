@@ -1,0 +1,1007 @@
+/* ============================================================
+   GLENN-INSPIRED THEME — original implementation
+   Feel: dark gallery, mono micro-labels, massive condensed
+   uppercase index, pill buttons with rolling labels,
+   floating hover preview, gated entry.
+   Uses open fonts: Anton (display) + IBM Plex Mono (labels).
+   No third-party assets copied.
+   ============================================================ */
+
+.glenn-root {
+  --glenn-bg: #141414;
+  --glenn-bg-deep: #0e0e0e;
+  --glenn-ink: #f2f2f2;
+  --glenn-ink-dim: rgba(242, 242, 242, 0.62);
+  --glenn-ink-faint: rgba(242, 242, 242, 0.38);
+  --glenn-pill: #f2f2f2;
+  --glenn-pill-ink: #141414;
+  --glenn-line: rgba(242, 242, 242, 0.14);
+  /* Full theme bridge: the 8-color engine (themes.ts → data-theme →
+     --primary) drives the whole gallery. --glenn-accent is the raw theme
+     color; the -soft/-faint/-glow derivations retint every text, line and
+     glow below. Body copy stays near-white ink for readability — everything
+     else follows the theme. Fallback lines first so browsers without
+     color-mix keep the monochrome look instead of dropping the rule. */
+  --glenn-accent: var(--primary, #f2f2f2);
+  --glenn-accent-soft: #f2f2f2;
+  --glenn-accent-soft: color-mix(in srgb, var(--glenn-accent) 58%, #f2f2f2);
+  --glenn-accent-faint: rgba(242, 242, 242, 0.14);
+  --glenn-accent-faint: color-mix(in srgb, var(--glenn-accent) 30%, transparent);
+  --glenn-glow: rgba(242, 242, 242, 0.55);
+  --glenn-glow: color-mix(in srgb, var(--glenn-accent) 48%, transparent);
+  --glenn-expo: cubic-bezier(0.19, 1, 0.22, 1);
+  --glenn-mono: var(--font-ibm-plex-mono), ui-monospace, monospace;
+  --glenn-display: var(--font-anton), 'Arial Narrow', sans-serif;
+  position: relative;
+  background: var(--glenn-bg-deep);
+  color: var(--glenn-ink);
+  min-height: 100vh;
+  overflow-x: clip;
+}
+
+/* Aurora stack unmounts itself in gallery mode (see Background.tsx);
+   this is a belt-and-braces kill so no ghost layer ever paints. */
+body.glenn-mode #site-background {
+  display: none;
+}
+
+.glenn-root ::selection {
+  background: var(--glenn-accent);
+  color: #0e0e0e;
+}
+
+.glenn-root :focus-visible {
+  outline: 2px solid var(--glenn-accent);
+  outline-offset: 3px;
+}
+
+.glenn-root a:not(.glenn-pill) {
+  color: inherit;
+}
+
+/* Anchored sections sit below the fixed pills — offset the snap point. */
+.glenn-section,
+.glenn-index-wrap {
+  scroll-margin-top: 4.5rem;
+}
+
+/* ---------- backdrop canvas ---------- */
+.glenn-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background:
+    radial-gradient(120% 90% at 50% 0%, #232323 0%, #161616 45%, #0c0c0c 100%);
+}
+.glenn-backdrop canvas {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+.glenn-backdrop::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: 3;
+  background: radial-gradient(90% 70% at 50% 45%, transparent 55%, rgba(0, 0, 0, 0.55) 100%);
+}
+
+/* ---------- pill button with rolling label ---------- */
+.glenn-pill {
+  display: inline-flex;
+  align-items: center;
+  height: 1.5rem;
+  padding: 0 0.7rem;
+  border-radius: 0.125rem;
+  background: var(--glenn-pill);
+  color: var(--glenn-pill-ink);
+  font-family: var(--glenn-mono);
+  font-size: 0.72rem;
+  letter-spacing: -0.01em;
+  text-transform: uppercase;
+  line-height: 1;
+  border: 1px solid transparent;
+  cursor: pointer;
+  box-shadow: 0 0 0.25rem rgba(20, 20, 20, 0.25);
+  text-decoration: none;
+  white-space: nowrap;
+  transition: box-shadow 0.4s ease, border-color 0.4s ease;
+}
+@media (hover: hover) and (pointer: fine) {
+  .glenn-pill:hover {
+    border-color: var(--glenn-accent);
+    box-shadow: 0 0 14px var(--glenn-accent-faint), 0 0 0.25rem rgba(20, 20, 20, 0.25);
+  }
+}
+@media (max-width: 639px) {
+  .glenn-pill {
+    height: 2.75rem;
+    padding: 0 1rem;
+    font-size: 0.85rem;
+  }
+}
+.glenn-roll {
+  position: relative;
+  display: block;
+  overflow: hidden;
+}
+.glenn-roll > span {
+  display: block;
+  transition: transform 0.8s var(--glenn-expo), opacity 0.8s var(--glenn-expo);
+}
+.glenn-roll > span:last-child {
+  position: absolute;
+  inset: 0;
+  transform: translateY(102%);
+  opacity: 0;
+}
+@media (hover: hover) and (pointer: fine) {
+  .glenn-pill:hover .glenn-roll > span:first-child {
+    transform: translateY(-102%);
+    opacity: 0;
+  }
+  .glenn-pill:hover .glenn-roll > span:last-child {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+/* ---------- top-right nav ---------- */
+.glenn-nav {
+  position: fixed;
+  top: 1rem;
+  right: 1rem;
+  z-index: 40;
+  font-family: var(--glenn-mono);
+}
+.glenn-nav ul {
+  display: flex;
+  gap: 0.25rem;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+@media (max-width: 639px) {
+  .glenn-nav {
+    top: auto;
+    bottom: 1rem;
+    left: 0;
+    right: 0;
+    display: flex;
+    justify-content: center;
+    padding: 0 1rem;
+  }
+  .glenn-nav ul {
+    width: 100%;
+    max-width: 26rem;
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+  .glenn-nav ul li,
+  .glenn-nav .glenn-pill {
+    flex: 1 1 auto;
+    justify-content: center;
+  }
+}
+
+/* ---------- right-side meta header ---------- */
+.glenn-meta {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  z-index: 5;
+  pointer-events: none;
+  font-family: var(--glenn-mono);
+  font-size: 0.72rem;
+  text-transform: uppercase;
+  letter-spacing: -0.01em;
+}
+.glenn-meta-inner {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  min-height: 100vh;
+  min-height: 100svh;
+  padding: 1rem 1.25rem;
+  max-width: 90rem;
+  margin-left: auto;
+  text-align: left;
+}
+@media (min-width: 1000px) {
+  .glenn-meta-inner {
+    align-items: flex-end;
+    text-align: left;
+    /* Clear the fixed top-right pill nav (1rem top + 1.5rem height). */
+    padding-top: 3.5rem;
+  }
+  .glenn-meta-block {
+    width: 16rem;
+  }
+}
+@media (max-width: 999px) {
+  .glenn-meta {
+    position: relative;
+    min-height: auto;
+  }
+  .glenn-meta-inner {
+    min-height: auto;
+    padding: 4.5rem 1.25rem 0;
+    gap: 1rem;
+  }
+}
+.glenn-meta-block {
+  display: flex;
+  flex-direction: column;
+  color: var(--glenn-ink);
+  text-shadow: 0 0 4px var(--glenn-glow);
+}
+.glenn-meta-block::after {
+  content: '';
+  display: block;
+  height: 0.25rem;
+  width: 0.25rem;
+  border-radius: 0.03rem;
+  background: var(--glenn-accent);
+  margin-top: 0.75rem;
+  box-shadow: 0 0 6px var(--glenn-glow);
+}
+.glenn-meta-sub {
+  padding-bottom: 18vh;
+}
+/* NOTE: the desktop spread above must stay AFTER this rule in the file —
+   on small screens the column flows normally and 18vh becomes a dead
+   hole, so it is collapsed below (later = wins at equal specificity). */
+@media (max-width: 999px) {
+  .glenn-meta-sub {
+    padding-bottom: 0;
+  }
+}
+
+/* ---------- massive project index ---------- */
+.glenn-index-wrap {
+  position: relative;
+  z-index: 6;
+  padding: 22vh 1rem 12vh;
+}
+@media (max-width: 999px) {
+  .glenn-index-wrap {
+    padding-top: 4vh;
+  }
+}
+.glenn-index {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+.glenn-row {
+  display: block;
+  overflow: hidden;
+}
+.glenn-row-link {
+  position: relative;
+  display: inline-flex;
+  align-items: flex-start;
+  font-family: var(--glenn-display);
+  font-weight: 400;
+  text-transform: uppercase;
+  line-height: 0.85;
+  letter-spacing: 0.01em;
+  font-size: clamp(2.6rem, 9vw, 6rem);
+  color: var(--glenn-ink);
+  text-shadow: 0 0 6px var(--glenn-glow);
+  text-decoration: none;
+  white-space: nowrap;
+  padding-right: 1.25rem;
+  cursor: pointer;
+  background: none;
+  border: 0;
+  text-align: left;
+}
+@media (min-width: 1000px) {
+  .glenn-row-link {
+    font-size: 6rem;
+  }
+}
+.glenn-row-link .glenn-row-text {
+  display: inline-block;
+  transition: transform 1.1s var(--glenn-expo), opacity 0.5s ease, color 0.5s ease, text-shadow 0.5s ease;
+}
+@media (hover: hover) and (pointer: fine) {
+  .glenn-row-link:hover .glenn-row-text,
+  .glenn-row-link:focus-visible .glenn-row-text {
+    transform: translateX(0.6rem) skewX(-6deg);
+    opacity: 0.96;
+    color: var(--glenn-accent-soft);
+    text-shadow: 0 0 14px var(--glenn-glow);
+  }
+}
+.glenn-row-index {
+  font-family: var(--glenn-mono);
+  font-size: 0.65rem;
+  letter-spacing: 0.08em;
+  color: var(--glenn-accent-soft);
+  margin-right: 0.9rem;
+  padding-top: 0.7rem;
+  flex: none;
+}
+.glenn-row-cat {
+  font-family: var(--glenn-mono);
+  font-size: 0.62rem;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--glenn-accent-soft);
+  border: 1px solid var(--glenn-accent-faint);
+  border-radius: 999px;
+  padding: 0.3rem 0.6rem;
+  margin-left: 1rem;
+  align-self: center;
+  white-space: nowrap;
+  flex: none;
+}
+
+/* ---------- small-phone index: a real list, not a clipped poster ----
+   Titles wrap instead of clipping, rows get air + hairline dividers, and
+   nothing collides. Larger screens keep the tight gallery stack. */
+@media (max-width: 639px) {
+  .glenn-index-wrap {
+    padding-top: 5vh;
+  }
+  .glenn-row {
+    padding: 0.65rem 0;
+    border-bottom: 1px solid var(--glenn-line);
+  }
+  .glenn-row:first-child {
+    border-top: 1px solid var(--glenn-line);
+  }
+  .glenn-row-link {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    row-gap: 0.5rem;
+    white-space: normal;
+    line-height: 0.95;
+    font-size: clamp(2.1rem, 11vw, 3rem);
+    padding-right: 0;
+    width: 100%;
+  }
+  .glenn-row-index {
+    padding-top: 0.15rem;
+  }
+  .glenn-row-cat {
+    margin-left: 0.75rem;
+  }
+}
+
+/* floating hover preview */
+.glenn-preview {
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 30;
+  width: min(22rem, 34vw);
+  aspect-ratio: 16 / 10;
+  border-radius: 0.35rem;
+  overflow: hidden;
+  pointer-events: none;
+  opacity: 0;
+  transform: translate(-50%, -58%) scale(0.9);
+  transition: opacity 0.35s ease;
+  box-shadow: 0 24px 80px rgba(0, 0, 0, 0.6), 0 0 32px var(--glenn-accent-faint);
+  border: 1px solid var(--glenn-accent-faint);
+  background: #222;
+}
+.glenn-preview.is-visible {
+  opacity: 1;
+}
+.glenn-preview img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+.glenn-preview-fallback {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--glenn-display);
+  font-size: 2rem;
+  text-transform: uppercase;
+  color: var(--glenn-ink);
+  background: linear-gradient(135deg, #2b2b2b, #101010);
+}
+@media (hover: none), (max-width: 999px) {
+  .glenn-preview {
+    display: none;
+  }
+}
+
+/* ---------- gate / preloader ---------- */
+.glenn-gate {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  display: flex;
+  align-items: safe center;
+  justify-content: center;
+  overflow-y: auto;
+  background: #f2f2f2;
+  color: #141414;
+  font-family: var(--glenn-mono);
+  text-transform: uppercase;
+}
+.glenn-gate-dark {
+  background: transparent;
+  color: #f2f2f2;
+  animation: glenn-gate-in 0.5s ease;
+}
+@keyframes glenn-gate-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+/* ---------- shutter reveal (exit choreography) ----------
+   Two dark panels carry the gate cover (the container itself is
+   transparent so parting them reveals the gallery mounted beneath).
+   Timeline on Enter: center pushes in + blurs (0–0.45s), accent seam
+   flashes across the middle, panels part top/bottom (0.15–1.15s).
+   All % based — identical on phones and widescreens. Reduced motion
+   collapses every transition via the global rule; JS uses a short fuse. */
+.glenn-shutter {
+  position: absolute;
+  left: 0;
+  width: 100%;
+  height: 51%;
+  background: linear-gradient(180deg, #111111, #0b0b0b);
+  z-index: 1;
+  transition: transform 1s var(--glenn-expo) 0.15s;
+  will-change: transform;
+}
+.glenn-shutter-top {
+  top: 0;
+  border-bottom: 1px solid rgba(242, 242, 242, 0.06);
+}
+.glenn-shutter-bottom {
+  bottom: 0;
+  background: linear-gradient(0deg, #111111, #0b0b0b);
+  border-top: 1px solid rgba(242, 242, 242, 0.06);
+}
+.glenn-seam {
+  position: absolute;
+  top: 50%;
+  left: 6%;
+  right: 6%;
+  height: 2px;
+  margin-top: -1px;
+  background: var(--glenn-accent);
+  box-shadow: 0 0 22px var(--glenn-glow), 0 0 60px var(--glenn-glow);
+  border-radius: 2px;
+  opacity: 0;
+  transform: scaleX(0.2);
+  z-index: 2;
+}
+.glenn-gate-dark .glenn-gate-center {
+  position: relative;
+  z-index: 3;
+  transition: opacity 0.45s ease, transform 0.6s var(--glenn-expo), filter 0.45s ease;
+}
+.glenn-gate.is-leaving {
+  pointer-events: none;
+}
+.glenn-gate.is-leaving .glenn-gate-center {
+  opacity: 0;
+  transform: scale(1.07);
+  filter: blur(8px);
+}
+.glenn-gate.is-leaving .glenn-shutter-top {
+  transform: translateY(-102%);
+}
+.glenn-gate.is-leaving .glenn-shutter-bottom {
+  transform: translateY(102%);
+}
+.glenn-gate.is-leaving .glenn-seam {
+  animation: glenn-seam-life 0.85s var(--glenn-expo) 0.3s forwards;
+}
+@keyframes glenn-seam-life {
+  0% { opacity: 0; transform: scaleX(0.2); }
+  25% { opacity: 1; }
+  70% { opacity: 1; transform: scaleX(1); }
+  100% { opacity: 0; transform: scaleX(1); }
+}
+.glenn-gate-top {
+  position: absolute;
+  top: 14vh;
+  left: 0;
+  width: 100%;
+  text-align: center;
+  font-size: 0.75rem;
+  line-height: 1.6;
+}
+.glenn-gate-bottom {
+  position: absolute;
+  bottom: 13vh;
+  left: 0;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  font-size: 0.75rem;
+}
+.glenn-gate-count {
+  display: flex;
+  align-items: baseline;
+  gap: 0.15rem;
+  font-size: 0.85rem;
+}
+.glenn-gate-center {
+  text-align: center;
+  padding: 4rem 1rem;
+  margin: auto;
+}
+.glenn-gate-title {
+  font-family: var(--glenn-display);
+  text-transform: uppercase;
+  line-height: 0.85;
+  font-size: clamp(3rem, 10vw, 6rem);
+  margin: 0 0 1.5rem;
+}
+.glenn-gate-title em {
+  font-style: italic;
+}
+.glenn-gate-sub {
+  font-family: var(--glenn-display);
+  text-transform: uppercase;
+  line-height: 0.85;
+  font-size: clamp(1.6rem, 5vw, 3rem);
+  color: #757575;
+  margin: 0 0 2.5rem;
+}
+.glenn-gate-dark .glenn-gate-sub {
+  color: #8a8a8a;
+}
+.glenn-enter {
+  display: inline-flex;
+  align-items: center;
+  gap: 1.4rem;
+  background: none;
+  border: 0;
+  cursor: pointer;
+  color: inherit;
+  font: inherit;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  padding: 1rem 2rem;
+  transition: color 0.5s ease, text-shadow 0.5s ease;
+}
+.glenn-enter:hover {
+  color: var(--glenn-accent-soft);
+  text-shadow: 0 0 12px var(--glenn-glow);
+}
+.glenn-enter:hover .glenn-enter-dot {
+  background: var(--glenn-accent);
+  box-shadow: 0 0 8px var(--glenn-glow);
+}
+.glenn-enter-dot {
+  width: 0.3rem;
+  height: 0.3rem;
+  border-radius: 0.05rem;
+  background: currentColor;
+  transition: transform 1s var(--glenn-expo);
+}
+.glenn-enter:hover .glenn-enter-dot:first-child {
+  transform: translateX(0.8rem);
+}
+.glenn-enter:hover .glenn-enter-dot:last-child {
+  transform: translateX(-0.8rem);
+}
+.glenn-enter-quiet {
+  position: absolute;
+  bottom: 10vh;
+  left: 0;
+  width: 100%;
+  text-align: center;
+  background: none;
+  border: 0;
+  cursor: pointer;
+  color: inherit;
+  font: inherit;
+  font-size: 0.72rem;
+  text-transform: uppercase;
+  opacity: 0.7;
+}
+.glenn-enter-quiet:hover {
+  opacity: 1;
+}
+
+/* Short screens (landscape phones, small windows): the gate stack is
+   taller than the viewport — compact the type and pull the chrome in so
+   nothing clips. The gate scrolls as a last resort (safe-center above). */
+@media (max-height: 520px) {
+  .glenn-gate-title {
+    font-size: clamp(2rem, 13vh, 3rem);
+    margin-bottom: 0.8rem;
+  }
+  .glenn-gate-sub {
+    font-size: clamp(1.1rem, 8vh, 1.6rem);
+    margin-bottom: 1rem;
+  }
+  .glenn-gate-top {
+    top: 6vh;
+  }
+  .glenn-gate-bottom {
+    bottom: 6vh;
+  }
+  .glenn-enter {
+    padding: 0.5rem 2rem;
+  }
+  .glenn-enter-quiet {
+    bottom: 3vh;
+  }
+  .glenn-gate-center {
+    padding: 3rem 1rem;
+  }
+}
+
+/* ---------- sound toggle ---------- */
+.glenn-sound {
+  position: fixed;
+  bottom: 1rem;
+  right: 1rem;
+  z-index: 40;
+  width: auto;
+  min-width: 1.5rem;
+  height: 1.5rem;
+  padding: 0 0.3rem;
+  border-radius: 0.125rem;
+  border: 1px solid var(--glenn-line);
+  background: var(--glenn-pill);
+  color: var(--glenn-pill-ink);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--glenn-mono);
+  font-size: 0.6rem;
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+.glenn-sound[aria-pressed="true"] {
+  border-color: var(--glenn-accent);
+  box-shadow: 0 0 10px var(--glenn-accent-faint);
+}
+@media (max-width: 639px) {
+  .glenn-sound {
+    display: none;
+  }
+}
+
+/* ---------- lower sections restyled ---------- */
+.glenn-section {
+  position: relative;
+  z-index: 6;
+  border-top: 1px solid var(--glenn-line);
+  padding: 5rem 1rem;
+  max-width: 76rem;
+  margin: 0 auto;
+}
+.glenn-kicker {
+  font-family: var(--glenn-mono);
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--glenn-accent-soft);
+  margin-bottom: 1rem;
+  display: flex;
+  align-items: center;
+  gap: 0.7rem;
+}
+.glenn-kicker::before {
+  content: '';
+  width: 1.5rem;
+  height: 1px;
+  background: var(--glenn-accent);
+}
+.glenn-h2 {
+  font-family: var(--glenn-display);
+  text-transform: uppercase;
+  line-height: 0.85;
+  font-size: clamp(2.4rem, 7vw, 4.5rem);
+  margin: 0 0 1rem;
+  color: var(--glenn-ink);
+  text-shadow: 0 0 6px rgba(242, 242, 242, 0.25);
+}
+.glenn-h2 em {
+  font-style: italic;
+  color: var(--glenn-accent-soft);
+  text-shadow: 0 0 12px var(--glenn-glow);
+}
+.glenn-lede {
+  font-family: var(--glenn-mono);
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  line-height: 1.8;
+  color: var(--glenn-ink-dim);
+  max-width: 34rem;
+}
+.glenn-body {
+  font-family: var(--glenn-mono);
+  font-size: 0.78rem;
+  line-height: 1.9;
+  color: var(--glenn-ink-dim);
+}
+.glenn-list {
+  list-style: none;
+  margin: 2rem 0 0;
+  padding: 0;
+  border-top: 1px solid var(--glenn-line);
+}
+.glenn-list li {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 0.9rem 0;
+  border-bottom: 1px solid var(--glenn-line);
+  font-family: var(--glenn-mono);
+  font-size: 0.72rem;
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
+  color: var(--glenn-ink-dim);
+}
+.glenn-list li strong {
+  color: var(--glenn-ink);
+  font-weight: 400;
+}
+.glenn-cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(15rem, 100%), 1fr));
+  gap: 1rem;
+  margin-top: 2rem;
+}
+.glenn-card {
+  border: 1px solid var(--glenn-line);
+  border-radius: 0.25rem;
+  padding: 1.25rem;
+  background: rgba(242, 242, 242, 0.03);
+}
+.glenn-card h3 {
+  font-family: var(--glenn-display);
+  text-transform: uppercase;
+  font-size: 1.4rem;
+  line-height: 0.9;
+  margin: 0 0 0.7rem;
+  color: var(--glenn-ink);
+}
+.glenn-card p {
+  font-family: var(--glenn-mono);
+  font-size: 0.7rem;
+  line-height: 1.8;
+  text-transform: uppercase;
+  color: var(--glenn-ink-dim);
+  margin: 0;
+}
+.glenn-footer {
+  position: relative;
+  z-index: 6;
+  border-top: 1px solid var(--glenn-line);
+  padding: 3rem 1rem 6rem;
+  font-family: var(--glenn-mono);
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  color: var(--glenn-ink-dim);
+}
+.glenn-footer-inner {
+  max-width: 76rem;
+  margin: 0 auto;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  justify-content: space-between;
+}
+.glenn-footer a {
+  color: var(--glenn-ink);
+  transition: color 0.3s ease, text-shadow 0.3s ease;
+}
+.glenn-footer a:hover {
+  color: var(--glenn-accent-soft);
+  text-shadow: 0 0 10px var(--glenn-glow);
+}
+
+/* thin scroll hint */
+.glenn-hint {
+  position: relative;
+  z-index: 6;
+  text-align: center;
+  font-family: var(--glenn-mono);
+  font-size: 0.65rem;
+  text-transform: uppercase;
+  letter-spacing: 0.2em;
+  color: var(--glenn-ink-faint);
+  padding: 0 1rem 3rem;
+}
+
+/* ---------- theme dots (gallery-styled accent picker) ---------- */
+.glenn-themes {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  flex-wrap: wrap;
+}
+.glenn-themes-label {
+  font-family: var(--glenn-mono);
+  font-size: 0.62rem;
+  text-transform: uppercase;
+  letter-spacing: 0.14em;
+  color: var(--glenn-ink-faint);
+  margin-right: 0.3rem;
+}
+.glenn-theme-dot {
+  width: 0.9rem;
+  height: 0.9rem;
+  border-radius: 50%;
+  border: 1px solid rgba(242, 242, 242, 0.25);
+  background: var(--dot);
+  cursor: pointer;
+  padding: 0;
+  transition: transform 0.5s var(--glenn-expo), box-shadow 0.3s ease;
+}
+.glenn-theme-dot:hover {
+  transform: scale(1.25);
+}
+.glenn-theme-dot.is-active {
+  box-shadow: 0 0 0 2px var(--glenn-bg-deep), 0 0 0 3px var(--dot), 0 0 12px var(--dot);
+}
+
+/* Auto-cycle resume pill: the 15s show stops on a manual pick — this is
+   the way back. Active = cycling. */
+.glenn-auto {
+  font-family: var(--glenn-mono);
+  font-size: 0.6rem;
+  text-transform: uppercase;
+  letter-spacing: 0.14em;
+  color: var(--glenn-ink-faint);
+  background: transparent;
+  border: 1px solid var(--glenn-line);
+  border-radius: 999px;
+  padding: 0.28rem 0.7rem;
+  cursor: pointer;
+  transition: color 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
+}
+.glenn-auto:hover {
+  color: var(--glenn-ink);
+  border-color: var(--glenn-accent);
+}
+.glenn-auto.is-active {
+  color: var(--glenn-accent-soft);
+  border-color: var(--glenn-accent);
+  box-shadow: 0 0 10px var(--glenn-accent-faint);
+}
+
+/* ---------- back to top ---------- */
+.glenn-top {
+  position: fixed;
+  bottom: 1rem;
+  left: 1rem;
+  z-index: 40;
+  height: 1.5rem;
+  padding: 0 0.7rem;
+  border-radius: 0.125rem;
+  border: 1px solid var(--glenn-line);
+  background: rgba(20, 20, 20, 0.7);
+  backdrop-filter: blur(8px);
+  color: var(--glenn-ink);
+  font-family: var(--glenn-mono);
+  font-size: 0.65rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  cursor: pointer;
+}
+.glenn-top:hover {
+  border-color: var(--glenn-accent);
+  color: var(--glenn-accent);
+}
+@media (max-width: 639px) {
+  .glenn-top {
+    bottom: 4.2rem;
+  }
+}
+
+/* ---------- gallery contact form ---------- */
+.glenn-form {
+  margin-top: 2rem;
+  max-width: 34rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+.glenn-field label {
+  display: block;
+  font-family: var(--glenn-mono);
+  font-size: 0.62rem;
+  text-transform: uppercase;
+  letter-spacing: 0.14em;
+  color: var(--glenn-ink-faint);
+  margin-bottom: 0.45rem;
+}
+.glenn-field input,
+.glenn-field textarea {
+  width: 100%;
+  background: rgba(242, 242, 242, 0.03);
+  border: 1px solid var(--glenn-line);
+  border-radius: 0.25rem;
+  color: var(--glenn-ink);
+  font-family: var(--glenn-mono);
+  font-size: 0.78rem;
+  line-height: 1.6;
+  padding: 0.7rem 0.9rem;
+  outline: none;
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+  resize: vertical;
+}
+.glenn-field input::placeholder,
+.glenn-field textarea::placeholder {
+  color: var(--glenn-ink-faint);
+}
+.glenn-field input:focus,
+.glenn-field textarea:focus {
+  border-color: var(--glenn-accent);
+  box-shadow: 0 0 0 1px var(--glenn-accent);
+}
+.glenn-field-error {
+  font-family: var(--glenn-mono);
+  font-size: 0.62rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: #ff8a8a;
+  margin-top: 0.35rem;
+}
+.glenn-form-status {
+  font-family: var(--glenn-mono);
+  font-size: 0.68rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--glenn-accent);
+}
+
+/* ---------- testimonials ---------- */
+.glenn-quotes {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(17rem, 100%), 1fr));
+  gap: 1rem;
+  margin-top: 2rem;
+}
+.glenn-quote {
+  border: 1px solid var(--glenn-line);
+  border-radius: 0.25rem;
+  padding: 1.25rem;
+  background: rgba(242, 242, 242, 0.03);
+  display: flex;
+  flex-direction: column;
+  gap: 0.9rem;
+}
+.glenn-quote p {
+  font-family: var(--glenn-mono);
+  font-size: 0.72rem;
+  line-height: 1.9;
+  color: var(--glenn-ink-dim);
+  margin: 0;
+}
+.glenn-quote footer {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  font-family: var(--glenn-mono);
+  font-size: 0.62rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--glenn-accent-soft);
+}
+.glenn-quote-stars {
+  color: var(--glenn-accent);
+  letter-spacing: 0.2em;
+}

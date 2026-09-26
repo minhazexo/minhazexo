@@ -1,6 +1,8 @@
 'use client'
 
+import { useEffect, useState } from 'react'
 import { useReducedMotion } from '@/hooks/useReducedMotion'
+import { useIsGlennMode } from '@/hooks/useGlennMode'
 import { HexGrid } from './HexGrid'
 import { GlowLayer } from './GlowLayer'
 import { Stars } from './Stars'
@@ -16,6 +18,23 @@ const layerStyles: React.CSSProperties = {
 
 export function Background() {
   const prefersReduced = useReducedMotion()
+  const isGlenn = useIsGlennMode()
+  const [mounted, setMounted] = useState(false)
+
+  useEffect(() => {
+    setMounted(true)
+  }, [])
+
+  /* The gallery paints its own backdrop (GlennBackdrop: canvas glows +
+     grain plus the shared HexGrid, all theme-driven). Unmount the whole
+     aurora stack here instead of dimming it — it was still animating at
+     16% opacity underneath. */
+  if (isGlenn) return null
+
+  /* Stars / particles generate random layouts with Math.random — rendering
+     them during SSR guarantees a hydration mismatch (server positions ≠
+     client positions). Mount them client-side only. */
+  const showRandomLayers = mounted && !prefersReduced
 
   return (
     <div aria-hidden="true" id="site-background">
@@ -36,13 +55,13 @@ export function Background() {
         <HexGrid />
       </div>
 
-      {!prefersReduced && (
+      {!showRandomLayers ? null : (
         <div style={{ ...layerStyles, zIndex: 4 }}>
           <Stars />
         </div>
       )}
 
-      {!prefersReduced && (
+      {!showRandomLayers ? null : (
         <div style={{ ...layerStyles, zIndex: 5 }}>
           <FloatingParticles />
         </div>

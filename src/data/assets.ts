@@ -14,7 +14,3 @@ export const imageAssets = {
 } as const
 
 export const preloadImages = Object.values(imageAssets)
-
-export const audioAssets = {
-  backgroundMusic: '/background-music-compressed.mp3',
-} as const

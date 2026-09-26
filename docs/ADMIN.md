@@ -2,7 +2,8 @@
 
 The portfolio includes a full admin dashboard at `/admin` for managing all content through the database.
 
----
+---username-admin
+pass-portfolio123
 
 ## Accessing the Admin Panel
 
