@@ -71,7 +71,17 @@ body.glenn-mode #site-background {
   inset: 0;
   z-index: 0;
   pointer-events: none;
+  /* Portfolio portrait sits beneath the existing glow/grain canvas and
+     the live HexGrid. Keep the image as a true backdrop layer so every
+     honeycomb animation remains crisp and interactive above it. */
   background:
+    linear-gradient(
+      180deg,
+      rgba(5, 8, 13, 0.48) 0%,
+      rgba(5, 8, 13, 0.34) 42%,
+      rgba(5, 8, 13, 0.62) 100%
+    ),
+    url('/For%20Portfolio.jpeg') center 42% / cover no-repeat,
     radial-gradient(120% 90% at 50% 0%, #232323 0%, #161616 45%, #0c0c0c 100%);
 }
 .glenn-backdrop canvas {
