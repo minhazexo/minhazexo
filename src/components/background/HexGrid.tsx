@@ -326,8 +326,11 @@ export function HexGrid({
         const glow = Math.min(heat[i] * k, 1.15)
 
         trace(cell.pts)
-        ctx.strokeStyle = `rgba(${r},${g},${b},${0.26 + 0.65 * glow})`
-        ctx.lineWidth = 1 + 2.2 * glow
+        // Keep every hex boundary clearly visible even when the pointer is idle.
+        // Interaction effects build on this brighter baseline instead of being
+        // the only moment the honeycomb outline becomes noticeable.
+        ctx.strokeStyle = `rgba(${r},${g},${b},${0.44 + 0.48 * glow})`
+        ctx.lineWidth = 1.35 + 2.2 * glow
         ctx.stroke()
 
         if (glow > 0.03) {
